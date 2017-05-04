@@ -1,0 +1,88 @@
+<<prologue, include=FALSE>>=
+knitr::opts_chunk$set(warning = FALSE
+                      , message = FALSE
+                      , echo = FALSE
+                      )
+knitr::opts_template$set(
+  fig.tile = list(fig.height = 3
+                  , fig.width = 3
+                  , fig.align='center')
+  )
+knitr::opts_knit$set(self.contained=FALSE)
+@
+
+\documentclass[a4paper]{article}
+\usepackage{titling}
+\newcommand{\subtitle}[1]{%
+  \posttitle{%
+    \par\end{center}
+    \begin{center}\large#1\end{center}
+    \vskip0.5em}%
+}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\let\oldemptyset\emptyset
+\let\emptyset\varnothing
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+ 
+\urlstyle{same}
+
+\usepackage[backend=bibtex, style=authoryear]{biblatex}
+\addbibresource{likertimputebiblio.bib}
+
+\begin{document}
+\title{An Association Rules Based Method for Imputing Missing Ordinal Data and Likert Scales}
+\subtitle{Proposal for Master's Dissertation}
+\author{Julian Hatwell}
+\maketitle
+
+Student Number: S15142087\newline
+Tutor: Prof. Mohamed Medhat Gaber
+
+\tableofcontents
+
+\section{Abstract}
+
+\section{Introduction}
+
+This project investigates novel techniques for imputing missing survey data, specifically of ordinal responses and multiple-item (Likert) scales where imputation techniques are not as well developed as they are for continuous data.
+
+\subsection{Problem Statement}
+
+Surveys using ordinal scales are ubiquitous in the medical and social sciences, market research, election polling and numerous other applications. The practicalities of collecting survey data means that researchers and analysts who use such instruments are regularly faced with the problem of missing data (\cite{bono2007missing}; \cite{kamakura2000factor}). Examples are common in the literature (\cite{madow1983incomplete}; \cite{roth1999missing}; \cite{raaijmakers1999effectiveness}) showing that analysis of such survey data is adversely affected by missingness which can result in biased parameter estimates (central tendency, dispersion and correlation coefficients) and loss of statistical power. There are many strategies for recovering from issues caused by missing data which are well developed for continuous variables, but less so for categorical and ordinal variables according to \cite{finch2010imputation}.\newline 
+
+There is evidence in the literature of significant differences in the performance of various imputation strategies over different datasets (\cite{wu2015comparison} ) *CITE MORE*. This indicates a need to take into account the model and magnitude of missingness and other charactieristics particular to the target data. For this reason there is a real benefit in having a range of imputation methods from which to choose the most suitable for a given situation.\newline
+
+\cite{huisman1999missing} states that a strong relationship exists between the items of multiple-item scales which measure one latent trait (such as Likert scales). Techniques that can recognize this information and preserve it in the imputed data set would have an advantage. Association rules are known to exploit a combination of similarity and probabilistic *CITE* features of the underlying distribution which could form the basis of an imputation method. Yet a search of the literature yields no information on the use of association rules in this context.\newline
+
+\subsection{Contribution of This Work}
+
+This research project will investigate novel, association rules based imputation techniques for missing ordinal and Likert scale data, benchmarked against state of the art. Association rules offer additional advantages of generating compact and highly interpretable models of the target dataset *CITE* which may be used to enhance the results of the analysis.
+
+\section{Literature Review}
+
+This section provides an in brief review which will be developed further in the dissertation.
+
+\subsection{Ordinal Data and Multiple-Item Scales in Surveys}
+
+\subsection{Models of Missingness of Survey Data}
+
+\subsection{Imputation Techniques}
+
+These include list-wise deletion, regression, stochastic and similarity based methods.
+
+\subsection{Benchmarking Imputation Techniques}
+
+\subsection{Association Rules}
+
+\subsection{Prediction with Association Rules}
+
+\printbibliography
+\end{document}

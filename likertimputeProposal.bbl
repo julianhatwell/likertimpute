@@ -1,0 +1,292 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 2.8 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\sortlist[entry]{nyt/global/}
+  \entry{bono2007missing}{article}{}
+    \name{author}{4}{}{%
+      {{hash=BC}{%
+         family={Bono},
+         familyi={B\bibinitperiod},
+         given={Christine},
+         giveni={C\bibinitperiod},
+      }}%
+      {{hash=RLD}{%
+         family={Ried},
+         familyi={R\bibinitperiod},
+         given={L\bibnamedelima Douglas},
+         giveni={L\bibinitperiod\bibinitdelim D\bibinitperiod},
+      }}%
+      {{hash=KC}{%
+         family={Kimberlin},
+         familyi={K\bibinitperiod},
+         given={Carole},
+         giveni={C\bibinitperiod},
+      }}%
+      {{hash=VB}{%
+         family={Vogel},
+         familyi={V\bibinitperiod},
+         given={Bruce},
+         giveni={B\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Elsevier}%
+    }
+    \strng{namehash}{BC+1}
+    \strng{fullhash}{BCRLDKCVB1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2007}
+    \field{sortinit}{B}
+    \field{sortinithash}{B}
+    \field{number}{1}
+    \field{pages}{1\bibrangedash 27}
+    \field{title}{Missing data on the Center for Epidemiologic Studies
+  Depression Scale: a comparison of 4 imputation techniques}
+    \field{volume}{3}
+    \field{journaltitle}{Research in Social and Administrative Pharmacy}
+    \field{year}{2007}
+  \endentry
+
+  \entry{finch2010imputation}{article}{}
+    \name{author}{1}{}{%
+      {{hash=FWH}{%
+         family={Finch},
+         familyi={F\bibinitperiod},
+         given={W\bibnamedelima Holmes},
+         giveni={W\bibinitperiod\bibinitdelim H\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {中華資料採礦協會}%
+    }
+    \strng{namehash}{FWH1}
+    \strng{fullhash}{FWH1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2010}
+    \field{sortinit}{F}
+    \field{sortinithash}{F}
+    \field{number}{3}
+    \field{pages}{361\bibrangedash 378}
+    \field{title}{Imputation methods for missing categorical questionnaire
+  data: A comparison of approaches}
+    \field{volume}{8}
+    \field{journaltitle}{Journal of Data Science}
+    \field{year}{2010}
+  \endentry
+
+  \entry{huisman1999missing}{article}{}
+    \name{author}{1}{}{%
+      {{hash=HM}{%
+         family={Huisman},
+         familyi={H\bibinitperiod},
+         given={Mark},
+         giveni={M\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {DSWO PRESS, LEIDEN UNIVERSITY}%
+    }
+    \strng{namehash}{HM1}
+    \strng{fullhash}{HM1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1999}
+    \field{sortinit}{H}
+    \field{sortinithash}{H}
+    \field{pages}{23\bibrangedash 46}
+    \field{title}{Missing data in behavioral science research: Investigation of
+  a collection of data sets}
+    \field{volume}{32}
+    \field{journaltitle}{M AND T SERIES}
+    \field{year}{1999}
+  \endentry
+
+  \entry{kamakura2000factor}{article}{}
+    \name{author}{2}{}{%
+      {{hash=KWA}{%
+         family={Kamakura},
+         familyi={K\bibinitperiod},
+         given={Wagner\bibnamedelima A},
+         giveni={W\bibinitperiod\bibinitdelim A\bibinitperiod},
+      }}%
+      {{hash=WM}{%
+         family={Wedel},
+         familyi={W\bibinitperiod},
+         given={Michel},
+         giveni={M\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {American Marketing Association}%
+    }
+    \strng{namehash}{KWAWM1}
+    \strng{fullhash}{KWAWM1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2000}
+    \field{sortinit}{K}
+    \field{sortinithash}{K}
+    \field{number}{4}
+    \field{pages}{490\bibrangedash 498}
+    \field{title}{Factor analysis and missing data}
+    \field{volume}{37}
+    \field{journaltitle}{Journal of Marketing Research}
+    \field{year}{2000}
+  \endentry
+
+  \entry{madow1983incomplete}{article}{}
+    \name{author}{2}{}{%
+      {{hash=MWG}{%
+         family={Madow},
+         familyi={M\bibinitperiod},
+         given={William\bibnamedelima G},
+         giveni={W\bibinitperiod\bibinitdelim G\bibinitperiod},
+      }}%
+      {{hash=OI}{%
+         family={Olkin},
+         familyi={O\bibinitperiod},
+         given={Ingram},
+         giveni={I\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {New York NY/London England Academic Press 1983.}%
+    }
+    \strng{namehash}{MWGOI1}
+    \strng{fullhash}{MWGOI1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1983}
+    \field{sortinit}{M}
+    \field{sortinithash}{M}
+    \field{title}{Incomplete data in sample surveys. Vol. 3: proceedings of the
+  symposium}
+    \field{year}{1983}
+  \endentry
+
+  \entry{raaijmakers1999effectiveness}{article}{}
+    \name{author}{1}{}{%
+      {{hash=RQA}{%
+         family={Raaijmakers},
+         familyi={R\bibinitperiod},
+         given={Quinten\bibnamedelima AW},
+         giveni={Q\bibinitperiod\bibinitdelim A\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Sage Publications Sage CA: Thousand Oaks, CA}%
+    }
+    \strng{namehash}{RQA1}
+    \strng{fullhash}{RQA1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1999}
+    \field{sortinit}{R}
+    \field{sortinithash}{R}
+    \field{number}{5}
+    \field{pages}{725\bibrangedash 748}
+    \field{title}{Effectiveness of different missing data treatments in surveys
+  with Likert-type data: Introducing the relative mean substitution approach}
+    \field{volume}{59}
+    \field{journaltitle}{Educational and Psychological Measurement}
+    \field{year}{1999}
+  \endentry
+
+  \entry{roth1999missing}{article}{}
+    \name{author}{3}{}{%
+      {{hash=RPL}{%
+         family={Roth},
+         familyi={R\bibinitperiod},
+         given={Philip\bibnamedelima L},
+         giveni={P\bibinitperiod\bibinitdelim L\bibinitperiod},
+      }}%
+      {{hash=SIFS}{%
+         family={Switzer\bibnamedelima III},
+         familyi={S\bibinitperiod\bibinitdelim I\bibinitperiod},
+         given={Fred\bibnamedelima S},
+         giveni={F\bibinitperiod\bibinitdelim S\bibinitperiod},
+      }}%
+      {{hash=SDM}{%
+         family={Switzer},
+         familyi={S\bibinitperiod},
+         given={Deborah\bibnamedelima M},
+         giveni={D\bibinitperiod\bibinitdelim M\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Sage Publications Sage CA: Thousand Oaks, CA}%
+    }
+    \strng{namehash}{RPLSIFSSDM1}
+    \strng{fullhash}{RPLSIFSSDM1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1999}
+    \field{sortinit}{R}
+    \field{sortinithash}{R}
+    \field{number}{3}
+    \field{pages}{211\bibrangedash 232}
+    \field{title}{Missing data in multiple item scales: A Monte Carlo analysis
+  of missing data techniques}
+    \field{volume}{2}
+    \field{journaltitle}{Organizational Research Methods}
+    \field{year}{1999}
+  \endentry
+
+  \entry{wu2015comparison}{article}{}
+    \name{author}{3}{}{%
+      {{hash=WW}{%
+         family={Wu},
+         familyi={W\bibinitperiod},
+         given={Wei},
+         giveni={W\bibinitperiod},
+      }}%
+      {{hash=JF}{%
+         family={Jia},
+         familyi={J\bibinitperiod},
+         given={Fan},
+         giveni={F\bibinitperiod},
+      }}%
+      {{hash=EC}{%
+         family={Enders},
+         familyi={E\bibinitperiod},
+         given={Craig},
+         giveni={C\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Taylor \& Francis}%
+    }
+    \strng{namehash}{WWJFEC1}
+    \strng{fullhash}{WWJFEC1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2015}
+    \field{sortinit}{W}
+    \field{sortinithash}{W}
+    \field{number}{5}
+    \field{pages}{484\bibrangedash 503}
+    \field{title}{A comparison of imputation strategies for ordinal missing
+  data on Likert scale variables}
+    \field{volume}{50}
+    \field{journaltitle}{Multivariate behavioral research}
+    \field{year}{2015}
+  \endentry
+\endsortlist
+\endinput
