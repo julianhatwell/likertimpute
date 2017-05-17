@@ -48,23 +48,21 @@ Tutor: Prof. Mohamed Medhat Gaber
 
 \tableofcontents
 
-\section{Abstract}
-
 \section{Introduction}
 
-This project investigates novel techniques for imputing missing survey data, specifically of ordinal responses and multiple-item (Likert) scales where imputation techniques are not as well developed as they are for continuous data.
+Surveys using ordinal scales are ubiquitous in the medical and social sciences, market research, election polling and numerous other applications. This project investigates novel techniques for imputing missing survey data, specifically of ordinal responses and multiple-item (Likert) scales where imputation techniques are not as well developed as they are for continuous data.
 
 \subsection{Problem Statement}
 
-Surveys using ordinal scales are ubiquitous in the medical and social sciences, market research, election polling and numerous other applications. The practicalities of collecting survey data means that researchers and analysts who use such instruments are regularly faced with the problem of missing data (\cite{bono2007missing}; \cite{kamakura2000factor}). Examples are common in the literature (\cite{madow1983incomplete}; \cite{roth1999missing}; \cite{raaijmakers1999effectiveness}) showing that analysis of such survey data is adversely affected by missingness which can result in biased parameter estimates (central tendency, dispersion and correlation coefficients) and loss of statistical power. There are many strategies for recovering from issues caused by missing data which are well developed for continuous variables, but less so for categorical and ordinal variables according to \cite{finch2010imputation}.\newline 
+The practicalities of running surveys means that researchers and analysts who use such instruments are regularly faced with the problem of missing data (\cite{bono2007missing}; \cite{kamakura2000factor}). There is an abundance of examples in the literature  showing that analysis of survey data is adversely affected by missingness (\cite{madow1983incomplete}; \cite{roth1999missing}; \cite{raaijmakers1999effectiveness}). The problems include biased parameter estimates (central tendency, dispersion and correlation coefficients) and loss of statistical power. There are many strategies for recovering from issues caused by missing data which are well developed for continuous variables, but less so for categorical and ordinal variables according to \cite{finch2010imputation}.\newline
 
-There is evidence in the literature of significant differences in the performance of various imputation strategies over different datasets (\cite{wu2015comparison} ) *CITE MORE*. This indicates a need to take into account the model and magnitude of missingness and other charactieristics particular to the target data. For this reason there is a real benefit in having a range of imputation methods from which to choose the most suitable for a given situation.\newline
+Furthermore, there is evidence of significant differences in the performance of various imputation strategies over different datasets exhibiting different underlying characteristics (\cite{wu2015comparison}; \cite{rodwell2014comparison}; \cite{sim2015missing}). This indicates a need to take into account the model and magnitude of missingness and other charactieristics particular to the target data. For this reason there is real benefit in having a range of imputation methods from which to choose the most suitable for a given situation.\newline
 
-\cite{huisman1999missing} states that a strong relationship exists between the items of multiple-item scales which measure one latent trait (such as Likert scales). Techniques that can recognize this information and preserve it in the imputed data set would have an advantage. Association rules are known to exploit a combination of similarity and probabilistic *CITE* features of the underlying distribution which could form the basis of an imputation method. Yet a search of the literature yields no information on the use of association rules in this context.\newline
+One such characteristic of surveys is the use of multiple-item and Likert scales. \cite{huisman1999missing} states that there is a strong relationship between the individual items which measure one latent trait. Techniques that can recognize this structural information and preserve it in the imputed data set could have an advantage. Association rules methods are known to exploit probabilistic features (support and confidence) \cite{agrawal1994fast} features of the underlying distribution. These could form the basis of an imputation method. Yet a search of the literature yields no information on the use of association rules in this context.\newline
 
 \subsection{Contribution of This Work}
 
-This research project will investigate novel, association rules based imputation techniques for missing ordinal and Likert scale data, benchmarked against state of the art. Association rules offer additional advantages of generating compact and highly interpretable models of the target dataset *CITE* which may be used to enhance the results of the analysis.
+This research project will investigate novel, association rules based imputation techniques for missing ordinal and Likert scale data, benchmarked against state of the art. Association rules are one example given in \cite{chandola2005summarization} of methods for generating compact models of the target dataset. This is an additional advantage which may be used to enhance the results of the analysis.
 
 \section{Literature Review}
 
@@ -74,15 +72,61 @@ This section provides an in brief review which will be developed further in the 
 
 \subsection{Models of Missingness of Survey Data}
 
-\subsection{Imputation Techniques}
+The reader is directed to *CITE MULITPLE RUBIN (AND LITTLE) BOOK* for the seminal works on models of missingness. In brief, data is:
 
-These include list-wise deletion, regression, stochastic and similarity based methods.
+\begin{itemize}
+\item missing completely at random (MCAR) if the distribution of missing data is unrelated to the value of any variable in the dataset. Data cannot be predicted from any information whatever, whether observed or unobserved. This is the most difficult assumption to qualify.*CITE*
+\item missing at random (MAR) if the distribution of missing data may be related to other variables in the dataset but not the variable itself. The mechanism is correlated with the observed data.
+\item not missing at random (NMAR) if the distribution of missing data is related to the value of the variable itself. This is the most challenging situation to recover. *CITE*
+\end{itemize}
+
+\subsection{Techniques to Recover From Missing Data}
+
+While missing data is upported for storage and retrieval purposes (the SQL NULL value, R's NA value and system missing values generally), many statistical functions and operations simply do not work with missing data and it is necessary to implement some form of pre-processing to recover a dataset for appropriate analysis. \cite{carpita2011imputation} describes four categories of  procedures as follows:
+
+\begin{enumerate}
+\item ignore or omit
+\item weighting procedures
+\item model-based procedures
+\item imputation procedures
+\end{enumerate}
+
+Each method has advantages and disadvantages. For example, (1) is simplest to implement but potentially introduces significant problems. For example, simply omitting a data point from an aggregate or multiple-item scale will result in an underestimated score on the latent variable. This category also includes listwise deletion, i.e. only retaining complete cases across all variables in the survey but this can lead to drastically lower numbers of valid respondents and bias parameter estimates if the underlying cause of missing data is NMAR.\newline
+
+There is a wide variety of imputation strategies. Single imputation attempts to create a complete dataset by replacing the missing value with a "plausible" value. This is useful for maintaining the highest number of valid respondents. More sophisticated, multiple imputation methods exist which create multiple copies of the dataset, completed with values from an inferred or bootstrapped distribution. The aim of such methods is to reduce the bias in parameter estimation by preserving the variance-covariance relationships within and between the variables.
 
 \subsection{Benchmarking Imputation Techniques}
 
 \subsection{Association Rules}
 
+
 \subsection{Prediction with Association Rules}
+
+As discussed by \cite{garcia2004mining}, it is common to categorize data mining and learning algorithms into either supervised or unsupervised methods (alternatively predictive/descriptive). Association rules mining would normally fall into the unsupervised and descriptive categories, as the goal is to find patterns (frequent itemsets and supported rules, in this case) without any prior information about what these patterns might be. However, there are special cases where the resulting models can be used for prediction or, more specifically, clasification. Here, a subset of rules is found, which \cite{ma1998integrating} calls \textit{class association rules} (CARs). These CARs have the characteristic of having the target variable as the only element in the consequent or right-hand side of the rule.\newline
+
+While prediction and imputation differ in scope and goal, the intention of finding a plausible value rather than an accurate value could be seen as a simple relaxation of success criteria. If prediction with excellent results is possible from association rules, then it stands to reason that imputation is also possible.
+
+\subsection{Summary of the Literature Review}
+
+Ordinal data and multiple response scales are a both a common and special case which , due to the practicalities of data collection, are highly prone to missingness and non-response. The magnitude, pattern and distribution of missingness depends on the underlying cause and has different consequences for the analysis, which are potentially serious loss of statistical power and biased parameter estimates. There are many techniques that perform with varying degrees of success, depending on the features of the data and the characteristics of missingness. The success of these techniques can be assessed using well understood measures.\newline
+
+Since the concept was proposed, ARM has been the subject of intense research. While the technique is inherently a descriptive, knowledge discovery tool, it has been successfully adapted for classification but never used for imputation (based on an extensive literature search).
+
+\section{Research Methodology}
+
+\section{Ethical Consideration}
+
+\section{Supervision}
+
+This project is carried out towards the Masters of Science in Business Intelligence at Birmingham City University, Faculty of Computing and supervised by Prof. Mohamed Medhat Gaber.
+
+\section{Time Frame}
+
+\subsection{Deliverables}
+
+\section{Skills Audit}
+
+\section{Support Required}
 
 \printbibliography
 \end{document}
