@@ -111,7 +111,7 @@ These methods, which are now consdered the state of the art, create multiple cop
 
 \subsection{Association Rules}
 
-Association Rules Mining (ARM) was first popularised by the development of a fast algorithm for large databases, \textit{apriori}, in \cite{agrawal1993mining}. Since then, (ARM) has been the subject of intensive research. Readers are directed to an abundance of explanations and examples in the literature. \cite{garcia2004mining} categorizes ARM among the unsupervised and descriptive techniques as opposed to the other common categorisation (supervised/predictive). The goal of ARM is to find patterns (frequent itemsets and supported rules, in this case) without any prior information about what these patterns might be. The original implementation uses transaction data but \cite{ma1998integrating} describes a process using a normal relational table with highly discretized data, where the items are represented on columns with various integer values. It is expected that this methodology will be applicable to representations of surveys with ordinal data.
+Association Rules Mining (ARM) was first popularised by the development of a fast algorithm for large databases, \textit{apriori}, in \cite{agrawal1993mining}. Since then, (ARM) has been the subject of intensive research. Readers are directed to an abundance of explanations and examples in the literature. \cite{garcia2004mining} categorizes ARM among the unsupervised and descriptive techniques as opposed to the other common categorisation (supervised/predictive). The goal of ARM is to find patterns (frequent itemsets and supported rules, in this case) without any prior information about what these patterns might be. The original implementation uses transaction data. In \cite{arulespackage} this is represented as a sparse, binary incidence matrix, with each item represented as present (1) or absent (0) in a unique column and each transaction on rows. \cite{ma1998integrating} describes a process using a normal relational table with highly discretized data, where the items are represented on columns with various integer values. These can then be coerced to binary dummy variables. This makes ARM applicable to representations of surveys with multi-ranked (non-binary) ordinal data and Likert scales.
 
 \subsection{Classification with Association Rules}
 
@@ -135,7 +135,7 @@ The R programming environment (\cite{rsoftware}) has been selected for the imple
 \item SAS Software. All analytical procs are compiled programmes and can't be extended. Macro language is a limited set of data and file manipulation functions.
 \item Oracle Data Mining. A point and click canvas, lacking the programmability required.
 \item RapidMiner. A point and click canvas, lacking the programmability required.
-\item Python. This could be a viable alternative but would require additional time for the researcher to reach an adequate level of competence. Python offers a native library based on the FP-growth algorithm, which is significantly faster than \textit{apriori} which is an advantage over R. FP-growth is available to R but only via C++ integration with the Rcpp package, \cite{rcpppackage}.
+\item Python. This could be a viable alternative but would require additional time for the researcher to reach an adequate level of competence. Python offers a native library based on the FP-growth algorithm, which is significantly faster than \textit{apriori} which is an advantage over R. An FP-growth reference implementation is available to R but only via C integration.
 \end{itemize}
 
 \subsection{Datasets}
@@ -146,7 +146,9 @@ Two scenarios are considered for real-world datasets. Firstly, there are benchma
 
 \subsection{Association Rules Mining Algorithm}
 
-It is not the intention of this project to improve or extend ARM nor to compare different ARM algorithms, but simply to use association rules as the basis of a novel imputation technique. While \cite{li2001cmar} state significant performance benefits from using FP-growth, this requires additional steps to implement in R that will detract from the project timelines. Because of the deterministic nature of ARM, the resulting rulesets should be the same whichever algorithm is used. As such, integration of FP-growth for improved computational performance is left to future work.
+It is not the intention of this project to improve or extend ARM nor to compare different ARM algorithms, but simply to use association rules as the basis of a novel imputation technique. While \cite{li2001cmar} state significant performance benefits from using FP-growth, this requires additional steps to implement in R that will detract from the project timelines. Because of the deterministic nature of ARM, the resulting rulesets should be the same whichever algorithm is used. As such, integration of FP-growth for improved computational performance is left to future work.\newline
+
+The \textit{apriori} algorithm is provided to the R environment by the arules package, \cite{arulespackage}. This is found to lack some of the flexibility required to be easily repurposed for the exclusive discovery of CARs. It is likely that some workaround code needs to be generated to generate all rules then filter down to a valid set. This work requires a fast, efficient algorithm for mining CARs over a dataset for each variable containing any missing values. Developing this in R will also be left to future work.
 
 \subsection{Imputation Algorithm}
 
@@ -253,8 +255,7 @@ legend("topright", c("Research"
        , col = c("goldenrod", "red"))
 @
 
-
-\subsection{Deliverables}
+The gannt chart shows deliverables with indicative dates in yellow. Hard deadlines are shown in red.
 
 \section{Skills Audit}
 
