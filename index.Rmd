@@ -1,6 +1,6 @@
 ---
-title: "An Association Rules Based Method for Imputing Missing Ordinal Data and Likert Scales"
-author: "Julian Hatwell"
+title: "An Association Rules Based Method for Imputing Missing Ordinal and Likert Scale Data"
+author: "A dissertation by Julian Hatwell for the Master of Science in Business Intelligence degree at Birmingham City University, faculty of Computing, Engineering and the Built Environment"
 date: "September 2017"
 site: bookdown::bookdown_site
 documentclass: book
@@ -14,7 +14,9 @@ nocite: |
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+
+options(xtable.comment = FALSE)
 
 # automatically create a bib database for R packages
 knitr::write_bib(c(
@@ -24,4 +26,20 @@ knitr::write_bib(c(
 
 # Acknowledgements {-}
 
+With special thanks to my supervisor, Professor Mohamed Medhat Gaber for guidance during this project.\newline
+
+To my mother, without whom none of this would be possible.\newline
+
+To Daniel, "you are a positive motivating force within my life."\newline
+
+OxIS 2013 databases provided by the Oxford Internet Institute on 21/04/2017.\newline
+
+Job Satisfaction and Procedural Fairness data provided by Prof. Maurizio Carpita.
+
 # Abstract {-}
+
+**this will have to change once the research method and resutls come through**
+
+Surveys are an ubiquitous research tool, used in the widest variety of disciplines. The data collected mainly includes categorical types (binary, nominal, ordinal and Likert). Due to the practicalities of running surveys, they are highly prone to non-response and therefore, missing data. The magnitude, pattern and distribution of missingness depends on the underlying cause and has consequences for the analysis of results. These problems include serious loss of statistical power and biased parameter estimates. There are many techniques to recover the analysis with varying degrees of success. Most important of these is imputation, which is to substitute  missing values with suitable or ``plausible" values. Successful imputation depends on the features of the data and the characteristics of missingness. Such techniques are very well developed for continuous, numerical data but much less so for caterogical types.
+
+Since association rules mining (ARM) was proposed, the concept has been the subject of intense research. ARM is best suited to applications on categorical data. While the technique is inherently a descriptive, knowledge discovery tool, it has been successfully adapted for classification but never used for imputation. This project proposes a novel technique based on ARM for the imputation of categorical data, especially ordinal and Likert scales.

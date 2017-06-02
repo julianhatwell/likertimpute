@@ -1,10 +1,77 @@
 # Introduction
 
-Primary research in the social sciences often makes use of surveys to collect data on subjective attitudes, perceptions and psychological traits. Ordinal responses are frequently used, sometimes individually but often combined into Likert scales. These are intended to measure the outwardly manifested facets of some latent concept or factor. As such, the individuals' positions on the latent concept can be obtained through appropriately combining the responses of the Likert scale items [@carpita2011imputation] . *citation Carpita?* 
+In this section, the motivation and rationale are established along with a primer for the topics that will be later covered in more depth in the literature review. The essential aim and objectives are set, together with the basic principles of the overall research design.
+
+## Motivation
+
+Surveys are an ubiquitous research tool, used in the widest variety of disciplines. The data collected mainly includes categorical types (binary, nominal, ordinal and Likert). Due to the practicalities of running surveys, they are highly prone to non-response and therefore, missing data. The magnitude, pattern and distribution of missingness depends on the underlying cause and has consequences for the analysis of results. These problems include serious loss of statistical power and biased parameter estimates. There are many techniques to recover the analysis with varying degrees of success. Most important of these is imputation, which is to substitute  missing values with suitable or ``plausible" values. Successful imputation depends on the features of the data and the characteristics of missingness. Such techniques are very well developed for continuous, numerical data but much less so for caterogical types.
+
+Since association rules mining (ARM) was proposed, the concept has been the subject of intense research. ARM is best suited to applications on categorical data. While the technique is inherently a descriptive, knowledge discovery tool, it has been successfully adapted for classification but never used for imputation. This project proposes a novel technique based on ARM for the imputation of categorical data, especially ordinal and Likert scales.
 
 ## Problem Statement
 
+**Revise - see what other problem statements look like**
+
+The goal of an imputation technique is to maximize the use of collected data by reducing or eliminating the instance of missingness in the dataset by the substitution of missing values with suitable values. The results of analysing the imputed dataset should either be unaffected, or enhanced by the imputation process. A poor quality imputation (one which yields inaccurate analyses) is worse than no imputation at all. Thus, there may be a trade-off between finding a value to substitute each and every missing data points, while preserving structural parameters such as variance-covariance measures.
+
 ## Contribution of This Work
 
+It is hoped that this research will deliver a novel and viable imputation method based on association rules which is best suited for datasets consisting primarily of categorical data types, such as would be found in surveys and questionnaires. Techniques to recover these datasets from missingness are not as well developed as for numeric, continuous and multivariate normal data, even though surveys and questionnaires are ubiquitous. Furthermore, a detailed review of the literature finds no previous examples of an association rules based method, depsite compelling evidence that such a method should give useful results.
+
+## Aims and Objectives
+
+### Aim
+
+To design and evaluate a novel, association rules-based imputation technique for missing ordinal and Likert scale data, benchmarked against state of the art.
+
+### Objectives
+
+The following objectives are necessary to meeting the stated aim:
+
+```{r objectives, results='asis'}
+library(xtable)
+objectives <- c("Describe the widespread use, especially large-scale and online, of surveys and the types of data collected."
+                , "Explain accepted models of missingness and their effect on survey data."
+                , "Identify current techniques, focussing on state of the art imputation techniques to recover from missing data."
+                , "Discuss association rules mining (ARM) and prediction/classification with association rules."
+                , "Argue that ARM could be applied as an imputation technique."
+                , "Select appropriate datasets, methods and success criteria to evaluate and benchmark a novel technique."
+                , "Construct an algorithm and implement using the chosen programming environment."
+                , "Execute experiments that test and benchmark the technique against state of the art and appraise the results."
+                , "Draw conclusions, weighing up whether the technique performs better than state of the art."
+                , "Critique the project and the methods chosen. Suggest avenues for further research.")
+xtable(data.frame(Objective = objectives)
+       , caption = "Objectives")
+```
+
+## Research Design
+
+The research method used to meet each objective are organized as follows:
+
+```{r research_design, results='asis'}
+objsummary <- c("Research the topics for objectives 1-5"
+                , "Design of experiments and finding appropriate data (6)"
+                , "Design and implement algorithm (7)"
+                , "Execute experiments (8)"
+                , "Analyse results (9)"
+                , "Critical review (10)")
+resmethods <- c("Literature review"
+                , "Literature review and expert consultation"
+                , "Pseudocode and R programming"
+                , "R programming"
+                , "Quantitative and statistical analysis"
+                , "Qualitative evaluation of objectives and outcomes")
+
+resmethodstable <- xtable(data.frame(Objective = objsummary
+                  , "Research Method" = resmethods
+                  , row.names = 1
+                  , check.names = FALSE)
+        , caption = "Research Methods")
+align(resmethodstable) <- "ll"
+resmethodstable
+```
 
 
+## Report Structure
+
+The remaining chapters of this report are organized as follows: Chapter 2 provides a comprehensive literature review covering objectives 1-4 and laying the foundation for the applied project. Chapter 3 describes the experimental methodology and applied research id detail.
