@@ -37,6 +37,8 @@ knitr::opts_knit$set(self.contained=FALSE)
 \usepackage[backend=bibtex, maxcitenames=2, style=authoryear]{biblatex}
 \addbibresource{likertimputebiblio.bib}
 
+\usepackage{pdfpages}
+
 \begin{document}
 \title{An Association Rules Based Method for Imputing Missing Ordinal and Likert Scale Data}
 \subtitle{Proposal for Master's Dissertation}
@@ -44,37 +46,57 @@ knitr::opts_knit$set(self.contained=FALSE)
 \maketitle
 
 Student Number: S15142087\newline
-Tutor: Prof. Mohamed Medhat Gaber
+Tutor: Prof. Mohamed Medhat Gaber\newline
+Word Count: 3123
+
+\abstract
+
+Surveys are an ubiquitous research tool, used in the widest variety of disciplines. The data collected mainly includes categorical types (binary, nominal, ordinal and Likert). Due to the practicalities of running surveys, they are highly prone to non-response and therefore, missing data. The magnitude, pattern and distribution of missingness depends on the underlying cause and has consequences for the analysis of results. These problems include serious loss of statistical power and biased parameter estimates. There are many techniques to recover the analysis with varying degrees of success. Most important of these is imputation, which is to substitute  missing values with suitable or ``plausible" values. Successful imputation depends on the features of the data and the characteristics of missingness. Such techniques are very well developed for continuous, numerical data but much less so for caterogical types.\newline
+
+Since association rules mining (ARM) was proposed, the concept has been the subject of intense research. ARM is best suited to applications on categorical data. While the technique is inherently a descriptive, knowledge discovery tool, it has been successfully adapted for classification but never used for imputation. This project proposes a novel technique based on ARM for the imputation of categorical data, especially ordinal and Likert scales.
 
 \tableofcontents
 
 \section{Introduction}
 
-Surveys using ordinal scales are ubiquitous in the medical and social sciences, market research, election polling and numerous other applications. These instruments typically suffer missing data which can have serious impacts on analysis and results. This project investigates a novel technique using association rules to impute missing data, specifically of ordinal responses and multiple-item (Likert) scales which are common to surverys and where imputation techniques are not as well developed as they are for continuous data.
+Surveys using ordinal scales are ubiquitous in the medical and social sciences, market research, election polling and numerous other applications. These instruments typically suffer missing data which can have serious impacts on analysis and results. This project investigates a novel technique using association rules to impute missing data, specifically of ordinal responses and multiple-item (Likert) scales which are common to surveys and where imputation techniques are not as well developed as for continuous data.
 
-\subsection{Motivation}
+\subsection{Motivation / Philosophy}
 
-The practicalities of running surveys means that researchers and analysts who use such instruments are regularly faced with the problem of missing data (\cite{bono2007missing}; \cite{kamakura2000factor}). There is an abundance of examples in the literature  showing that analysis of survey data is adversely affected by missingness (\cite{madow1983incomplete}; \cite{roth1999missing}; \cite{raaijmakers1999effectiveness}). The problems include biased parameter estimates (central tendency, dispersion and correlation coefficients) and loss of statistical power. There are many strategies for recovering from issues caused by missing data which are well developed for continuous variables, but sources indicate that there has been much less research for datasets comprising  categorical and ordinal variables, (\cite{finch2010imputation}; \cite{leite2010performance}).\newline
+The practicalities of running surveys means that they regularly suffer the problem of missing data (\cite{bono2007missing}; \cite{kamakura2000factor}). There is an abundance of examples in the literature of the adverse effects of missingness in survey data. These include biased parameter estimates (central tendency, dispersion and correlation coefficients) and loss of statistical power (\cite{madow1983incomplete}; \cite{roth1999missing}; \cite{raaijmakers1999effectiveness}). There are many strategies for recovering from missing data, such as imputation. These are well developed for continuous variables, but sources indicate that there has been much less research for datasets comprising categorical and ordinal variables, (\cite{finch2010imputation}; \cite{leite2010performance}).\newline
 
 Furthermore, there is evidence of significant differences in the performance of various imputation strategies over datasets exhibiting different underlying characteristics (\cite{wu2015comparison}; \cite{rodwell2014comparison}; \cite{sim2015missing}). These results indicate a need to take into account not only the model and magnitude of missingness but also other characteristics particular to the target data. For this reason there is real benefit in having a range of imputation methods from which to choose the most suitable in a given situation.\newline
 
-A particular characteristic of many surveys is the use of ordinal data and multiple-item (Likert) scales. \cite{huisman1999missing} states that there is a strong relationship between the individual items of a Likert scale which measure one latent trait. Techniques that can recognize this within-instance, structural information and preserve it in the imputed dataset should have an advantage. According to \cite{agrawal1994fast}, support and confidence measures are probabilistic features. They measure the frequency of occurence of the within-instance relationships in the underlying distribution. Yet a search of the literature yields no information on the use of association rules in the context of imputation.
+A particular characteristic of many surveys is the use of ordinal data and multiple-item (Likert) scales. \cite{huisman1999missing} states that there is a strong relationship between the individual items of a Likert scale which measure one latent trait. Techniques that can recognize this within-instance, structural information and preserve it in the imputed dataset should be valuable. \cite{agrawal1994fast} states that association rules mining uses probabilistic measures (support and confidence) for discovering frequent patterns. Association rules mining algorithms work on discretized or categorical data, such as ordinal, nominal and binary. Furthermore, \cite{chandola2005summarization} describe association rules as a compact model of a dataset and as such may be used to enhance other stages of the analysis. So an association rules-based method for survey data would have several advantages over other imputation methods, yet a search of the literature yields no information on the use of association rules in this context.
 
-\subsection{Problem Statement}
+\subsection{Aims and Objectives}
 
-The goal of an imputation technique is to maximize the use of collected data by reducing or eliminating the instance of missingness in the dataset by the substitution of missing values with suitable values. The results of analysing the imputed dataset should either be unaffected, or enhanced by the imputation process. A poor quality imputation (one which yields inaccurate analyses) is worse than no imputation at all. Thus, there may be a trade-off between finding a value to substitute each and every missing data points, while preserving structural parameters such as variance-covariance measures.
+\subsubsection{Aim}
 
-\subsection{Contribution of This Work}
+To design and evaluate a novel, association rules-based imputation technique for missing ordinal and Likert scale data, benchmarked against state of the art.
 
-This research project will investigate a novel, association rules based imputation technique for missing ordinal and Likert scale data, benchmarked against state of the art. \cite{chandola2005summarization} describe association rules as a compact model of a dataset. So an association rules based method would have an advantage over other imputation methods by generating such a model which may be used to enhance other stages of the analysis. 
+\subsubsection{Objectives}
 
-\section{Literature Review}
+The following objectives are necessary to meeting the stated aim:
+
+\begin{enumerate}
+\item Describe the widespread use, especially large-scale and online, of surveys and the types of data collected.
+\item Explain accepted models of missingness and their effect on survey data.
+\item Identify current techniques, focussing on state of the art imputation techniques to recover from missing data.
+\item Discuss association rules mining (ARM) and prediction/classification with association rules. Argue that ARM could be applied as an imputation technique.
+\item Select appropriate datasets, methods and success criteria to evaluate and benchmark a novel technique.
+\item Construct an algorithmic approach of the novel technique and implement using the chosen programming environment.
+\item Execute experiments that test and benchmark the novel technique against state of the art and appraise the results.
+\item Draw conclusions, weighing up whether the novel technique performs better than state of the art in the specific scenarios outlined.
+\end{enumerate}
+
+\section{Preliminary Literature Review}
 
 \subsection{Ordinal Data and Multiple-Item Scales in Surveys}
 
 \cite{johnson2009working} states that nominal and ordinal variables are predominant in social sciences data and gives detailed examples of why ordinal variables cannot be treated the same as numerical scales. \cite{gertheiss2009penalized} explains how this assertion holds even when the ordinal variable is a discretised version of an underlying continuous scale. Interpretation depends on arbitrarily assigned categories and mid-point estimates. Upper and lower unbound categories may hide any number of extreme values.\newline
 
-\cite{jamieson2004likert} posits that it is inappropriate even to use mean and standard deviations when analyzing Likert and similar scales. These data types anchor phrases of sentiment or attitude to a series of integers (e.g. 1 = strongly agree, 5 = strongly disagree). Although the responses are ranked, it is wrong to presume that intervals between categories are equal. The barrier to reach the highly polarised strongly agree or strongly disagree may be inconsistent with a move from neutral to either agree or disagree. These types of scales are often skewed or polarized and generally require the use of non-parametric analyses and clear statements of assumptions made. \cite{gliem2003calculating} states that these data types are often intended to be used as a combined scale, measuring a latent concept and concludes that their individual analysis leads to erroneous conclusions. Other authors (\cite{norman2010likert}; \cite{carifio2008resolving}) strongly rebut these arguments, citing various sources of empirical evidence of the robustness of parametric tests. This is one of the great debates of statistics in the last few decades but there is agreement that combining individual responses into their intended scale leads to the least controversial usage and analytical or probabilistic techniques over single items in a Likert scale should be avoided where possible. This present work falls squarely on the side of using the range of available responses for both inference and benchmarking.
+\cite{jamieson2004likert} posits that it is inappropriate even to use mean and standard deviations when analyzing Likert and similar scales. These data types anchor phrases of sentiment or attitude to a series of integers (e.g. 1 = strongly disagree, 5 = strongly agree). Although the responses are ranked, it is wrong to presume that intervals between categories are equal. The barrier to reach the highly polarised strongly disagree or strongly agree may be inconsistent with a move from neutral to either agree or disagree. These types of scales are often skewed or polarized and generally require the use of non-parametric analyses and clear statements of assumptions made. \cite{gliem2003calculating} states that these data types are often intended to be used as a combined scale, measuring a latent concept, and asserts that their individual analysis leads to erroneous conclusions. Other authors (\cite{norman2010likert}; \cite{carifio2008resolving}) strongly rebut these arguments, citing various sources of empirical evidence of the robustness of parametric tests. This is one of the great debates of statistics in the last few decades but there is agreement that combining individual responses into their intended scale leads to the least controversial usage and analytical or probabilistic techniques over single items in a Likert scale should be avoided where possible.
 
 \subsection{Models of Missingness in Survey Data}
 
@@ -83,7 +105,7 @@ The reader is directed to \cite{rubin2004multiple} for seminal work on models of
 \begin{itemize}
 \item missing completely at random (MCAR) if the distribution of missing data is unrelated to the value of any variable in the dataset. The missing/non-missing state of individual data points cannot be predicted from any information whatever, whether observed or unobserved. This is the most difficult assumption to qualify.
 \item missing at random (MAR) is the most common scenario according to \cite{schafer1997analysis} and applies if the distribution of missing data may be related to other variables in the dataset but not the variable itself. The mechanism is correlated with the observed data. 
-\item missing not at random (MNAR) if the distribution of missing data is related to the value of the variable itself. This is the most challenging situation to recover. In fact, \cite{tsikriktsis2005review} states that there are no statistical means to recover when missing data is NMAR and no way to ameliorate the potential bias in results based on analysis of such data.
+\item missing not at random (MNAR) if the distribution of missing data is related to the value of the variable itself. This is the most challenging situation to recover. In fact, \cite{tsikriktsis2005review} states that there are no statistical means to recover when missing data is MNAR and no way to ameliorate the potential bias in results based on analysis of such data.
 \end{itemize}
 
 \subsection{Techniques to Recover From Missing Data}
@@ -97,13 +119,13 @@ Many statistical functions and operations simply do not work with missing data, 
 \item imputation procedures
 \end{enumerate}
 
-Each method has advantages and disadvantages. For example, (1) is simplest to implement but potentially introduces significant problems. Simply omitting a data point from an aggregate or multiple-item scale will result in an underestimated score on the latent variable. This category also includes listwise deletion, i.e. only retaining complete cases across all variables in the survey. This method can lead to drastically lower numbers of valid respondents and, as a result, bias parameter estimates if the underlying cause of missing data is MNAR or the magnitude of missingness is high. Consequently, deletion methods have fallen out of favour following the emergence of ubiquitous computing power to run more sophisticated methods.\newline
+Each method has advantages and disadvantages. For example, (1) is simplest to implement but potentially introduces significant problems. Simply omitting a data point from an aggregate or multiple-item scale will result in an underestimated score on the latent variable. This category also includes listwise deletion, i.e. only retaining complete cases across all variables in the survey. This method can lead to drastically lower numbers of valid respondents and, as a result, reduce statistical power and bias parameter estimates if the underlying cause of missing data is MNAR or the magnitude of missingness is high. Consequently, deletion methods have fallen out of favour following the emergence of ubiquitous computing power to run more sophisticated methods.\newline
 
 This present work focuses on imputation. There is a wide variety of imputation strategies available to the researcher and these can be broadly split into single and multiple methods. 
 
 \subsubsection{Single Imputation}
 
-These methods attempt to create a complete dataset by replacing the missing values with an estimated value such as a grand mean, median or mode. Such simplistic approaches are discouraged as they bias variance estimates downwards, reducing the separation between different groups and clusters present in the data, \cite{donders2006review}. Methods that make some attempt to recognize between-groups differences, such as use of a group mean are considered old-fashioned and inadequate, \cite{royston2004multiple}. Preferred single imputation methods include prediction from a linear or other model or substituting each missing value with values from one or more similar but complete individuals. This latter category is known as hot-deck imputation and \cite{jonsson2004evaluation} suggest that nearest neighbour methods are a commonly used implementation.
+These methods attempt to create a complete dataset by replacing the missing values with an estimated value such as a grand mean, median or mode. \cite{donders2006review} shows that such simplistic approaches should be discouraged because they bias variance estimates downwards, reducing the separation between different groups or clusters present in the data. Methods that make some attempt to recognize between-groups differences, such as use of a group mean, are also considered old-fashioned and inadequate, \cite{royston2004multiple}. Preferred single imputation methods include prediction from a linear or other model or substituting each missing value with values from one or more similar but complete individuals. This latter category is known as hot-deck imputation and \cite{jonsson2004evaluation} suggest that nearest neighbour methods are a commonly used implementation.
 
 \subsubsection{Multiple Imputation}
 
@@ -111,60 +133,117 @@ These methods, which are now consdered the state of the art, create multiple cop
 
 \subsection{Association Rules}
 
-Association Rules Mining (ARM) was first popularised by the development of a fast algorithm for large databases, \textit{apriori}, in \cite{agrawal1993mining}. Since then, (ARM) has been the subject of intensive research. Readers are directed to an abundance of explanations and examples in the literature. \cite{garcia2004mining} categorizes ARM among the unsupervised and descriptive techniques as opposed to the other common categorisation (supervised/predictive). The goal of ARM is to find patterns (frequent itemsets and supported rules, in this case) without any prior information about what these patterns might be. The original implementation uses transaction data. In \cite{arulespackage} this is represented as a sparse, binary incidence matrix, with each item represented as present (1) or absent (0) in a unique column and each transaction on rows. \cite{ma1998integrating} describes a process using a normal relational table with highly discretized data, where the items are represented on columns with various integer values. These can then be coerced to binary dummy variables. This makes ARM applicable to representations of surveys with multi-ranked (non-binary) ordinal data and Likert scales.
+Association rules mining (ARM) was first popularised by the development of a fast algorithm for large databases, \textit{apriori}, in \cite{agrawal1993mining}. Since then, ARM has been the subject of intensive research. Readers are directed to an abundance of explanations and examples in the literature. \cite{garcia2004mining} categorizes ARM among the unsupervised and descriptive techniques as opposed to the other common categorisation (supervised/predictive). The goal of ARM is to find patterns (frequent itemsets and supported rules, in this case) without any prior information about what these patterns might be. The original implementation uses transaction data. In \cite{arulespackage} this is represented as a sparse, binary incidence matrix where each row is a transaction and items are each represented in a unique column as present (1) or absent (0). \cite{ma1998integrating} describes a process using a normal relational table with highly discretized data, where the items are represented on columns with various integer values. Each item-value pair is then coerced to a binary dummy variable. This makes ARM applicable to representations of surveys with multi-ranked (non-binary) ordinal data and Likert scales.
 
 \subsection{Classification with Association Rules}
 
-\cite{freitas2000understanding} posits that ARM is a deterministic task and very different to classification though does concede that there are special cases where the resulting models can be used for predictions or, more specifically, classification. These special cases involve finding a subset of rules, which \cite{ma1998integrating} calls \textit{class association rules} (CARs). These CARs have the characteristic of having the target variable as the only element in the consequent or right-hand side of the rule. The ``partial classification" described in \cite{ali1997partial} is of particular interest because the objective here is to discover characteristics of the target variables. The authors suggest applicability to situations where attributes will be modeled based on other attributes which is precisely the situation characterizing in this project.\newline
+\cite{freitas2000understanding} posits that ARM is a deterministic task and very different to classification though does concede that there are special cases where the resulting models can be used for predictions or, more specifically, classification. These special cases involve finding a subset of rules, which \cite{ma1998integrating} calls \textit{class association rules} (CARs). These CARs have the characteristic of having the target variable as the only element in the consequent or right-hand side of the rule. The ``partial classification" described in \cite{ali1997partial} is of particular interest because the objective here is to discover characteristics of the target variables. The authors suggest applicability to situations where some attribute will be modeled based on the other attributes. This is precisely the situation under investigation in this project.\newline
 
-While prediction and imputation differ in scope and goal, the intention of finding a plausible value rather than an accurate value could be seen as a simple relaxation of success criteria. If prediction with excellent results is possible from association rules, then it stands to reason that imputation in some form is also possible.
-
-\subsection{Summary of the Literature Review}
-
-Ordinal data and multiple response scales are a both a common and special case which, due to the practicalities of data collection, are highly prone to missingness and non-response. The magnitude, pattern and distribution of missingness depends on the underlying cause and has consequences for the analysis which include serious loss of statistical power and biased parameter estimates. There are many techniques to impute data (substitute  missing values with ``plausible" values) which can recover the analysis with varying degrees of success. These depend on the features of the data and the characteristics of missingness. The success of these techniques can be assessed using well understood measures.\newline
-
-Since ARM was proposed, the concept has been the subject of intense research. ARM is best suited to applications on highly discretized data. While the technique is inherently a descriptive, knowledge discovery tool, it has been successfully adapted for classification but never used for imputation (based on an extensive literature search).  
+While prediction and imputation differ in scope and goal, the intention of finding a suitable (or ``plausible") value rather than an accurate value could be seen as a mere relaxation of success criteria. If prediction with excellent results is possible from association rules, then it stands to reason that imputation in some form must also be possible.
 
 \section{Research Methodology}
 
+\subsection{Experimental Design}
+
+This project will follow as closely as possible the methodological approaches outlined in previous, similar work which benchmark new or existing techniques (\cite{jonsson2004evaluation}; \cite{jonsson2006benchmarking}; \cite{leite2010performance}; \cite{carpita2011imputation}; \cite{wu2015comparison}). These works also provide both recognised and novel measures for benchmarking performance.
+
 \subsection{Programming Environment}
 
-The R programming environment (\cite{rsoftware}) has been selected for the implementation of this project. Other systems support ARM, statistical analysis and general purpose scripting/programming either individually or in combination, only R offers a pre-existing set of relevant, open sournce libraries and functions plus unlimited extensibility through its functional and object oriented programming paradigm. Other tools considered and ruled out were:
+The R programming environment (\cite{rsoftware}) has been selected for the implementation of this project. Only R and Python offer pre-existing sets of relevant, open source libraries and functions plus unlimited extensibility through a functional and object oriented programming paradigm but R is selected based on the Skills Audit. Other tools considered and ruled out were:
 
 \begin{itemize}
 \item SAS Software. All analytical procs are compiled programmes and can't be extended. Macro language is a limited set of data and file manipulation functions.
-\item Oracle Data Mining. A point and click canvas, lacking the programmability required.
+\item Oracle Data mining. A point and click canvas, lacking the programmability required.
 \item RapidMiner. A point and click canvas, lacking the programmability required.
-\item Python. This could be a viable alternative but would require additional time for the researcher to reach an adequate level of competence. Python offers a native library based on the FP-growth algorithm, which is significantly faster than \textit{apriori} which is an advantage over R. An FP-growth reference implementation is available to R but only via C integration.
+\item Python. This could be a viable alternative but would require additional time for the researcher to reach an adequate level of competence. Python offers a native library based on the FP-growth algorithm, which is significantly faster than \textit{apriori} which is an advantage over R. An FP-growth reference implementation is available to R but only via C integration. However, the efficiency of the ARM algorithm should only be of concern for huge datasets and not under the experimental conditions foreseen for this project.
 \end{itemize}
 
 \subsection{Datasets}
 
-Both synthetic and real-world datasets will be used. Synthetic datasets offer the advantage of comparing substitute values with known values, statistical testing with  known population parameters such as the underlying distributions of latent and/or observed variables, as well as testing the efficacy of the techniques under controlled conditions of missingness. For example, a technique can be tested on the same dataset with 10\%, 20\% and 30\% of missing values. This approach is best for the earlier stages of development and refining the method.\newline
+Both synthetic and real-world datasets may be used. Synthetic datasets offer the advantage of comparing substitute values with known values, statistical testing with  known population parameters such as the underlying distributions of latent and/or observed variables, as well as testing the efficacy of the techniques under controlled conditions of missingness. For example, a technique can be tested on the same dataset with 10\%, 20\% and 30\% of missing values. This approach is best for the earlier stages of development and refining the method.\newline
 
-Two scenarios are considered for real-world datasets. Firstly, there are benchmark datasets which are widely used in data mining research to compare performance with existing techniques. These are available from \url{https://archive.ics.uci.edu/ml/datasets.html}, \url{https://www.kaggle.com/datasets}. The second scenario is to use datasets from other sources (open, or private with permission). This second scenario offers an opportunity respond to unexpected situations and bring a novel technique closer to real-world applicability but it is much more challenging to draw conclusions about performance and accuracy because underlying population parameters are rarely known. Such datasets will be analysed only if time allows.
+Two scenarios are considered for real-world datasets. Firstly, there are benchmark datasets which are widely used in data mining research to compare performance with existing techniques. These are available from \url{https://archive.ics.uci.edu/ml/datasets.html} and \url{https://www.kaggle.com/datasets}. The second scenario is to use datasets from other sources (open, or private with permission). This second scenario offers an opportunity respond to unexpected situations and bring a novel technique closer to real-world applicability but it is much more challenging to draw conclusions about performance and accuracy because underlying population parameters are rarely known. Such datasets will be analysed only if time allows.
 
 \subsection{Association Rules Mining Algorithm}
 
 It is not the intention of this project to improve or extend ARM nor to compare different ARM algorithms, but simply to use association rules as the basis of a novel imputation technique. While \cite{li2001cmar} state significant performance benefits from using FP-growth, this requires additional steps to implement in R that will detract from the project timelines. Because of the deterministic nature of ARM, the resulting rulesets should be the same whichever algorithm is used. As such, integration of FP-growth for improved computational performance is left to future work.\newline
 
-The \textit{apriori} algorithm is provided to the R environment by the arules package, \cite{arulespackage}. This is found to lack some of the flexibility required to be easily repurposed for the exclusive discovery of CARs. It is likely that some workaround code needs to be generated to generate all rules then filter down to a valid set. This work requires a fast, efficient algorithm for mining CARs over a dataset for each variable containing any missing values. Developing this in R will also be left to future work.
+The \textit{apriori} algorithm is provided to the R environment by the arules package, \cite{arulespackage}. Preliminary investigation found this to lack some of the flexibility required to be easily repurposed for the exclusive discovery of CARs. It is likely that some workaround code needs to be written to generate all rules then filter down to a valid set. The priority in this project is to deliver working code. Optimising the most efficient implementation in R will also be left to future work.
 
 \subsection{Imputation Algorithm}
 
-Deliberate attention will be given to the algorithm efficiency, as well as its efficacy and accuracy. Previous work on classification algorithms offer ideas for optimisation. \cite{li2001cmar} propose a novel method which uses pruning rules to manage the number of generated rules and a combined $\chi^2$ measure for combining rules for greater classification accuracy which compares favourably with other classification techniques on benchmark datasets. \cite{yin2003cpar} extend this work with a greedy algorithm that restricts the search space to itemsets containing the target variable rules with only the target variable as the consequent. 
+Deliberate attention will be given to the algorithm efficiency, as well as its efficacy and accuracy. Previous work on classification algorithms offer ideas for optimisation. \cite{li2001cmar} propose a novel method which uses pruning rules to manage the number of generated rules and a combined $\chi^2$ measure for combining rules for greater classification accuracy which compares favourably with other classification techniques on benchmark datasets. \cite{yin2003cpar} extend this work with a greedy algorithm that restricts the search space to itemsets containing the target variable and rules with only the target variable as the consequent. 
 
 \subsection{Benchmarking and Success Criteria}
 
-The goal of imputation is to find substitute values for missing data that are neutral to or (preferably) enhance the results of subsequent data analysis. This requires different measures than a classification problem which simply  compare predicted values to known values (although this can still be useful). Also, \cite{jonsson2004evaluation} shows that hot-decking methods do not always find a suitable donor value and a final round of listwise deletion of remaining incomplete cases may still be necessary. This suggests that succuss measures of imputation need to take into account the efficacy as well. \cite{jonsson2006benchmarking} propose various metrics for evaluating and benchmarking imputation methods which measure both the ability to find a suitable value as well as its accuracy or approximation of accuracy. Alternative approaches exist; \cite{pantanowitz2008evaluating} is an example of indirectly ascertaining the quality of imputation by measuring the effect on prediction accuracy of a classification technique. This work will use a combination of such techniques and benchmark against state of the art imputation methods with a variety of datasets .\newline
+The goal of imputation is to find substitute values for missing data that are neutral to or (preferably) enhance the results of subsequent data analysis. This requires different measures than a classification problem which measures accuracy by comparing predicted values to known values (although this can still be useful to do). Also, \cite{jonsson2004evaluation} shows that hot-decking methods do not always find a suitable donor value and a final round of listwise deletion of remaining incomplete cases may still be necessary. This suggests that succuss measures of imputation need to take into account the efficacy as well. Various metrics for evaluating and benchmarking imputation methods are suggested in the reference texts. Alternative approaches exist; \cite{pantanowitz2008evaluating} is an example of indirectly ascertaining the quality of imputation by measuring the effect on prediction accuracy of a classification technique. This work will use a combination of reference measures and indirect classification techniques to benchmark against state of the art imputation methods with a variety of datasets.\newline
+
+In the event that the experimental phase yields no evidence that the novel technique improves on state of the art, it will still be worthwhile to hypothesize why the method falls short and to suggest further avenues of research.
 
 \section{Ethical Consideration}
 
-This project does not carry any foreseeable potential for harm to any individuals or animals, breaches of data protection, conflicts of interest or reputational damage to Birmingham City University or any other institution. The data used in pursuit of the stated aims is either publicly available or permission has been granted for the expressed purpose. Please see the Stage One Ethical Review Form in the appendices.
+This project does not carry any foreseeable potential for harm to any individuals or animals, breaches of data protection or any collection of personal data from any individual, conflicts of interest or reputational damage to Birmingham City University or any other institution. The data used in pursuit of the stated aims is either publicly available or permission has been granted for the expressed purpose. Please see the Stage One Ethical Review Form in the appendices.
 
 \section{Supervision}
 
-This project is carried out towards the Masters of Science in Business Intelligence at Birmingham City University, Faculty of Computing and supervised by Prof. Mohamed Medhat Gaber.
+The supervisor is Prof. Mohamed Medhat Gaber who has many years' experience supervising students and publishing papers in data mining, machine learning and artificial intelligence. In particular, his prolific experience of researching novel and extended data mining techniques will be invaluable.
+
+\section{Skills Audit}
+<<results='asis'>>=
+library(xtable)
+categories <- c(rep("Technical", 2)
+                , rep("Data Mining Theory", 2)
+                , rep("Statistical", 6)
+                , rep("Procedural", 2))
+skills <- c("Base R"
+         , "Authoring R Packages"
+         , "General Knowledge"
+         , "Association Rules Knowledge"
+         , "Models of Missing Data"
+         , "Multiple Imputation"
+         , "Survey Methods"
+         , "Analysis of Ordinal Data"
+         , "Analysis of Likert scales"
+         , "Quantitative Results Analysis"          , "Academic Reading"
+         , "Academic Writing")
+audit <- c("Good"
+           , "Requires more depth"
+           , "Good"
+           , "Requires more depth"
+           , "Requires more depth"
+           , "Rudimentary"
+           , "Requires more depth"
+           , "Requires more depth"
+           , "Requires more depth"
+           , "Good"
+           , "Good"
+           , "Good")
+
+skillsaudit_df <- data.frame(
+  Category = categories
+  , Skills = skills
+  , Level = audit)
+xtable(skillsaudit_df)
+@
+
+All required skills have at least a basic level. Theoretical knowledge requiring more depth will be developed throughout the literature review. Package authoring will be explored during the practical part of the project.
+
+\section{Support Required}
+
+<<results='asis'>>=
+library(xtable)
+assistance <- c("Prof. M. M. Gaber"
+                , "Prof. M. M. Gaber"
+                , "Dr. Peter Samuels (Centre for Academic Success)"
+                , "Karim Visram (Project Co-ordinator)")
+  
+supportreq_df <- data.frame(
+  Category = unique(categories)
+  , Person = assistance)
+xtable(supportreq_df)
+@
+
+If additional support is required, the  listing provides a suggested contact.
 
 \section{Time Frame}
 
@@ -176,10 +255,10 @@ gantt.info <- list(
   labels=c("Rapid Lit. Review"
            , "Submit Proposal"
            , "Extended Lit. Review"
-           , "Algorithm Design"
-           , "Benchmarking\n Funcs Design"
-           , "Synth. Data Prep."
-           , "Functional Code"
+           , "Select and\nsynthesize datasets"
+           , "Select and program\nbenchmarking criteria"
+           , "Design and prototype\nimputation algorithm"
+           , "Complete\nfunctional code"
            , "Run Experiments"
            , "Results Analysis\n and Write Up"
            , "Submit Report"
@@ -189,23 +268,23 @@ gantt.info <- list(
       , "2017/06/07"
       , "2017/06/09"
       , "2017/06/19"
-      , "2017/06/23"
-      , "2017/06/30"
+      , "2017/06/25"
       , "2017/07/01"
-      , "2017/07/09"
-      , "2017/08/08"
+      , "2017/07/05"
+      , "2017/07/15"
+      , "2017/08/15"
       , "2017/09/20"
       , "2017/09/25")
     , format=Ymd.format))
   , ends=as.POSIXct(strptime(
     c("2017/06/08"
       , "2017/06/08"
-      , "2017/07/08"
-      , "2017/06/26"
-      , "2017/06/30"
+      , "2017/07/15"
+      , "2017/06/27"
       , "2017/07/04"
-      , "2017/07/08"
-      , "2017/08/20"
+      , "2017/07/09"
+      , "2017/07/15"
+      , "2017/08/23"
       , "2017/09/20"
       , "2017/09/21"
       , "2017/09/29")
@@ -257,12 +336,11 @@ legend("topright", c("Research"
 
 The gannt chart shows deliverables with indicative dates in yellow. Hard deadlines are shown in red.
 
-\section{Skills Audit}
-
-\section{Support Required}
-
 \printbibliography
 
-\section{Appendices}
-\subsection{Stage One Ethical Review Form}
+\appendix
+\section{Stage One Ethical Review Form}
+Next Page
+
+\includepdf[pages={1-2},nup=1x2,landscape=true,frame=true]{EthicalForm.pdf}
 \end{document}

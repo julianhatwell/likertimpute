@@ -1,10 +1,254 @@
-# Please bloody Work
+# Literature Review
 
-Primary research in the social sciences often makes use of surveys to collect data on subjective attitudes, perceptions and psychological traits. Ordinal responses are frequently used, sometimes individually but often combined into Likert scales. These are intended to measure the outwardly manifested facets of some latent concept or factor. As such, the individuals' positions on the latent concept can be obtained through appropriately combining the responses of the Likert scale items [@carpita2011imputation] . *citation Carpita?* 
+In this section, the research question is decomposed into its component topics and each is reviewed systematically and in detail. The topics are covered in a logical order that reflect the motivation for this research: The breadth of the problem domain, the well-understood underlying models of the problem and current popular, though not necessarily optimal, solutions and the potential suitability of the suggested method which is, as yet, untried.
 
-## cminign along
+## The Importance of Surveys and Questionnaires
 
-## Cha cha cha of This Work
+@groves2011three [p. 861] states that "the systematic observation of social and economic phenomena has roots deep in history" but describes the 1930's-1960's period as foundational for the development and popularization of the survey method involving structured questions, random sampling and statistical inference. It was also a golden age with respect to response rates, perhaps due to the novelty and the small numbers of surveys carried out, relative to today. Understandably, the earlier historical discussions in this article are backed up by fewer references than paragraphs covering more recent decades. Nevertheless, the author is well regarded and prolific on this subject matter. As a potted history of surveys and questionnaires, the article provides a very plausible interpretation of the influence of sociological and technological factors which explain why the survey method became so ubiquitous up to and during the 1990's but began to see a decline in usage thereafter. For example, one suggestion is that the popularity of the method was driven in part by usage in the consumer and service sectors as a means to gain customer feedback and thereby maximize profits. This speaks to economic common sense. The aid of computers in the 1960's reducing processing costs and allowing more sophisticated computational analysis would have been another driver both in commerce and government research. In academia, the publication of archived data "permitted the rise of quantitative methods in many social science disciplines," @groves2011three [p. 865]. 
 
+Consistent with the description of a decline in popularity, @sheehan2001mail posits that even the change from face-to-face and postal to email-based surveys provided only a temporary stay in the overall decline in usage in more recent times. However, there is no shortage of recent examples of surveys and questionnaires being used for all manner of ongoing research which does suggest that the method is still incredibly important today, [@shrive2006dealing; ]
+
+@groves2011three goes on to make a number of reasoned predictions about future adaptations of the survey method in light of the emergence of a multitude of new data sources (of which the author's description matches what is now commonly coined as "Big Data"). One technological development is not discussed in detail, namely the emerging popularity of online survey construction software (SurveyMonkey, Qualtrix, www.onlinesurveys.ac.uk, SmartSurvey, SogoSurvey to name but a few). This could be because the article is not recent enough or perhaps as @solomon2001conducting describes, because of the caution with which this new technology was viewed by the academic community. Such caution may relate to statistical issues such as coverage bias resulting from "the skew in demographics of the internet population versus the general public" [@hayslett2005pixels p. 78] combined with the practical need for researchers to become more familiar with the technology before being able to construct surveys with sufficiant statistical rigour. Nevertheless, @evans2005value shows that online surveys were already a rapidly growing, multi-million dollar industry by the early 2000's. The article describes many weaknesses as well as strengths in the sector. Indeed, it was very much a clarion call for addressing the weaknesses to consolidate the value of online surveys for the modern day. It would be safe to assume that these have been addressed for there has been a rise and rise of services for the creation of casual surveys and polls by the "citizen analyst" as well as seasoned pollsters which are distributed through social media and quick customer ratings devices. These instruments may introduce the need for development of new methods that stand up to analytical scrutiny but they do offer new opportunities given their widespread dissemination.
+
+## Characteristics of Survey Data
+
+### Prevalent Data Types
+
+Researchers in the social sciences and other disciplines often use surveys to collect data on subjective attitudes, perceptions and psychological traits. Ordinal (ranking) responses are frequently used, sometimes individually but often combining multiple related items into data types, known as Likert scales. Here, a series of statements are scored by the respondent using a series of integers which are anchored to phrases of sentiment or attitude (e.g. 1 = strongly disagree, 5 = strongly agree). Likert scales are intended to measure the outwardly manifested facets of some latent concept or factor. As such, the individuals' positions on the latent concept can be obtained through appropriately aggregating, summing or transforming the multiple responses of the Likert scale items [@carpita2011imputation].
+
+A particular characteristic of many surveys is the use of ordinal data and multiple-item (Likert) scales. \cite{huisman1999missing} states that there is a strong relationship between the individual items of a Likert scale which measure one latent trait. Techniques that can recognize this within-instance, structural information and preserve it in the imputed dataset should be valuable. \cite{agrawal1994fast} states that association rules mining uses probabilistic measures (support and confidence) for discovering frequent patterns. Association rules mining algorithms work on discretized or categorical data, such as ordinal, nominal and binary. Furthermore, \cite{chandola2005summarization} describe association rules as a compact model of a dataset and as such may be used to enhance other stages of the analysis. So an association rules-based method for survey data would have several advantages over other imputation methods, yet a search of the literature yields no information on the use of association rules in this context.
+
+Cost of collecting data becomes prohibitive. Big Data is collected organically, so there's still a place for the designed data of surveys. 
+
+Survey software, commercially driven use cases. Employee surveys, customer satisfaction surveys etc.
+
+ordinal responses and multiple-item (Likert) scales 
+
+\cite{johnson2009working} states that nominal and ordinal variables are predominant in social sciences data and gives detailed examples of why ordinal variables cannot be treated the same as numerical scales. \cite{gertheiss2009penalized} explains how this assertion holds even when the ordinal variable is a discretised version of an underlying continuous scale. Interpretation depends on arbitrarily assigned categories and mid-point estimates. Upper and lower unbound categories may hide any number of extreme values.\newline
+
+\cite{jamieson2004likert} posits that it is inappropriate even to use mean and standard deviations when analyzing Likert and similar scales. These data types anchor phrases of sentiment or attitude to a series of integers (e.g. 1 = strongly disagree, 5 = strongly agree). Although the responses are ranked, it is wrong to presume that intervals between categories are equal. The barrier to reach the highly polarised strongly disagree or strongly agree may be inconsistent with a move from neutral to either agree or disagree. These types of scales are often skewed or polarized and generally require the use of non-parametric analyses and clear statements of assumptions made. \cite{gliem2003calculating} states that these data types are often intended to be used as a combined scale, measuring a latent concept, and asserts that their individual analysis leads to erroneous conclusions. Other authors (\cite{norman2010likert}; \cite{carifio2008resolving}) strongly rebut these arguments, citing various sources of empirical evidence of the robustness of parametric tests. This is one of the great debates of statistics in the last few decades but there is agreement that combining individual responses into their intended scale leads to the least controversial usage and analytical or probabilistic techniques over single items in a Likert scale should be avoided where possible.
+
+## Non-Response and Missingness
+
+The practicalities of running surveys means that they regularly suffer the problem of non-response and missing data [@bono2007missing; @kamakura2000factor]. In the broadest terms, non-response can occur at two levels: Unit and Item. Unit non-response occurs when one or more respondents fail to return anything to the survey organisers. This may be a one-off survey, or may be one in a series of surveys in a longitudinal study. If the non-response rate is high, this can impact the overall sampling frame. Item non-response occurs when individual items (questions) in a survey are skipped, but the whole survey is returned to the organisers. Both types of non-response have serious consequences. However, this work is concerned only with item non-response which will be the focus for the remainder of the review, unless otherwise stated. Understanding the model (patterns, mechanism and magnitude) of missingness in data is critical when selecting or designing techniques to recover from the resulting issues. Fortunately, there has been an enormous amount of research in this area over recent decades.
+
+As always, routine exploratory analysis is the best starting point. For example, when examining the effect of survey length on response rates, @sheehan2001mail reports numerous prior studies that illustrate how longer surveys tend to reduce overall (unit) response rates, particularly for business-oriented surveys. Only one example is given of a study that found the opposite pattern but it is unclear if this is enough to call the overall trend into question. Crucially, there is no discussion of the implication of survey length on any pattern of item non-response and specifically whether longer surveys suffer more incomplete items towards the end than near the beginning. From the historical outline given in @groves2011three, this must be assumed to be the case, given that the focus shifted to shorter questionnaires to reduce hang-up rates at the same time as an increase in popularity of surveys by telephone. A ragged tail pattern of non-response would be a clear indicator of a survey that respondents found overly long.
+
+```{r nonresp-reasons}
+reason <- c("Failure to complete the whole questionnaire"
+          , "Failure to complete the whole questionnaire"
+          , "Unwillingness to answer"
+          , "Unwillingness to answer"
+          , "Data entry errors"
+          , "Data entry errors"
+          , "Structural design of questionnaire"
+          , "Structural design of questionnaire")
+cause <- c("Absent-mindedness"
+          , "Skipping a page in error"
+          , "Personal issues: income, status, health"
+          , "Perceived not relevant to study: drug use, sexual orientation"
+          , "Manual conversion of paper forms"
+          , "Using incorrect marking of papers e.g. check instead of filled box"
+          , "Some questions only apply depending on previous answers"
+          , "Poorly designed e.g. too long"
+           )
+reasonstable <- data.frame(Reason = reason
+                  , "Examples" = cause)
+knitr::kable(reasonstable
+             , caption = "Reasons for item non-response")
+```
+
+Table \@ref(tab:nonresp-reasons) is shows a non-exhaustive list of examples of reasons for item non-response. In a single survey instance, more than one such reason could be at play for different items. These different underlying models have various consequences and researchers may have no way of knowing for sure what are the mechanisms behind missingness in the data.
+
+```{r nonresp-patterns}
+pattern <- c("Univariate"
+             , "Multivarate"
+             , "Ragged tail"
+             , "Missing blocks"
+             , "Missing blocks"
+             , "Missing regular")
+explanation <- c("Only one item has missing responses"
+                 , "Missing responses throughout, seemingly at random"
+                 , "Missing all after a certain question"
+                 , "Groups of respondents reply to different questions"
+                 , "Groups of respondents reply to different questions"
+                 , "Questions skipped depending on prior responses")
+posscause <- c("Badly worded or irrelevant question"
+               , "Any"
+               , "Survey is too long"
+               , "Data fusion: different surveys combined"
+               , "A subsample participate in follow ups"
+               , "Structural constraints")
+patternstable <- data.frame(Pattern = pattern
+                            , Explanation = explanation
+                            , Possible_Cause = posscause)
+
+knitr::kable(patternstable
+             , caption = "Patterns of non-response"
+             , booktabs = TRUE)
+```
+
+Table \@ref(tab:nonresp-patterns) and figures \@ref(fig:univmissingness), \@ref(fig:multmissingness), \@ref(fig:mtailmissingness), \@ref(fig:dfusmissingness), \@ref(fig:sbsmmissingness) and \@ref(fig:stdgmissingness) are adapted from @kamakura2000factor to illustrate patterns of both unintentional (1-3) and intentional (4-6) non-response in surveys. These also demonstrate the usefulness of the missing values map, @unwin1996interactive. This is a simple, exploratory plot of a missing indicator matrix. This is a binary matrix representing presence or absence of a value for each respondent and item. Some articles [@he2010missing] recommend using a one to represent a missing value and a zero for present values as this reflects binomial success of the non-response process. However, other authors [@gelman2006data] put forward cases where the reverse makes sense. Clearly, it can be argued that this choice does not matter, so long as the research method is implemented with clarity.
+
+```{r univmissingness, fig.height=2, fig.width=2, fig.cap="Missing Values Map showing univariate missingness"}
+set.seed(101)
+qnnaire <- matrix(rep(1, 2000), nrow = 100, ncol = 20)
+
+umsng <- rbinom(100, 1, 1 - 0.2)
+univ <- qnnaire
+univ[, 13] <- umsng
+
+par(mar = c(1, 1, 1, 1)
+    , mgp = c(0, 0, 0)
+    , cex.main = 0.8)
+
+image(t(univ)
+      , main = "Univariate Pattern"
+      , xlab = "Item"
+      , ylab = "Respondent"
+      , xaxt = "n"
+      , yaxt = "n"
+      , col = c("ivory", "darkslateblue"))
+```
+
+```{r multmissingness, fig.height=2, fig.width=2, fig.cap="Missing Values Map showing multivariate missingness"}
+mult <- matrix(rbinom(2000, 1, 1 - 0.05), nrow = 100, ncol = 20)
+
+par(mar = c(1, 1, 1, 1)
+    , mgp = c(0, 0, 0)
+    , cex.main = 0.8)
+  
+image(t(mult)
+      , main = "Multivariate Pattern"
+      , xlab = "Item"
+      , ylab = "Respondent"
+      , xaxt = "n"
+      , yaxt = "n"
+      , col = c("ivory", "darkslateblue"))
+```
+
+```{r mtailmissingness, fig.height=2, fig.width=2, fig.cap="Missing Values Map showing ragged tail missingness"}
+mult <- matrix(rbinom(2000, 1, 1 - 0.05), nrow = 100, ncol = 20)
+
+mtail <- qnnaire
+mtmsng <- rbinom(100, 1, 1 - 0.1)
+mtrow <- which(mtmsng == 0)
+mtcount <- 100 - sum(mtmsng)
+mtcol <- round(runif(mtcount, 15, 20))
+
+for (i in seq_along(mtrow)) {
+  mtail[mtrow[i], mtcol[i]:20] <- 0  
+}
+
+par(mar = c(1, 1, 1, 1)
+    , mgp = c(0, 0, 0)
+    , cex.main = 0.8)
+  
+image(t(mtail)
+      , main = "Ragged Tail Pattern"
+      , xlab = "Item"
+      , ylab = "Respondent"
+      , xaxt = "n"
+      , yaxt = "n"
+      , col = c("ivory", "darkslateblue"))
+```
+
+```{r dfusmissingness, fig.height=2, fig.width=2, fig.cap="Missing Values Map showing data fusion missingness"}
+dfus <- qnnaire
+dfus[1:50, 11:15] <- 0
+dfus[51:100, 6:10] <- 0
+
+par(mar = c(1, 1, 1, 1)
+    , mgp = c(0, 0, 0)
+    , cex.main = 0.8)
+
+image(t(dfus)
+      , main = "Data Fusion Pattern"
+      , xlab = "Item"
+      , ylab = "Respondent"
+      , xaxt = "n"
+      , yaxt = "n"
+      , col = c("ivory", "darkslateblue"))
+```
+
+```{r sbsmmissingness, fig.height=2, fig.width=2, fig.cap="Missing Values Map showing subsample missingness"}
+sbsm <- qnnaire
+sbsm[26:100, 15:20] <- 0
+
+par(mar = c(1, 1, 1, 1)
+    , mgp = c(0, 0, 0)
+    , cex.main = 0.8)
+
+image(t(sbsm)
+      , main = "Subsample Pattern"
+      , xlab = "Item"
+      , ylab = "Respondent"
+      , xaxt = "n"
+      , yaxt = "n"
+      , col = c("ivory", "darkslateblue"))
+```
+
+```{r stdgmissingness, fig.height=2, fig.width=2, fig.cap="Missing Values Map showing structural design missingness"}
+stdg <- qnnaire
+stdg_skip1 <- which(rbinom(100, 1, 1 - 0.1) == 0)
+stdg_skip2 <- which(rbinom(100, 1, 1 - 0.2) == 0)
+stdg[stdg_skip1, 5:6] <- 0
+stdg[stdg_skip2, 10:13] <- 0
+
+par(mar = c(1, 1, 1, 1)
+    , mgp = c(0, 0, 0)
+    , cex.main = 0.8)
+
+image(t(stdg)
+      , main = "Structural Pattern"
+      , xlab = "Item"
+      , ylab = "Respondent"
+      , xaxt = "n"
+      , yaxt = "n"
+      , col = c("ivory", "darkslateblue"))
+```
+
+Donald B. Rubin is widely cited for seminal works on modeling, recovering (imputing) and inference using missing data e.g. @rubin2004multiple. Of particular importance in this body of work is formalization of the relationship between the missing values, the incomplete variable and the other variables. The patterns arising from these relationships are categorized as:
+
+* Missing completely at random (MCAR) if process that causes the missing data is distinct from any parameter $\theta$ of the data. In other words the distribution of missing data is unrelated to the value of any variable in the dataset. It is also suggested in @gelman2006data that the probability of non-response is the same for all points of the missing indicator matrix. The missing/non-missing state of individual data points cannot be predicted from any information whatever, whether observed or unobserved other than the overall missingness rate. This is the most general assumption as well as being the most difficult to verify. 
+
+* Missing at random (MAR) is the most common scenario according to @schafer1997analysis and applies if the distribution of missing data may be related to available information. That is, other variables in the dataset but not the variable itself. The mechanism is correlated with the observed data according to @gelman2006data, it is often reasonable to model this as a logistic regression.
+
+* Missing not at random (MNAR) if the distribution of missing data is related to data that is unobserved. @gelman2006data further sub-divides this category in two. Firstly, when missingness depends on unobserved predictors, for example, dissatisfied customers being less likely to respond than satisfied customers would generate a MNAR unit non-response. An example of an MNAR unit non-response might be a survey where people in a particular education bracket responded less frequently to questions about income where there were no questions identifying the level of educational attainment. The second sub-division is where the distribution of missing data is related to the value of the partially missing variable itself, such that answers given by complete respondents differ substantially from answers that would have been given by non-respondents. For example, if respondents from a lower income bracket are reluctant to respond to questions about earnings. This is the most challenging situation to recover and of most concern to researchers. In fact, @tsikriktsis2005review states that there are no statistical means to recover when missing data is MNAR and no way to ameliorate the potential bias in results based on analysis of such data. While it is not explicit in the article, @tsikriktsis2005review must be referring to this second sub-division of the category.
+
+In a historic article, @rubin1976inference lays the foundation for these definitions, which are now used throughout the literature, and deteremines that ignoring the mechanism of non-response is the proper procedure when, and only when, the data is MCAR. Missingness in MAR cases is "ignorable" in regression models only when controlling for all the variables that correlate with non-response. This is an important milestone in statistics discourse and after this time, references to these assumptions and the terms "ignorable" and "not ignorable" (with respect to non-response) are seen in results analysis generally. Furthermore, @gelman2006data also suggests that most missingness is not MCAR. This means that most missingness is not ignorable, which is a crucially important point for any statistical analysis. It is vital to make clear statements of assumptions made about missingness in data and its treatment prior to releasing results.
+
+There is an abundance of examples in the literature of the adverse effects of missingness in survey data. These include biased parameter estimates (central tendency, dispersion and correlation coefficients) and loss of statistical power [@madow1983incomplete; @bean1995long; @roth1999missing; @raaijmakers1999effectiveness].
+
+Carpita has some useful stuff on models of missing data
+
+10. facotr analysis method
+500. plausible values
+has some stuff on missing data simul.
+
+
+
+
+
+
+
+
+
+## Techniques for Recovering from Missingness
+
+@gelman2006data [p.529] describes non-response a social indicators survey as "a distraction to our main goal of studying trends in attitudes and economic conditions, and we would like to simply clean the dataset so it could be analyzed as if there were no missingness." This is a statement which perfectly sums up the reason why so many techniques have been developed to make it possible to analyze a dataset with confidence and statistical rigour, despite the prevalence of non-response. Many statistical functions and operations simply do not work with missing data, whether calculated manually or by software. Many software systems (whether silently or with a warning) will automatically exclude cases with any missing values in the variables under analysis. It is necessary to implement some form of pre-processing to recover a dataset for appropriate analysis.
+
+There are many strategies for recovering from missing data, such as imputation. These are well developed for continuous variables, but sources indicate that there has been much less research for datasets comprising categorical and ordinal variables, (\cite{finch2010imputation}; \cite{leite2010performance}).\newline
+
+@groves2011three has some stuff on weighting models to recover from missingness.  
+
+Furthermore, there is evidence of significant differences in the performance of various imputation strategies over datasets exhibiting different underlying characteristics (\cite{wu2015comparison}; \cite{rodwell2014comparison}; \cite{sim2015missing}). These results indicate a need to take into account not only the model and magnitude of missingness but also other characteristics particular to the target data. For this reason there is real benefit in having a range of imputation methods from which to choose the most suitable in a given situation.\newline
+
+
+@shrive2006dealing as example of a "self-report" ordinal scale where multiple impute worked best, even for very high rates of missingness. Also one missing response in the whole instrument - makes it a real waste to use listwise deletion.
+
+@he2010missing stat on how many records lost in listwise deletion and good comparison of technique
+
+\cite{carpita2011imputation} describes four categories of  recovery procedures as follows:
 
 

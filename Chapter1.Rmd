@@ -4,7 +4,7 @@ In this section, the motivation and rationale are established along with a prime
 
 ## Motivation
 
-Surveys are an ubiquitous research tool, used in the widest variety of disciplines. The data collected mainly includes categorical types (binary, nominal, ordinal and Likert). Due to the practicalities of running surveys, they are highly prone to non-response and therefore, missing data. The magnitude, pattern and distribution of missingness depends on the underlying cause and has consequences for the analysis of results. These problems include serious loss of statistical power and biased parameter estimates. There are many techniques to recover the analysis with varying degrees of success. Most important of these is imputation, which is to substitute  missing values with suitable or ``plausible" values. Successful imputation depends on the features of the data and the characteristics of missingness. Such techniques are very well developed for continuous, numerical data but much less so for caterogical types.
+Surveys are an ubiquitous research tool, used in the widest variety of disciplines. The data collected mainly includes categorical types (binary, nominal, ordinal and Likert). Due to the practicalities of running surveys, they are highly prone to non-response and therefore, missing data. The magnitude, pattern and distribution of missingness depends on the underlying cause and has consequences for the analysis of results. These problems include serious loss of statistical power and biased parameter estimates. There are many techniques to recover the analysis with varying degrees of success. Most important of these is imputation, which is to substitute  missing values with suitable or "plausible" values. Successful imputation depends on the features of the data and the characteristics of missingness. Such techniques are very well developed for continuous, numerical data but much less so for caterogical types.
 
 Since association rules mining (ARM) was proposed, the concept has been the subject of intense research. ARM is best suited to applications on categorical data. While the technique is inherently a descriptive, knowledge discovery tool, it has been successfully adapted for classification but never used for imputation. This project proposes a novel technique based on ARM for the imputation of categorical data, especially ordinal and Likert scales.
 
@@ -16,7 +16,7 @@ The goal of an imputation technique is to maximize the use of collected data by 
 
 ## Contribution of This Work
 
-It is hoped that this research will deliver a novel and viable imputation method based on association rules which is best suited for datasets consisting primarily of categorical data types, such as would be found in surveys and questionnaires. Techniques to recover these datasets from missingness are not as well developed as for numeric, continuous and multivariate normal data, even though surveys and questionnaires are ubiquitous. Furthermore, a detailed review of the literature finds no previous examples of an association rules based method, depsite compelling evidence that such a method should give useful results.
+This work will contribute to the literature by connecting current research in classification association rules to existing theories of missing data and imputation in a detailed and sestematic manner. It is hoped that this research will deliver, in the form of an R software package, a novel and viable imputation method based on association rules which is best suited for datasets consisting primarily of categorical data types, such as would be found in surveys and questionnaires. Techniques to recover these datasets from missingness are not as well developed as for numeric, continuous and multivariate normal data, even though surveys and questionnaires are ubiquitous. Furthermore, a detailed review of the literature finds no previous examples of an association rules based method, despite compelling evidence that such a method should give useful results. 
 
 ## Aims and Objectives
 
@@ -46,7 +46,7 @@ xtable(data.frame(Objective = objectives)
 
 ## Research Design
 
-The research method used to meet each objective are organized as follows:
+The research method used to meet each objective are as follows:
 
 ```{r research_design, results='asis'}
 objsummary <- c("Research the topics for objectives 1-5"
@@ -57,7 +57,7 @@ objsummary <- c("Research the topics for objectives 1-5"
                 , "Critical review (10)")
 resmethods <- c("Literature review"
                 , "Literature review and expert consultation"
-                , "Pseudocode and R programming"
+                , "Pseudocode and R package authoring*"
                 , "R programming"
                 , "Quantitative and statistical analysis"
                 , "Qualitative evaluation of objectives and outcomes")
@@ -71,7 +71,8 @@ align(resmethodstable) <- "ll"
 resmethodstable
 ```
 
+*methodology for producing a distributable software package using best practices (version control, automated tests, namespaces and documentation) proposed in @Wickham:2015:RP:2904414
 
 ## Report Structure
 
-The remaining chapters of this report are organized as follows: Chapter 2 provides a comprehensive literature review covering objectives 1-4 and laying the foundation for the applied project. Chapter 3 describes the experimental methodology and applied research id detail.
+The remaining chapters of this report are organized as follows: Chapter 2 provides a comprehensive literature review covering objectives 1-5 and laying the foundation for the applied project. Chapter 3 describes the choice of experimental methodology and applied research in detail.
