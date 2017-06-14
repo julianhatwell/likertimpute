@@ -1,6 +1,18 @@
 # Research Methods
 
+Research is the order you do things to meet your objectives.
+Consider alternative research methods for each objective.
+Research methods enable you to achieve your objectives.
+
+Ethnography, Lit review, Structured questions, Experimentation, Survey. Case Study.
+
+Braod feel from lit. review. Asking one expert will only give you one perspective.
+
+Identify a framework, identify the tools you need.
+
 ## Datasets
+
+@de2010five establishes patterns for synthetic Likert scale data
 
 This work makes use of the following datasets:
 
@@ -13,3 +25,15 @@ Young People's Survey Dataset [@yps2013]
 _carpita and oxis_
 
 @shrive2006dealing a good methodology paper
+
+@plumpton2016multiple great graphs of % responses and great for comparisons of two methods
+
+## benchmarks
+complete case
+multiple imputation
+ordinal logistic regression
+approximate bayesian (carpita)
+
+Future work could try a non-deterministic approach, using a choice from the top n donor values rather than picking the top 1.
+
+Future work, could try a MICE approach - iterative cycle over imputation and look for a convergence.
