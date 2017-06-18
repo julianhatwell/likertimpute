@@ -12,20 +12,37 @@ Consistent with the description of a decline in popularity, @sheehan2001mail pos
 
 ## Characteristics of Survey Data and Prevalent Data Types
 
-Researchers in the social sciences and other disciplines often use surveys to collect data on subjective attitudes, perceptions and psychological traits. @johnson2009working states that nominal and ordinal variables are predominant and this makes sense when survey design considerations are taken into account. In this respect @schultz2015psychology [p.37] explains that "fixed-alternative questions simplify the survey and allow more questions to be asked," and also "answers to fixed-alternative questions can be recorded more easily and accurately than can answers to open ended questions." Furthermore, when collecting demographic information, apart from height and weight, most routine information will be categorical in nature, e.g. eye colour, hair colour, ethnic origin.
+Researchers in the social sciences and other disciplines often use surveys to collect data on subjective attitudes, perceptions and psychological traits. @johnson2009working states that nominal and ordinal variables are predominant. This makes sense when survey design considerations are taken into account. In this respect @schultz2015psychology [p.37] explains that "fixed-alternative questions simplify the survey and allow more questions to be asked," and also "answers to fixed-alternative questions can be recorded more easily and accurately than can answers to open ended questions." Furthermore, when collecting demographic information, apart from height and weight, most routine information will be categorical in nature, e.g. eye colour, hair colour, ethnic origin.
 
-Surveys frequently use Ordinal (ranking) responses, sometimes individually but often combining multiple related items. @johnson2009working also gives detailed examples of why ordinal variables cannot be treated the same as numerical scales and @gertheiss2009penalized explains how this assertion holds even when the ordinal variable is a discretised version of an underlying continuous scale. Essentially, this is because the interpretation depends on arbitrarily assigned categories and mid-point estimates. Upper and lower unbound categories may hide any number of extreme values.
+Surveys frequently use ordinal (ranking) responses. These generally taking the form of a categorical variable with levels $k = \{0,\dots,K\}$ or $k = \{1,\dots,K\}$ or sometimes a symmetric form $k = \{-K,\dots,0,\dots,K\}$ and all are interpreted as a monotonic, ranking representation $Least \succ Less \succ More \succ Most$. Ordinal variables can be used individually but are often combined in a survey as multiple related items (multiple-item response scales). Likert scales are a special case of ordinal variable and a special case of multiple-item response, whereby a collection of statements are scored by the respondent using an integer series which is anchored to phrases of sentiment or attitude (e.g. 1 = strongly disagree, 5 = strongly agree). The collection of responses measure the outwardly manifested facets of some latent concept or factor. The respondents' positions on the latent factor can then be estimated by appropriately aggregating, summing or transforming the multiple responses of the individual items [@carpita2011imputation]. Likert scales are ubiquitous in behavioural science, marketing, usability, customer feedback, psychological and clinical research. Although the term Likert scale is sometimes used in the literature to refer to single items following the classic agree/disagree scoring, the correct definition refers to a combined scale as described here.
 
-Likert scales are a special case of multiple-item response whereby a collection of statements are scored by the respondent using an integer series which is anchored to phrases of sentiment or attitude (e.g. 1 = strongly disagree, 5 = strongly agree). Likert scales are ubiquitous in behavioural science, marketing, customer feedback and usubility research. They are intended to measure the outwardly manifested facets of some latent concept or factor. As such, the individuals' positions on the latent concept can be obtained through appropriately aggregating, summing or transforming the multiple responses of the Likert scale items [@carpita2011imputation]. 
+It is common in the literature to find misunderstandings and disagreement about how ordinal variables ought to be treated analytically. The introduction in @gertheiss2011testing reviews a range of conflicting views which is typical of the debates. The disagreements centre on the question of whether it is appropriate to use the integer class labels directly as explanatory variables in a regression model. @johnson2009working gives detailed examples of why ordinal variables cannot be treated the same as numerical scales and @gertheiss2009penalized explains how this assertion holds even when the ordinal variable is a discretised version of an underlying continuous scale. Essentially, this is because the interpretation depends on arbitrarily assigned categories and mid-point estimates. Upper and lower unbound categories may hide any number of extreme values. @joreskog2005structural provides a formalization of the concept of inferred discretization, reproduced in \@ref(eq:ordvar1)-\@ref(eq:ordvar2). These show the relationship between $z$, an observed ordinal variable which varies between 1 to $m$ integer values and $z^*$, an underlying, unobserved variable which has a range from $-\infty$ to $\infty$.
 
-When analyzing Likert and similar scales, @jamieson2004likert posits that it is inappropriate even to use mean and standard deviations because it is wrong to presume that intervals between categories are equal. That is to say, the barrier to reach the highly polarised strongly disagree or strongly agree may be inconsistent with a move from neutral to either agree or disagree. Also, these types of scales are often skewed or multimodal and require non-parametric tests such as Mann-Whitney-Wilcoxon (MWW) for analysis. @gliem2003calculating states that these data types are often intended to be used as a combined scale, measuring a latent concept, and asserts that their individual analysis leads to erroneous conclusions. Other authors [@norman2010likert; @carifio2008resolving] strongly rebut these arguments, citing various sources of empirical evidence of the robustness of parametric tests. This is one of the great debates of statistics in the last few decades but there is agreement that combining individual responses into their intended scale leads to the least controversial usage and analytical or probabilistic techniques over single items in a Likert scale should be avoided where possible. @de2010five compares the type I and type II error rates of the t-test MWW test using synthetic data which finds that there is no benefit to either test with respect to type I errors and slight differences in performance with type II error rates, and consequently the power of the test. The direction of these differences depends on the underlying populations and may favour t-tests in some cases and MWW in others. Crucially, this article only tests a single variable, and so does little to settle the debate.
+\begin{equation} 
+  z = i \Longleftrightarrow \tau_{i-1} < z^* < \tau_i, \quad i = \{1, 2, \dots, m\}
+  (\#eq:ordvar1)
+\end{equation}
+
+where
+
+\begin{equation} 
+  -\infty = \tau_0 < \tau_1 < \tau_2 < \dots < \tau_{m-1} < \tau_m = \infty
+  (\#eq:ordvar2)
+\end{equation}
+
+The $\tau$ terms are unknown population parameters. These arbitrary threshold values may be estimated in some circumstances, such as from percentage counts of responses $z$ when $z^*$ is assumed to be normally distributed.
+
+When analyzing individual items of Likert and similar scales the debates are even more polarized. @joreskog2005structural takes the firm position that it is wrong even to use means, variances and covariances. The reasons given are that the integer values do not represent a continuous scale. They should not be attributed metric properties as they have neither an origin nor units. @jamieson2004likert goes even further, stating that it is also wrong to presume that intervals between categories are equal. There is no assumption in \@ref(eq:ordvar2) that the $\tau$ terms follow a regular pattern. In practice, this means that the barrier to reach the highly polarised strongly disagree or strongly agree may be inconsistent with a move from neutral to either agree or disagree. Also, these types of scales are often skewed or multimodal and require non-parametric tests such as Mann-Whitney-Wilcoxon (MWW) for analysis. @gliem2003calculating states that these data types are intended to be used as a combined scale measuring a latent concept, and asserts that their individual analysis leads to erroneous conclusions. 
+
+Other authors [@norman2010likert; @carifio2008resolving] strongly rebut these arguments, citing various sources of empirical evidence of the robustness of parametric tests. This is one of the great debates of statistics in the last few decades but there is agreement that combining individual responses into their intended scale leads to the least controversial usage and analytical or probabilistic techniques over single items in a Likert scale should be avoided where possible. @de2010five compares the type I and type II error rates of the t-test MWW test using synthetic data which finds that there is no benefit to either test with respect to type I errors and slight differences in performance with type II error rates, and consequently the power of the test. The direction of these differences depends on the underlying populations and may favour t-tests in some cases and MWW in others. Crucially, this article only tests one (synthetic) variable at a time, and so does little to settle the debate.
+
+Valuable contributions to the discussion come from authors and statistical researchers who specialize in discrete data analysis. Among these, the *proportional odds model* (also known as *cumulative logit model* and *ordered logit model*) is favoured for statistical analysis where the dependent variable is ordinal [@friendly2016discrete; @agresti2013categorical; @R-ordinal]. *Penalized likelihood estimation* and *penalized regression* are favoured where the predictors are ordinal [@R-ordPens; @gertheiss2009penalized]. Tests based on these models are shown to perform better than models based on linear assumptions [@gertheiss2011testing].
 
 ## Non-Response and Missingness
 
 The practicalities of running surveys means that they regularly suffer the problem of non-response and missing data [@bono2007missing; @kamakura2000factor; @plumpton2016multiple]. In the broadest terms, non-response can occur at two levels: Unit and Item. Unit non-response occurs when one or more respondents fail to return anything to the survey organisers. This may be a one-off survey, or may be one in a series of surveys in a longitudinal study. If the non-response rate is high, this can impact the overall sampling frame. Item non-response occurs when individual items (questions) in a survey are skipped, but the whole survey is returned to the organisers. Both types of non-response have serious consequences. However, this work is concerned only with item non-response which will be the focus for the remainder of the review, unless otherwise stated. Understanding the model (patterns, mechanism and magnitude) of missingness in data is critical when selecting or designing techniques to recover from the resulting issues. Fortunately, there has been an enormous amount of research in this area over recent decades.
 
 As always, routine exploratory analysis is the best starting point. For example, when examining the effect of survey length on response rates, @sheehan2001mail reports numerous prior studies that illustrate how longer surveys tend to reduce overall (unit) response rates, particularly for business-oriented surveys. Only one example is given of a study that found the opposite pattern but it is unclear if this is enough to call the overall trend into question. Crucially, there is no discussion of the implication of survey length on any pattern of item non-response and specifically whether longer surveys suffer more incomplete items towards the end than near the beginning. From the historical outline given in @groves2011three, this must be assumed to be the case, given that the focus shifted to shorter questionnaires to reduce hang-up rates at the same time as an increase in popularity of surveys by telephone. A ragged tail pattern of non-response would be a clear indicator of a survey that respondents found overly long.
-
 
 ```{r nonresp-reasons}
 reason <- c("Failure to complete the whole questionnaire"
@@ -201,6 +218,47 @@ image(t(stdg)
       , col = c("ivory", "darkslateblue"))
 ```
 
+@joreskog2005structural provides and alternative missing data map in a collapsed form showing all possible patterns. Here a missing indicator matrix with a 1 indicating missingness is used. Note that eleven cases had five or more out of six responses missing and would be useless in any analysis. This format is of most use when there aren't too many items to create a combinatorial explosion. In fact, in the article a subset of just six items is used, which represent the items of a single multiple-item response variable. Some questionnaires may run up to hundreds of individual items, including datasets used in this research project so the format may be too unwieldy, unless this is done separately for each multiple-item response. Another question to consider is what sorting criteria did the author use to present this information as it is not obvious from the layout shown, which has been reproduced exactly in Table \@ref(tab:missmapclpse).
+
+```{r missmapclpse}
+
+
+Frequency <- c(1554, 16, 12, 1, 4, 11, 31, 1, 2, 1, 4, 1, 32, 1, 1, 1, 5, 2, 1, 1, 14, 4, 4, 2, 1, 1, 2, 9)
+Pattern <- c("000000"
+             , "100000"
+             , "010000"
+             , "110000"
+             , "001000"
+             , "000100"
+             , "000010"
+             , "010010"
+             , "110010"
+             , "011010"
+             , "000110"
+             , "001110"
+             , "000001"
+             , "010001"
+             , "110001"
+             , "101001"
+             , "000101"
+             , "100101"
+             , "001101"
+             , "101101"
+             , "000011"
+             , "100011"
+             , "010011"
+             , "110011"
+             , "011011"
+             , "000111"
+             , "011111"
+             , "111111")
+missingtable <- data.frame(Frequency = Frequency, Pattern = Pattern)
+knitr::kable(missingtable
+             , caption = "Missing data map, compact form. Source: Jöreskog (2009)"
+             , booktabs = TRUE)
+
+```
+
 Secondary citation of Roth 1994 in @plumpton2016multiple that conspicuously little research done on missing data analysis, despite importance in the social sciences, and there is still a gap in practice with what is recommended in the literature with 45% of papers surveyd using complete case analysis and only 8% using MI @plumpton2016multiple secondary citation of Bell ML, Fiero M, Horton NJ, et al. Donald B. Rubin is widely cited for seminal works on modeling, recovering (imputing) and inference using missing data e.g. @rubin2004multiple. Of particular importance in this body of work is formalization of the relationship between the missing values, the incomplete variable and the other variables. The patterns arising from these relationships are categorized as:
 
 * Missing completely at random (MCAR) if process that causes the missing data is distinct from any parameter $\theta$ of the data. In other words the distribution of missing data is unrelated to the value of any variable in the dataset. It is also suggested in @gelman2006data that the probability of non-response is the same for all points of the missing indicator matrix. The missing/non-missing state of individual data points cannot be predicted from any information whatever, whether observed or unobserved other than the overall missingness rate.
@@ -227,12 +285,15 @@ It may be a case of stating the obvious, but bears repeating that prevention is 
 
 To give some idea of the motivation for missing data analysis and recovery per se,  @gelman2006data [p.529] describes non-response in a social indicators survey as "a distraction to our main goal of studying trends in attitudes and economic conditions, and we would like to simply clean the dataset so it could be analyzed as if there were no missingness." This  statement perfectly sums up the reason why so many techniques have been developed to make it possible to analyze a dataset with confidence and statistical rigour, despite the prevalence of non-response. Many statistical functions and operations simply do not work with missing data, whether calculated manually or by software. Many software systems (e.g. R, SAS, SPSS), whether silently or with a warning will automatically exclude cases with any missing values in the variables under analysis. This default list-wise deletion is only appropriate for data which is MCAR. **cite** It is therefore necessary to implement some form of pre-processing to recover a dataset for appropriate analysis and it can be argued that the method chosen will have a significant impact on the reliability of any subsequent analysis.
 
+@joreskog2005structural listwise deletion of course makes sense for cases with all or most responses missing.
+
 @gelman2006data complete case analyis is equivalent to listwise deletion. Data are thrown away as whole cases. Problems if missing data differe systematically from non-missing MNAR, this leads to biased estimates of population parameters. If there are many variables (wide dataset), then even a low proportion of missing could lead to most data being discarded. Available case analysis is using portions of the dataset with complete cases to answer different research questions. Problem is that analysis are based on inconsistent subsamples, representing potentially different populations. 70% of men answer one thing but only 60% of women answer it. Weighting methods add a weight to make complete cases more representative but this is very complicated in anything other than the univariate missingness. Single imputation strategies lead to variance estimates that are too low - because these "simulate knowing the true value with certainty." Mean imputation biases standard deviations and correlations downwards. Last value carried forward is only applicable in longitudinal, or time-based surveys. Create erratic results for trends analysis. Unordered categories, just add a missing category. Logical rules, using domain knowledge and structure in the survey - worked no hours, income = 0. Simple (naive) random imputation in the univariate case will substitute missing values with values that are sampled with replacement from the complete values. This ignores any useful information from the other variables. Can use zero coding, top/bottom coding to reduce sensitivity to extreme values and improve the predictive power of the model. A simple cutoff or a transform above a cutoff. Linear model prediction increases central tendency - see @gelman2006data for equations why based on R squared page 536. Random prediction imputation, for univariate normal data, or data which has been transformed to be so, can create a random normal vector from the vector of pred values (means) and resid st.devs as the st.dev so the scatter is defived from the unexplained variance in the model. Transforms and multi-stage imputations required for non-normal data (counts, zero-inflated modes and so on.)
 
 Cold-deck imputation is where substitute values are found in prior studies. This is not generally talked about in the statistical literature, which focuses on statistical and computational techniques.
 
 also quoted @plumpton2016multiple Poor handling and reporting of missing data may result in misleading conclusions and are one of the main reasons for publication rejections.
 
+@joreskog2005structural take mechanism of missing into account for example "similar pattern response matching" [@joreskog2005structural p.3] is suitable for continuous and MCAR and secondary citation Brown 1994 says compares well to listwise deletion. Someone with missing variable *i* has same response pattern as another case, then it's likely that variable *i* is matching. Goes on to say that if multiple individuals are found with the matching response pattern then that's even stronger evidence. Importantly, shows that missing values can remain after this method and should be removed by listwise deletion. This point corroborates what this current research is hoping to achieve. The intention of this research is to go a step further and find all the similarity patterns. 
 
 @gelman2006data hot-deck and matching. Find similar individuals in the dataset (in values of X) and replace with their value of *y*. "non-parametric version of regression" @gelman2006data [p.538] but not sure where this description arises other than assertion that it is useful where (linear) regression is challenging. Similarity can be based on a scoring function, a distance function - but then we'd assume you have scalar numeric or even multi-variate normal data. Another way is to use other variable to create a score for propensity to missingness and then use these values to impute missing. This one doesn't quite make sense and one has to assume it means use propensity score to find the donor cases to then impute missing.
 
@@ -286,7 +347,7 @@ Multiple impute, analyze, combine
 Particular attention to multi-item scales: QUOTED
 As missing data in a single item of a multi-item scale leads to a missing total, the rate of missing data in scale totals can be very high. Imputing at the level of scale total whilst ignoring individual items may therefore introduce unnecessary bias.
 
-A recent study considered imputing at item level rather than imputing scale totals [15]. When the pattern of missingness tended towards all items being missing for a respondent, little difference was seen between methods. When the pattern of missingness tended towards individual items being missing, for sample sizes of n > 100, imputing at item level was shown to be more accurate. \
+A recent study considered imputing at item level rather than imputing scale totals [15]. When the pattern of missingness tended towards all items being missing for a respondent, little difference was seen between methods. When the pattern of missingness tended towards individual items being missing, for sample sizes of n > 100, imputing at item level was shown to be more accurate.
 
 Another study proposed methods for handling multiitem scales at the item score level [16], and further emphasised how mean imputation or single imputation leads to bias and underestimation of standard errors. The study concludes that missing data should be handled by applying multiple imputation to the individual items. 
 
@@ -296,15 +357,145 @@ QUOTED
 
 MI is a maximum likelihood estimation, along with expectation maximization (EM). @plumpton2016multiple MI is robust to departures from normality, small sample sizes and high proportion of missing data. MI also less computationally expensive.
 
+but graphs in @plumpton2016multiple clearly show an attempt to use MI for continuous variables and it's not clear how this translates to categorical.
+
 @graham2007many MI and FIML (full information maximum likelihood) are the two most common ways approaches to missing data analysis. MI theory suggest m = 3-5 @graham2007many secondary citation of Schafer and Olsen 1998 and Rubin 1987 gives formula, is enough imputations but @graham2007many suggests this is nowhere near enough. White IR, Royston P, Wood AM secondary citation in @plumpton2016multiple suggests 1 imputation per 1% of missing data. @white2011multiple provides the same rule of thumb arrived at through other logic (go back and get precise) so it should be concluded that this is a very valuable method. The idea of MI is create plausible values through creating m imputations, which also allows a estimates of uncertainty of the estimation to  be reasonably partitioned into within imputation variance which is the usual variance of estimation, and between imputatation variance with is variance attributable to missing data.
 
 @graham2007many has good formulas for calculating the variances properly. These formulas allow fo cases where independent variables are correlated with the missing data, so the fraction of missing information is sometimes less than the fraction of missing data. This fraction of missing information is unreliably estimated unless number of imputations is large. The biggest problem of not having enough imputations is the loss of statistical power compared to conventional wisdom of the subject and is most relevant in situations where accuarately identifying levels of risk is of most importance, such as reduction of risk and prevention science.
 
+Amelia is an imputation package
 
+## Measuring the Benefit of Imputation
+
+The goal of imputation is to find substitute values for missing data that are neutral to or (preferably) enhance the results of subsequent data analysis. This requires different measures than a classification problem which measures accuracy by comparing predicted values to known values (although this can still be useful to do). Also, @jonsson2004evaluation shows that hot-decking methods, (which covers the association rules based method under investigation) do not always find a suitable donor value. This means that a final round of listwise deletion of remaining incomplete cases may still be necessary, with all the inherent assumptions and risks of such action. It suggests that succuss measures of an association rules based imputation method need to take into account the efficacy as well. Various metrics for evaluating and benchmarking imputation methods are suggested in the reference texts. Alternative approaches exist; pantanowitz2008evaluating is an example of indirectly ascertaining the quality of imputation by measuring the effect on prediction accuracy of a classification technique.
+
+
+This work will use a combination of reference measures and indirect classification techniques to benchmark against state of the art imputation methods with a variety of datasets.
 
 ## Association Rules
 
+Association rules mining (ARM) was first popularised by the development of a fast algorithm for large databases, *apriori*, in @agrawal1993mining. It was developed in response to the vast amount of data collected by large retail enterprises on their customer purchase data. 
+Many of the fundamental concepts of ARM were formalised in @agrawal1993mining article and its follow up, @agrawal1994fast which are considered to be the seminal works on the topic. The following definitions are adapted from @agrawal1994fast [p.2]:
+
+Let $I = \{i_1, i_2,\dots, i_m\}$ be the set of all items. Let $D = \{T_1, T_2,\dots,T_n\}$ be a set of transactions where each transaction $T \subseteq I$. A transaction $T$ is said to contain an itemset $X$ (a set of some items in $I$) if $X \subseteq T$.
+
+@tan2005chapter6 explains that to achieve its objective of finding useful association rules, ARM must solve two distinct problems:
+
+1. Overcoming the computational challenge of discovering patterns in large transaction data
+1. Ignoring spurious patterns/rules that occur by chance
+
+These challenges are addressed under the *apriori* algorithm by searching the database iteratively for combinations of items (itemsets) that occur more frequently than a given probabilistic threshold, known as *support*. 
+
+**Support for itemset $X$ in Transaction Data $D = \{T_1, T_2,\dots,T_n\}$** $$Supp(X) = \frac{Count(X)}{Count(T)}$$
+
+Each iteration, the search looks for itemsets with one more member than the previous run and ignores all supersets of items that did not prevously meet the required *support*. This rapidly reduces the search on each iteration. The resulting collection is then mined for rules of the pattern $$X \implies Y$$ $$(\text{read as }\textit{X implies Y})$$
+
+where $X \subseteq T$ is the *antecedent* of a rule and $Y \subseteq T$ is the *consequent* and $X \cap Y = \varnothing$. In some implementations, such as @R-arules, the cardinality of $Y$ is restricted to 1. This further reduces the computational complexity. Resulting rules are discarded if they fail to meet a given threshold for a specific measure of *interestingness*. A most comprehensive list is given in @hahsler2017interesting. In *apriori*, the measures *confidence* and *lift* are used by default:
+
+**Confidence of rule $X \implies Y$** $$Conf(X \implies Y) = \frac{Supp(X \cup Y)}{Supp(X)}$$
+
+**Lift of rule $X \implies Y$** $$Lift(X \implies Y) = \frac{Supp(X \cup Y)}{Supp(X) \times Supp(Y)}$$
+
+[@tan2005chapter7] When it emerged *apriori* was described as a "fast" algorithm and is still widely used today. The algorithm outperformed everything that came before it. @mythili2013performance and others raise an issue with *apriori*; The cycle of repeated database scans and candidate generations means that performance does not scale well on very large databases where the support threshold is low. The FP-Growth algorithm is proven to overcome these issues, constructing a frequent pattern tree in just two database passes.
+
+
+
+Other algorithms and packages
+
+@garcia2004mining categorizes ARM among the unsupervised and descriptive techniques as opposed to the other common categorisation (supervised/predictive). The goal of ARM is to find patterns (frequent itemsets and supported rules, in this case) without any prior information about what these patterns might be. The original implementation uses transaction data which is represented as a key-value pair, where the key is a transaction Id (TID) and the value is a list of items purchased in the single transaction identified by TID. See \@ref(tab:transdata) for example. In @R-arules this is represented as an *incidence matrix*, which is a sparse, binary matrix where each row is a transaction and all possible items are each represented in a unique column as present (1) or absent (0). See \@ref(tab:incidencemat). However, this approach is not without its limitations; Transaction data, or incidence matrix data, codifies only the presence or absence of an item. This is binary information and ignores the important variable of quantity or attributes with more than one possible value, such as ordinal data. Also, the binary variables in the (sparse) incidence matrix are said to be *asymmetric* [@tan2005chapter7] because a value of 1 is much more important and far less frequent than a value of 0. 
+
+Overcoming the binary limitation is a trade-off. @ma1998integrating describes a process using a normal relational table with highly discretized data, where the items are represented on columns with various integer values. Each item-value pair is coerced to a binary dummy variable which creates a very wide matrix. This makes ARM applicable to representations of surveys with multi-ranked (non-binary) ordinal data and Likert scales but @tan2005chapter7 explains that the relative scarcity of a useful value is magnified, drastically reducing *support* for each item and producing too many rules. See \@ref(tab:nonbinincmat). @tan2005chapter7 continues with advanced approaches for overcoming this issue based on discretized coninuous data.
+
+The ideas most relevant to this research are adapted here for use with imputation of ordinal variables:
+
+* Pre-processing methods. Combine adjacent values of ( $X \in \{1, 2\}$ or $X \in \{1, 2, 3\}$ ) until minimum support is exceeded:
+    * Single Imputation: Applies to antecedent variables.
+    * Multiple Imputation: Applies to consequent variables. A cumulative odds model or other smoothing method may be used as a distribution for random draws.
+
+* Statistical methods. Generate frequent itemsets not including the target variable. Compute descriptive statistics of the target variable for freqent item sets. A rule is interesting if the target variable mean for the segment of population covered by the rule is significantly different from the section of the population not covered by the rule.
+    * Single Imputation: Introduce the target variable mean as the rule consequent, using appropriate rounding or truncating to meet ordinal value constraints.
+    * Multiple Imputation: Introduce target variable statistics as the rule consequent to be used as a distribution for random draws.
+
+* Multi-level (hierachical) methods. Generate rules at a higher level of a hierarchy so naturally grouped variables are combined. Step down into lower levels until minimum support is no longer met. For a Likert scale, this would involve generating itemsets and rules after calculating the aggregate of multiple grouped items (e.g. summation, first principle component etc).
+    * Single Imputation: Applies to antecedent variables
+    * Multiple Imputation: Combine with other methods.
+
+```{r transdata}
+TID <- 1:5
+items <- c("{Bread, Milk}"
+           , "{Bread, Diapers, Beer, Eggs}"
+           , "{Milk, Diapers, Beer, Cola}"
+           , "{Bread, Milk, Diapers, Beer}"
+           , "{Bread, Milk, Diapers, Cola}")
+
+transdata <- data.frame(TID = TID, Items = items
+                           , row.names = TID)
+knitr::kable(transdata
+             , caption = "Transaction data example. Source: Tan, P. et al (2005)"
+             , booktabs = TRUE)
+
+```
+
+```{r incidencemat}
+TID <- 1:5
+Bread <- c(1, 1, 0, 1, 1)
+Milk <- c(1, 0, 1, 1, 1)
+Diapers <- c(0, 1, 1, 1, 1)
+Beer <- c(0, 1, 1, 1, 0)
+Eggs <- c(0, 1, 0, 0, 0)
+Cola <- c(0, 0, 1, 0, 1)
+
+incidentmat <- data.frame(TID = TID
+                          , Bread = Bread
+                          , Milk = Milk
+                          , Diapers = Diapers
+                          , Beer = Beer
+                          , Eggs = Eggs
+                          , Cola = Cola
+                          , row.names = TID)
+knitr::kable(incidentmat
+             , caption = "Incidence matrix example. Source: Tan, P. et al (2005)"
+             , booktabs = TRUE)
+```
+
+```{r nonbinincmat}
+TID <- 1:5
+Bread_1 <- c(1, 0, 0, 0, 0)
+Bread_2 <- c(0, 1, 0, 0, 0)
+Bread_3 <- c(0, 0, 0, 1, 1)
+Milk_1 <- c(1, 0, 1, 0, 0)
+Milk_2 <- c(0, 0, 0, 1, 0)
+Milk_3 <- c(0, 0, 0, 0, 1)
+Eggs_2 <- c(0, 0, 0, 0, 0)
+Eggs_4 <- c(0, 0, 0, 0, 0)
+Eggs_6 <- c(0, 1, 0, 0, 0)
+
+nonbinincmat <- data.frame(TID = TID
+                          , Bread_1 = Bread_1
+                          , Bread_2 = Bread_2
+                          , Bread_3 = Bread_3
+                          , Milk_1 = Milk_1
+                          , Milk_2 = Milk_2
+                          , Milk_3 = Milk_3
+                          , Eggs_2 = Eggs_2
+                          , Eggs_4 = Eggs_4
+                          , Eggs_6 = Eggs_6
+                          , row.names = TID)
+knitr::kable(nonbinincmat
+             , caption = "Wide incidence matrix for ordinal values. Adapted from: Tan, P. et al (2005)"
+             , booktabs = TRUE)
+```
+
+
+
+Returning to the idea of similar pattern response matching, it is self-evident that ARM is precisely an algorithm for finding similar patterns. Upon evaluation of a dataset by ARM, a collection of rules (patterns) is returned. However, out-of-the-box this neither offers nor assumes a specific usage for those found patterns. That is left up to the analyst. 
+
 ## Classification with Association Rules
+
+\cite{freitas2000understanding} posits that ARM is a deterministic task and very different to classification though does concede that there are special cases where the resulting models can be used for predictions or, more specifically, classification. These special cases involve finding a subset of rules, which \cite{ma1998integrating} calls \textit{class association rules} (CARs). These CARs have the characteristic of having the target variable as the only element in the consequent or right-hand side of the rule. The ``partial classification" described in \cite{ali1997partial} is of particular interest because the objective here is to discover characteristics of the target variables. The authors suggest applicability to situations where some attribute will be modeled based on the other attributes. This is precisely the situation under investigation in this project.\newline
+
+While prediction and imputation differ in scope and goal, the intention of finding a suitable (or ``plausible") value rather than an accurate value could be seen as a mere relaxation of success criteria. If prediction with excellent results is possible from association rules, then it stands to reason that imputation in some form must also be possible.
+
 
 ## Conceptual Model - Bringing it all together?
 

@@ -1,0 +1,5 @@
+# Further Work
+
+Able to enter collections of variables that are considered together and look for rules that only use those. Should be faster and might be more accurate if reliability measures support it.
+
+Able to enter collections of variables and find rules based on aggregated measures from those variables.

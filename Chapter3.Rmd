@@ -10,6 +10,10 @@ Braod feel from lit. review. Asking one expert will only give you one perspectiv
 
 Identify a framework, identify the tools you need.
 
+## Measures of effectiveness of technique
+
+@joreskog2005structural uses a variance ratio of matching compared to missing (maybe for pre-imputation work)
+
 ## Datasets
 
 @de2010five establishes patterns for synthetic Likert scale data
@@ -28,11 +32,13 @@ _carpita and oxis_
 
 @plumpton2016multiple great graphs of % responses and great for comparisons of two methods
 
+can we use Friendly Visualising Categorical to model missing using negative bin or geometric distributions?
+
 ## benchmarks
 complete case
 multiple imputation
 ordinal logistic regression
-approximate bayesian (carpita)
+Rubin and Schenker (1986) proposed the Approximate Bayesian Bootstrap (ABB) (carpita)
 
 Future work could try a non-deterministic approach, using a choice from the top n donor values rather than picking the top 1.
 

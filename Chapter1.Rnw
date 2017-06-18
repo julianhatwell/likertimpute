@@ -1,9 +1,0 @@
-\documentclass{article}
-
-\begin{document}
-
-Primary research in the social sciences often makes use of surveys to collect data on subjective attitudes, perceptions and psychological traits. Ordinal responses are frequently used, sometimes individually but often combined into Likert scales. These are intended to measure the outwardly manifested facets of some latent concept or factor. As such, the individuals' positions on the latent concept can be obtained through appropriately combining the responses of the Likert scale items  .
-
-
-
-\end{document}

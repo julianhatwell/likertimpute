@@ -1,6 +1,6 @@
 ---
 title: "An Association Rules Based Method for Imputing Missing Ordinal and Likert Scale Data"
-author: "A dissertation by Julian Hatwell for the Master of Science in Business Intelligence degree at Birmingham City University, faculty of Computing, Engineering and the Built Environment"
+author: "A dissertation by Julian Hatwell for the Master of Science degree in Business Intelligence at Birmingham City University, faculty of Computing, Engineering and the Built Environment"
 date: "September 2017"
 site: bookdown::bookdown_site
 documentclass: book
@@ -8,6 +8,7 @@ output: bookdown::pdf_book
 clean: [packages.bib, bookdown.bbl]
 bibliography: [likertimputebiblio.bib, packages.bib]
 biblio-style: apalike
+csl: harvard-university-of-wolverhampton.csl
 link-citations: true
 nocite: | 
   @R-bookdown
@@ -22,7 +23,9 @@ options(xtable.comment = FALSE)
 
 # automatically create a bib database for R packages
 knitr::write_bib(c(
-  .packages(), 'bookdown', 'knitr', 'rmarkdown'
+  .packages(), 'bookdown', 'knitr'
+  , 'rmarkdown', 'arules'
+  , 'ordPens', 'ordinal'
 ), 'packages.bib')
 ```
 
