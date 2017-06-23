@@ -3,11 +3,25 @@ title: "An Association Rules Based Method for Imputing Missing Ordinal and Liker
 author: "A dissertation by Julian Hatwell for the Master of Science degree in Business Intelligence at Birmingham City University, faculty of Computing, Engineering and the Built Environment"
 date: "September 2017"
 site: bookdown::bookdown_site
+# geometry: [left=40mm, right=25mm, top=25mm, bottom=25mm] # [a4paper] 
+geometry: [margin=0.984in, a4paper]
+fontsize: 12pt
+mainfont: helvetica
+colorlinks: true
 documentclass: book
-output: bookdown::pdf_book
+output: 
+  bookdown::pdf_book:
+    includes:
+      in_header: preamble.tex
+    keep_tex: yes
+    toc_depth: 3
+    toc_appendix: yes
+    citation_package: biblatex
+    template: C:\Dev\Prog\R-3.4.0\library\rmarkdown\rmd\latex\BCUcustom.tex
 clean: [packages.bib, bookdown.bbl]
 bibliography: [likertimputebiblio.bib, packages.bib]
-biblio-style: apalike
+biblio-style: authoryear
+biblatexoptions: [maxcitenames=2]
 csl: harvard-university-of-wolverhampton.csl
 link-citations: true
 nocite: | 

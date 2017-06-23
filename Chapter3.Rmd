@@ -1,5 +1,7 @@
 # Research Methods
 
+## refer to 1002. Computer Science Research Methods Amaral 2011
+
 Research is the order you do things to meet your objectives.
 Consider alternative research methods for each objective.
 Research methods enable you to achieve your objectives.
@@ -14,6 +16,61 @@ Identify a framework, identify the tools you need.
 
 @joreskog2005structural uses a variance ratio of matching compared to missing (maybe for pre-imputation work)
 
+ordPens package uses RLRT to assess significant difference in levels of an ordinal predictor effect on dependent. Could changes to this value after imputation be an indication of a change of statistical properties? 
+
+intercorrelation measures - expect to be driven down if imputing too many similar values such as mean
+
+predict ordinal after imputation?
+
+penalised regression - do parameters change?
+
+don't forget to use utility functions to get MSE, RMSE, MAD etc.
+
+## R Packages
+
+psych (cronbachs)
+ordPens, ordinal
+arules (apriori and eclat), arulesViz
+arulesCBA, arulesNBminer (classification)
+amelia, vim, mice, mi
+
+VIM good information in vignette about other packages
+KNN imputation is computationally expensive because of calculating dist each time. ref vim vignette
+
+Amelia II uses Expectation Maximisation with bootstrapping as a fast, stable algo for MI. Can configure cell level priors to introduce domain knowledge into the MI process. Diagnostic features to check goodness of fit. ASSUMES DATA IS MULTIVARIATE NORMAL
+
+If we denote the ($n×k$) dataset as $D$ (with observed part $D^{obs}$ and unobserved part $D^{mis}$), then this assumption is
+$$D \sim N_k(\mu, \Sigma)$$
+which states that D has a multivariate normal distribution with mean vector mu and covariance matrix Sigma. Although MI is thought to be robust to this assumption, Amelia II offers some transformations to address needs of real world data sets. MI also assumes that data is MAR. Missingness depends on the observed data $D^{obs}$
+
+"non-integer imputations carry more information about the underlying distribution than would be carried if we were to force the imputations to be integers. Thus whenever the analysis model permits, missing ordinal observations should be allowed to take on continuously valued imputations."
+
+To indicate if a cell $d_{ij}$ is missing, Let $M$ be the missingness matrix where cell 
+
+$$m_{ij} =
+\begin{cases} 
+1, \text{if}\ d_{ij} \in D^{mis} \\
+0, \text{otherwise}
+\end{cases}$$
+
+MAR assumption defined as:
+
+$$P(M \mid D) = P(M \mid D^{obs})$$
+
+This has no bearing on the actual distribution of data, which could be Bernoulli (coin flips) or something more complex. MAR is more plausible the more data is included, so it is recommended to include variables even if they are not intended for use in any final model, but at least the same variables must be included as in the final model.
+
+MCAR (check this one) :
+$$P(M \mid D) = P(M)$$
+
+More equations in @honaker2011amelia for combining results of MI analysis:
+Recommend average of quantity $q$ .e.g. a univariate mean:
+
+$$\bar{q} = \frac{1}{m} \sum^{m}_{j=1} q_j$$
+and a variance which needs to be corrected for within and between variances:
+
+$$SE(q)^2 = \frac{1}{m} \sum^{m}_{j=1}SE(q_j)^2+S^2_q(1+\frac{1}{m})$$
+
+
 ## Datasets
 
 @de2010five establishes patterns for synthetic Likert scale data
@@ -22,11 +79,54 @@ This work makes use of the following datasets:
 
 wiki4HE dataset (UCI Machine Learning Repository) [@meseguer2014factors; @gunduzfokoue2013]
 
+```{r wiki4HE_data}
+wiki4 <- read.csv("wiki4HE.csv"
+                  , sep = ";"
+                  , na.strings = "?")
+```
+
 Turkiye Student Evaluation (UCI Machine Learning Repository) @gunduzfokoue2013
+
+```{r turkiye}
+turk <- read.csv("turkiye.csv")
+```
 
 Young People's Survey Dataset [@yps2013]
 
-_carpita and oxis_
+```{r young}
+yps <- read.csv("responses.csv")
+```
+
+@carpita2011imputation
+
+```{r carpita}
+library(xlsx)
+read_jspf <- function(sheet, cols) {
+  read.xlsx2("JSPF.xls"
+          , sheetName = sheet
+          , stringsAsFactors = FALSE
+          , colClasses = c("numeric"
+                           , "character"
+                           , rep("numeric", cols)))
+}
+
+js <- read_jspf("JS", 13)
+pf <- read_jspf("PF", 10)
+```
+
+OxIS 2013 databases provided by the Oxford Internet Institute on 21/04/2017.
+
+```{r oxis}
+oxis <- read.csv("oxis.csv")
+names(oxis)[1] <- "qa01a"
+```
+
+# online personality test, not clinically administered
+temp <- tempfile()
+download.file("http://personality-testing.info/_rawdata/BIG5.zip", temp, mode="wb")
+perstest <- read.table(unz(temp, "BIG5/data.csv"), header = TRUE, sep="\t")
+unlink(temp); rm(temp)
+
 
 @shrive2006dealing a good methodology paper
 
@@ -35,10 +135,19 @@ _carpita and oxis_
 can we use Friendly Visualising Categorical to model missing using negative bin or geometric distributions?
 
 ## benchmarks
+### Accuracy
+By definition this missing data does not exist to create this comparison, and if it existed we would no longer need the imputations or care about their accuracy. However, a natural question the applied researcher will often ask is how accurate are these imputed values? 
+
+Over-imputing can create many (100's) of imputations for observed vars and create a confint. So can see where the algorithm would have imputed any observed var.
+
+
+
 complete case
-multiple imputation
-ordinal logistic regression
+multiple imputation (mice package used prop. odds if vars are ordinal)
+single impute ordinal logistic regression (cumulative odds model)
 Rubin and Schenker (1986) proposed the Approximate Bayesian Bootstrap (ABB) (carpita)
+
+more in Carpita
 
 Future work could try a non-deterministic approach, using a choice from the top n donor values rather than picking the top 1.
 
