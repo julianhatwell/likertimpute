@@ -38,9 +38,13 @@ options(xtable.comment = FALSE)
 # automatically create a bib database for R packages
 knitr::write_bib(c(
   .packages(), 'bookdown', 'knitr'
-  , 'rmarkdown', 'arules'
+  , 'rmarkdown', 'lattice'
+  , 'arules'
   , 'ordPens', 'ordinal'
 ), 'packages.bib')
+library(lattice)
+library(latticeExtra)
+source("MarketingTheme.R")
 ```
 
 # Acknowledgements {-}

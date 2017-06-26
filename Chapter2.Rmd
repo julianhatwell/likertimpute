@@ -300,11 +300,9 @@ has some stuff on missing data simul.
 
 The author is unequivocal on the first point, and while it is stating the obvious that prevention is always better than cure, it does bear repeating. The second point provides support for the motivation behind this research. Analytical and processing techniques should be carefully chosen to meet the challenges of a given situation. The prevalence of surveys which collect mostly categorical data calls for methods better suited to data with these characteristics. 
 
-The problems with missing data are many and of great concern to researchers. @gelman2006data provides a very comprehensive treatment of the topic which serves as the basis for much of this section. The authors describe non-response in a social indicators survey as "a distraction to our main goal of studying trends in attitudes and economic conditions, and we would like to simply clean the dataset so it could be analyzed as if there were no missingness" @gelman2006data [p.529]. This  statement perfectly sums up the motivation for missing data analysis and recovery per se illustrates why many techniques have been developed. Researchers want to analyze their data with confidence and statistical rigour, despite the prevalence of non-response.
+The problems with missing data are many and of great concern to researchers. The problems are reputational as well as technical. @plumpton2016multiple also reports that "poor handling and reporting of missing data may result in misleading conclusions and are one of the main reasons for publication rejections." @gelman2006data provides a very comprehensive treatment of the topic which serves as the basis for much of this section. The authors describe non-response in a social indicators survey as "a distraction to our main goal of studying trends in attitudes and economic conditions, and we would like to simply clean the dataset so it could be analyzed as if there were no missingness" @gelman2006data [p.529]. This  statement perfectly sums up the motivation for missing data analysis and recovery per se illustrates why many techniques have been developed. Researchers want to analyze their data with confidence and statistical rigour, despite the prevalence of non-response.
 
-Many statistical functions and operations simply do not work with missing data, whether calculated manually or by software. Many software systems (e.g. R, SAS, SPSS), sometimes with a warning and sometimes silently, will automatically exclude cases with *any* missing values in the variables under analysis. If there is only one missing value out of tens or hundreds of potential predictor variables, then much valuable information is lost. Even in the era of "Big Data," where TeraBytes may be trawled for accidental insight, a well-designed survey may still have a high cost per respondent may still be high due to the discipline of sampling and selection.
-
-@bono2007missing sums up advice which is well-supported throughout the literature; Although it is a default option, list-wise deletion (also known as complete case analysis) is only appropriate for data which is MCAR and the proportion of missing data is small. However, this instruction will not hold if the dataset is wide (having many variables). In this case, even a low proportion of missing data could lead to a very high number of rows being discarded as the missing data are dispersed throughout the dataset. @joreskog2005structural adds a common sense rule of thumb, that list-wise deletion is advisable for cases with all or most responses missing as these add little value to any statistical model. In practice, the MCAR conditions are rarely provable, so it is usually necessary to implement some form of pre-processing that recovers a dataset for appropriate analysis. It can be further be argued that the method chosen will have a significant impact on the reliability of any subsequent analysis. 
+Many statistical functions and operations simply do not work with missing data, whether calculated manually or by software. Many software systems (e.g. R, SAS, SPSS), sometimes with a warning and sometimes silently, will perform a list-wise deletion to automatically exclude cases with *any* missing values in the variables and analyze only the complete cases. If there is only one missing value out of tens or hundreds of potential predictor variables, then much valuable information is lost. Even in the era of "Big Data," where TeraBytes may be trawled for accidental insight, a well-designed survey may still have a high cost per respondent may still be high due to the discipline of sampling and selection. Rather than simply allowing statistical software to make default, often inappropriate choices, it is advisable to carry out a formal missing data analysis. Then, based on these findings, to implement some other form of pre-processing that recovers a dataset. The method chosen will have a significant impact on the reliability of any subsequent analysis. 
 
 @carpita2011imputation describes four categories of recovery procedures as follows:
 
@@ -313,43 +311,223 @@ Many statistical functions and operations simply do not work with missing data, 
 1. Model-based procedures
 1. Imputation procedures
 
-Each method has advantages and disadvantages. For example, (1) is simplest to implement but potentially introduces significant problems. Simply omitting a data point from an aggregate or multiple-item scale will result in an underestimated score on the latent variable. This category also includes listwise deletion, with its limitations described above. Consequently, deletion methods have fallen out of favour following the emergence of ubiquitous computing power to run more sophisticated methods. (2) can be applied after list-wise deletion to rebalance a sample. Essentially remaining cases are weighted or duplicated so the desired sampling and stratification proportions are restored. @gelman2006data posits that this becomes complicated if more than one variable contains non-response and will bias standard error estimates. A modification of this method is called available case analysis. It uses subsampling of the complete cases to answer different research questions. This has the problem that analyses may be based on inconsistent subsamples, representing potentially different populations.
+Each method has advantages and disadvantages. For example, (1) includes list-wise deletion which is simplest to implement but potentially introduces significant problems. @bono2007missing sums up advice which is well-supported throughout the literature; Although list-wise deletion is a default option, is only appropriate for data which is MCAR and the proportion of missing data is small. However, this instruction will not hold if the dataset is wide (having many variables). In this case, even a low proportion of missing data could lead to a very high number of rows being discarded as the missing data are dispersed throughout the dataset. @plumpton2016multiple imposes a further condition; that the missingness is only found in the dependent variable. Although this was not specifically mentioned in any of the other texts reviewed it certainly caps a plethora of significant limitations with the deletion method. The only article found to encouraged list-wise deletion under specific circumstances other than those listed was @joreskog2005structural, which offers the common sense advice that list-wise deletion is recommended for cases with all or most responses missing. Obviously these individual data rows would add little value to any statistical model. In practice, the MCAR conditions themselves are rarely provable. (1) also includes simply omitting a data point from an aggregate or multiple-item scale. This will obviously result in an underestimated score on the latent variable and would probably never be recommended up to date research methodologies.
+
+Methods in category (2) can be applied after list-wise deletion to rebalance a sample and can even be used to deal with unit non-response. Essentially remaining cases are weighted or duplicated so the desired sampling and stratification proportions are restored. @groves2011three points out that the theoretical assumptions for this method to be valid could never be met and @gelman2006data posits that weighting becomes too complicated if more than one variable contains non-response. Indeed support for these older methods is either thin or non-existent in the contemporary literature. A modification of this method is called available case analysis. It uses subsampling of the complete cases to answer different research questions. This has the problem that analyses may be based on inconsistent subsamples, representing potentially different populations. Given all the shortcomings associated with complete case analysis and following the emergence of ubiquitous computing power to run more sophisticated methods, it is not surprising they have fallen out of favour. Nevertheless, some authors [@plumpton2016multiple] **others?** suggest that routine applications of these methods persist.
 
 @carpita2011imputation introduces category (3) but only in passing and gives Expectation Maximization (EM) and data augmentations (the Bayesian counterpart of EM) as examples. @gelman2006data [p.540] also only briefly describes (3) as a process in which a "multivariate model is required, and this can be particularly tricky when some of the variables are discrete" which also implies EM, but then unexpectedly associates this with non-ignorable missing data models, in which domain knowledge is used to model the mechanism of missingess. This latter point is somewhat inconsistent. EM algorithms form the basis of multiple imputation techniques which will be discussed shortly, so perhaps this rather brief treatment of (3) indicates that it is a foundational concept for a more sophisticated technique. The remainder of this subsection with deal with (4).
 
-Imputations strategies replace missing data points with substitute values which means the full sample can be used for analysis. They are well developed for continuous variables, but sources indicate that there has been much less research for datasets comprising categorical and ordinal variables, [@finch2010imputation; @leite2010performance]. There are many different kinds of imputation strategies and different ways to categorize them:
+@bono2007missing explains that imputations strategies replace missing data points with substitute values that are estimated from patterns or relationships found in the observed data. This means the full sample can be used for analysis. Many methods are well developed for continuous variables, but sources indicate that there has been much less research for datasets comprising categorical and ordinal variables, [@finch2010imputation; @leite2010performance]. Furthermore, there is strong evidence of significant differences in the performance of various imputation strategies over datasets exhibiting different underlying characteristics [@wu2015comparison}; @rodwell2014comparison; @sim2015missing]. These experimental results indicate a need to take into account not only the model and magnitude of missingness but also other characteristics particular to the target data. For this reason there is real benefit in having a range of imputation methods from which to choose the most suitable in a given situation. **anything wrong with those experiments?**
+
+There are many different kinds of imputation strategies and different ways to categorize them:
 
 * Single (or point) versus Multiple Imputation
 * Parametric versus non-parametric Imputation
 * Simple versus predictive
 
+Of these, the most important distinction is probably Single versus Multiple.  
+
 ### Single Imputation
 
-Single imputation strategies are often quick and simple to implement but lead to variance and standard error estimates that are too low. This is because the analysis is done as if the simulated value is a true, observed value. Techniques differ in the choice of substitute value. Simple, parametric examples include grand mean, group mean (for example, a mean stratified over some other grouping, categorical variable).
+Single imputation strategies are often quick and simple to implement but lead to biased parameter estimates. This can happen for two reasons. Firstly, because the analysis is done as if the simulated value is a true, observed value. Secondly, depending on the techniques, the choice of substitute value can affect the statistical properties of the imputed variable. Consider a univariate normal scenario where all missing values are replaced with the mean of the observed data. While this action preserves the mean of the random variable, the variance is depressed. This is demonstrated by way of a Monte Carlo simulation, following the methodology given in @robert2009introducing:
+
+```{r sim_grandmean_imp}
+set.seed(1)
+n <- 1000
+m <- 100
+p <- 0.15
+k <- 4
+varx <- numeric(n)
+varxmis <- numeric(n)
+varximp <- numeric(n)
+meanx <- numeric(n)
+meanxmis <- numeric(n)
+meanximp <- numeric(n)
+
+x <- rnorm(m, mean = 10, sd = 2)
+
+d <- list()
+for (i in 1:n) {
+  x_star <- sample(x, m, replace = TRUE)
+  
+  nonresp <- rbinom(m, size = 1, prob = p)
+  x_mis <- ifelse(nonresp == 1
+                  , NA
+                  , x_star)
+  x_imp <- ifelse(is.na(x_mis)
+                  , mean(x_mis, na.rm = TRUE)
+                  , x_mis)
+  if ((i / n * k) %in% 1:k) {
+    d[[i / n * k]] <- densityplot(~x_star+x_mis+x_imp
+                                  , plot.points = FALSE
+                                  , main = "Density before and after mean imputation"
+                                  , xlab = "Bootstrap samples 250, 500, 750 and 1000"
+                                  , auto.key = list(columns = 2)
+                                  , par.settings = MyLatticeTheme
+                                  , scales = MyLatticeScale)  
+  }
+  
+  meanx[i] <- mean(x_star)
+  meanxmis[i] <- mean(x_mis, na.rm = TRUE)
+  meanximp[i] <- mean(x_imp)  
+  varx[i] <- var(x_star)
+  varxmis[i] <- var(x_mis, na.rm = TRUE)
+  varximp[i] <- var(x_imp)
+}
+
+function1 <- mean
+function2 <- function(x) {
+  quantile(x, c(0.025, 0.975))
+}
+
+mcmc_results <- function(x) {
+  t(rbind(
+    data.frame(
+      t(sapply(x, function1))
+      , row.names = "Emp.mean")
+    , sapply(x, function2)
+  )[c(2, 1, 3),])
+}
+
+means <- list(sim_mean = meanx
+              , mis_mean = meanxmis
+              , imp_mean = meanximp)
+vars <- list(sim_var = varx
+     , mis_var = varxmis
+     , imp_var = varximp)
+```
+
+1. A random variable $X = x_1...x_{100},\ X \sim \mathcal{N}(10, 2)$ is generated.
+1. $N =$ `r n` bootstrap samples $X^*$ are taken.
+1. For each $X^*$, $X^*_{mis}$ is generated by setting `r p * 100`% of values to missing by a coin flip (Bernoulli) function.
+1. $X^*_{imp}$ is generated by replacing missing values with the mean of $X^*_{mis}$.
+1. The empirical means and variances of $X^*$, $X^*_{mis}$ and $X^*_{imp}$ are returned with their 95% credible intervals.
 
 
-Mean imputation biases standard deviations and correlations downwards. Last value carried forward is only applicable in longitudinal, or time-based surveys. Create erratic results for trends analysis. Unordered categories, just add a missing category. Logical rules, using domain knowledge and structure in the survey - worked no hours, income = 0. Simple (naive) random imputation in the univariate case will substitute missing values with values that are sampled with replacement from the complete values. This ignores any useful information from the other variables. Can use zero coding, top/bottom coding to reduce sensitivity to extreme values and improve the predictive power of the model. A simple cutoff or a transform above a cutoff. Linear model prediction increases central tendency - see @gelman2006data for equations why based on R squared page 536. Random prediction imputation, for univariate normal data, or data which has been transformed to be so, can create a random normal vector from the vector of pred values (means) and resid st.devs as the st.dev so the scatter is defived from the unexplained variance in the model. Transforms and multi-stage imputations required for non-normal data (counts, zero-inflated modes and so on.)
+```{r sim-grandmean-imp-means}
+knitr::kable(mcmc_results(means)
+            , caption = "Empirical mean of X, X with missing data and imputed X"
+            , booktabs = TRUE)
+```
+```{r sim-grandmean-imp-vars}
+knitr::kable(mcmc_results(vars)
+            , caption = "Empirical variance of X, X with missing data and imputed X"
+            , booktabs = TRUE)
+```
+```{r sim-grandmean-imp-plot, fig.cap="Monte Carlo simulation of biased variance estimate after mean imputation"}
+c(d[[1]], d[[2]], d[[3]], d[[4]])
+```
 
-Cold-deck imputation is where substitute values are found in prior studies. This is not generally talked about in the statistical literature, which focuses on statistical and computational techniques.
+This informative example shows how the mean and variance of the MCAR data is almost identical to the underlying distribution. Using mean imputation gives a mean which is identical to the MCAR data to many decimal places, as can be seen in Table \@ref(tab:sim-grandmean-imp-means). However, the variance is much reduced in the imputed dataset, Table \@ref(tab:sim-grandmean-imp-vars). Density plots of selected bootstrap iterations show very clearly what has happened \@ref(fig:sim-grandmean-imp-plot). Not shown here, but also notable, is that bivariate correlations would also be artificially reduced by using a constant value to replace missing data.
 
-also quoted @plumpton2016multiple Poor handling and reporting of missing data may result in misleading conclusions and are one of the main reasons for publication rejections.
+Mean imputation, or any other technique that relies only on a measure of central tendency is too simplistic an approach for many missing data problems. Aside from the issues demonstrated here, the method takes no information from other variables if they are available. If data are MAR, then a dependency between the missingness and the observed data has been established and should be exploited. Other simple, parametric imputation methods that do so include group mean imputation, where the mean stratified over one of more categorical variable is used. Predictive mean imputation is better still, generating suitable values from a predictive model (usually linear, or whatever is appropriate for the data).
 
-@joreskog2005structural take mechanism of missing into account for example "similar pattern response matching" [@joreskog2005structural p.3] is suitable for continuous and MCAR and secondary citation Brown 1994 says compares well to listwise deletion. Someone with missing variable *i* has same response pattern as another case, then it's likely that variable *i* is matching. Goes on to say that if multiple individuals are found with the matching response pattern then that's even stronger evidence. Importantly, shows that missing values can remain after this method and should be removed by listwise deletion. This point corroborates what this current research is hoping to achieve. The intention of this research is to go a step further and find all the similarity patterns. 
+```{r sim_predmean_imp}
+set.seed(2)
+n <- 1000
+m <- 250
+p <- 0.20
+k <- 4
+corxy <- numeric(n)
+corxyimp <- numeric(n)
 
-@gelman2006data hot-deck and matching. Find similar individuals in the dataset (in values of X) and replace with their value of *y*. "non-parametric version of regression" @gelman2006data [p.538] but not sure where this description arises other than assertion that it is useful where (linear) regression is challenging. Similarity can be based on a scoring function, a distance function - but then we'd assume you have scalar numeric or even multi-variate normal data. Another way is to use other variable to create a score for propensity to missingness and then use these values to impute missing. This one doesn't quite make sense and one has to assume it means use propensity score to find the donor cases to then impute missing.
+x <- rnorm(m, mean = 10, sd = 2)
+eps <- rnorm(m, mean = 0, sd = 1)
+y <- 3 + x * 0.5 + eps
 
-@gelman2006data Routine/Simple multivariate regression imputation is a complicated task and often "off-the-shelf" distribution is used (t for continious and multinomial for categorical). Automated models need additional checks for validity. Iterative uses some starting value for all missing and imputes new values one at a time using all other values (initialised and complete), and iterates until convergence. These methods become more and more complex when modeling non-normal multivariate data, e.g. stratified, clustered, hierarchical etc.
+fitxy <- lm(y ~ x)
+errs <- fitxy$residuals
 
-@gelman2006data multiple imputation - replaces each value with several, reflecting uncertainty about the model. here different from prediction tasks and more like a bootstrapped estimation (my words). Common to see 5 imputations, might come from slightly different models, then run a complete analysis on each model. Then average over the parameter estimates. equations on @gelman2006data [p.542] 
+MyTempTheme <- MyLatticeTheme
+MyTempTheme$superpose.symbol$col <- myPalContrasts[c(5, 3)]
 
-King et al (2001) review many of the practical costs and benefits of multiple imputation. 
+d <- list()
+for (i in 1:n) {
+  y_star <- y + sample(errs
+                      , size = m
+                      , replace = TRUE)
+  corxy[i] <- cor(x, y_star)
+  
+  nonresp <- rbinom(m, size = 1, prob = p)
+
+  fit_star <- lm(y_star[nonresp == 0] ~ x[nonresp == 0])
+  y_imp <- y_star
+  y_pred <- predict(fitxy
+                    , newdata =
+                      data.frame(x =
+                                   x[nonresp == 1]))
+  y_imp[nonresp == 1] <- y_pred
+  corxyimp[i] <- cor(x, y_imp)
+  
+  if ((i / n * k) %in% 1:k) {
+    d[[i / n * k]] <- 
+      xyplot(y_star + y_imp ~ x
+             , pch = c(1, 19)
+             , cex = c(0.8, 0.6)
+             , alpha = c(1, 0.3)
+             , panel = function(x, y, ...) {
+               panel.xyplot(x, y, ...)
+               panel.xyplot(x[nonresp == 1]
+                           , y_pred)
+             }
+             , main = "Scatter plot before and after predictive mean imputation"
+             , xlab = "Bootstrap samples 250, 500, 750 and 1000"
+             , ylab = "Bootstrapped and Imputed Y"
+             , auto.key = list(columns = 2)
+             , par.settings = MyLatticeTheme
+             , scales = MyLatticeScale)  
+  }
+}
+corrs <- list(sim_corr = corxy
+              , imp_corr = corxyimp)
+```
+
+```{r sim-predmean-imp-corrs}
+knitr::kable(mcmc_results(corrs)
+            , caption = "Empirical correlation of X with Y and imputed Y"
+            , booktabs = TRUE)
+```
+```{r sim-predmean-imp-plot, fig.cap="Monte Carlo simulation of biased correlation estimate after predictive mean imputation. Original values in open circles, fuchsia colour. The imputed dataset shares most of the same values in filled circles, green colour, de-emphasised with transparency. Predicted values have been emphasised in darker green."}
+c(d[[1]], d[[2]], d[[3]], d[[4]])
+```
+
+Again, it is very informative to run a simulation of the predictive mean imputation technique to understand its shortcomings. Following again the methodology given in @robert2009introducing:
+
+1. A random variable $X = x_1...x_{250},\ X \sim \mathcal{N}(10, 2)$ is generated.
+1. A linearly dependent variable $Y$ is generated using the linear equation $Y = \beta_0 + \beta_1X + e, \ \beta_0 = 3, \ \beta_1 = 0.5, e \sim \mathcal{N}(0, 1)$
+1. An OLS regression is performed on $Y \sim X$ and the residuals are saved as $err$.
+1. $N =$ `r n` samples $Y^*$ are generated by bootstrapping $err$ and adding the result to $Y$.
+1. For each $Y^*$, $Y^*_{mis}$ is generated by setting `r p * 100`% of values to missing by a coin flip (Bernoulli) function.
+1. A new OLS regression is performed on $Y^*_{mis} \sim X$
+1. $Y^*_{imp}$ is generated by predicting new values from $X$ where $Y^*_{mis} \notin Y^*$
+1. The empirical correlations $Cor(X, Y^*)$ and $Cor(X, Y^*_{imp})$ are returned with their 95% credible intervals.
+
+The results in Table \@ref(tab:sim-predmean-imp-corrs) show a systematic over-estimate of bivariate correlation because all the imputed values fall directly on the regression line.
+
+The examples serve to demonstrate why imputation is quite a different process to prediction. The purpose of imputation is not to achieve a measure of accuracy or smoothing, but instead to faithfully represent a distribution. As such, methods that estimate a posterior distribution of the parameters of the observed data have grown in popularity
+
+In contrast to grand mean, group mean or predictive mean imputation, simple (naive) random imputation is the process of sample with replacement values from the observed data but ignores any useful information from the other variables. Hence methods have been developed that that do take into account information from all available variables. For example, methods that use multivariate normal models to infer sampling distributions for imputation. @gelman2006data describes this as a complicated task, especially where the missingness is multivariate. This requires an iterative process, in which some starting value is set for all missing values, and new values are imputed one variable at a time using all other values (initialised and complete). When all variables have been imputed, this completes a cycle, and the process iterates until convergence. These methods become more and more complex when modeling non-normal multivariate data, e.g. stratified, clustered, hierarchical etc. Such automated models must be checked for convergence and validity before the results can be used in further analysis.
+
+Can use zero coding, top/bottom coding to reduce sensitivity to extreme values and improve the predictive power of the model. A simple cutoff or a transform above a cutoff. Linear model prediction increases central tendency - see @gelman2006data for equations why based on R squared page 536. Random prediction imputation, for univariate normal data, or data which has been transformed to be so, can create a random normal vector from the vector of pred values (means) and resid st.devs as the st.dev so the scatter is defived from the unexplained variance in the model. Transforms and multi-stage imputations required for non-normal data (counts, zero-inflated modes and so on.)
+
+There are also non-parametric alternatives of single imputation. Many are best suited for specific situations. For example, "last value carried forward" is only applicable in longitudinal, or time-based surveys. It can result in erratic reeadings for trends analysis. For missing data in a nominal variable it is sometimes acceptable simply to add a new category, "missing." Logical rules, survey structure or domain knowledge can be applied. For example, a respondent reporting low or moderate drinking might have the number of alcohol units per week imputed if missing. Similarly, someone reporting they worked zero hours per week might be also assigned an income of zero.
+
+The most important non-parametric imputation methods are generally referred to as "similar pattern response matching" [@joreskog2005structural p.3] and also Hot-deck imputation. @gelman2006data seems to refer to Hot-deck and matching interchangeably, which seems reasonable given the descriptions of these elsewhere in the literature. @joreskog2005structural defines the intuition behind matching imputations as follows; If an individual with missing variable *x* has same response pattern in other variables as another case, then it's likely that variable *x* also matches. The article goes on to say that if multiple individuals are found with the matching response pattern then that's even stronger evidence for value *x*. @gelman2006data [p.538] describes the process as a "non-parametric version of regression" but it is not clear what the grounds are for this description. Certainly the method is useful where (linear) regression is challenging.
+
+It should be noted that Cold-deck imputation is also mentioned in the literature, but only as a brief aside [@bono2007missing; ]  ** more ** In this process, substitute values are found by refernece to prior studies, not the same dataset where the missing values are found. Perhaps it  is not discussed much because the literature generally focuses on statistical and computational techniques. Or perhaps it is simply not considered to be important or useful. This is not made clear.
+
+The detail of Hot-deck imputation is in the way matches are made and donor cases found. Similarity between individual cases can be based a distance function, such as Euclidean distance. In such cases, there would be an assumption that the matching variables would be numeric scales, where regression models presumably would also work. In such cases, the question of how to choose the right method becomes more nuanced.
+
+ is suitable for continuous and MCAR and secondary citation Brown 1994 says compares well to listwise deletion. 
+
+Importantly, shows that missing values can remain after this method and should be removed by listwise deletion. This point corroborates what this current research is hoping to achieve. The intention of this research is to go a step further and find all the similarity patterns.
+
+on a scoring functionAnother way is to use other variable to create a score for propensity to missingness and then use these values to impute missing. This one doesn't quite make sense and one has to assume it means use propensity score to find the donor cases to then impute missing.
 
 
 
 
-@groves2011three has some stuff on weighting models to recover from missingness.  
 
-Furthermore, there is evidence of significant differences in the performance of various imputation strategies over datasets exhibiting different underlying characteristics (\cite{wu2015comparison}; \cite{rodwell2014comparison}; \cite{sim2015missing}). These results indicate a need to take into account not only the model and magnitude of missingness but also other characteristics particular to the target data. For this reason there is real benefit in having a range of imputation methods from which to choose the most suitable in a given situation.\newline
 
 
 @shrive2006dealing as example of a "self-report" ordinal scale where multiple impute worked best, even for very high rates of missingness. Also one missing response in the whole instrument - makes it a real waste to use listwise deletion.
@@ -366,7 +544,7 @@ Furthermore, there is evidence of significant differences in the performance of 
 
 The name multiple imputation actually refers to the m imputations, but the literature contains many variations, referring sometimes to the EM algorithm, the multivariate model, the possibility of imputing more than one missing variable or the iterative process used to converge each of the m imputations. It is easy to see why the literature is inconsistent on this matter!
 
-The theory established by @rubin2004multiple cited in @graham2007many and @schafer1997analysis cited in @graham2007many suggest m = 3-5 is enough imputations. These articles are cited very widely and are conferred a great deal of authority by other authors. Nevertheless, there are some disagreements; @graham2007many posits that 3-5 is nowhere near enough and @white2011multiple develops this further to suggests 1 imputation per 1% of missing data provides the same rule of thumb arrived at through other logic (go back and get precise) so it should be concluded that this is a very valuable method. With the power of modern computing today, it seems unnecessary to stick to a bare minimum number of runs. These days, it is probably trivial to increase m for all but the largest datasets, and there are no counter-indications for doing so.
+The theory established by @rubin2004multiple cited in @graham2007many and @schafer1997analysis cited in @graham2007many suggest m = 3-5 is enough imputations. These articles are cited very widely and are conferred a great deal of authority by other authors. Nevertheless, there are some disagreements; @wu2005role states that there is no support in the literature for the number 5 and that one imputation is often enough. In stark contrast, @graham2007many posits that 3-5 is nowhere near enough and @white2011multiple develops this further to suggests 1 imputation per 1% of missing data provides the same rule of thumb arrived at through other logic (go back and get precise) so it should be concluded that this is a very valuable method. With the power of modern computing today, it seems unnecessary to stick to a bare minimum number of runs. These days, it is probably trivial to increase m for all but the largest datasets, and there are no counter-indications for doing so.
 
 @plumpton2016multiple MI has taken a long time to gain in popularity despite the proven benefits. But there are specific issues with applying it to surveys with multi-item scales. Likert scales are not specifically mentioned but it is safe to assume this specific case is covered by the arguments given.
 
@@ -380,6 +558,12 @@ QUOTED
 * questions which are conditional upon previous responses
 * and multiple multi-item scales, which are summed (either directly or weighted) during analysis. 
 QUOTED
+
+@gelman2006data multiple imputation - replaces each value with several, reflecting uncertainty about the model. here different from prediction tasks and more like a bootstrapped estimation (my words). Common to see 5 imputations, might come from slightly different models, then run a complete analysis on each model. Then average over the parameter estimates. equations on @gelman2006data [p.542] 
+
+King et al (2001) review many of the practical costs and benefits of multiple imputation. 
+
+
 
 @plumpton2016multiple quoted Multiple imputation for a single incomplete variable works by constructing an imputation model relating the incomplete variable to other variables and drawing from the posterior predictive distribution of the missing data conditional on the observed data [1]. The approach allows for uncertainty in the missing data values by introducing variability in the imputed items. In MICE, variables are initially ordered by level of missingness. Missing values are initially replaced for each variable, for example by drawing at random from the observed values of that variable. Imputation is then conducted on each variable sequentially using the observed and currently imputed values of all other variables in the imputation model. In order to stabilise, this imputation step (known as a cycle) is repeated (typically 10 times) to produce one imputed data set. The process is repeated until the desired number of imputed data sets is reached 
 
