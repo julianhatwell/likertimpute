@@ -1,30 +1,32 @@
 # Literature Review
 
-In this section, the research question is decomposed into its component topics and each is reviewed systematically and in detail. The topics are covered in a logical order that reflect the motivation for this research: The breadth of use of surveys and questionnaires and the problem of missing data, the well-understood underlying models and current popular solutions. The potential suitability of association rules as a basis for a new imputation method is explored in the later subsections.
+In this section, various subtopics are reviewed in a logical order that reflects the motivation for this research question: The breadth of use of surveys and questionnaires and the problem of missing data, the well-understood underlying models and current popular and state of the art solutions are reviewed systematically and in detail before exploring the potential suitability of association rules as a basis for a new imputation method.
 
 ## The Importance of Surveys and Questionnaires
 
-@groves2011three [p. 861] states that "the systematic observation of social and economic phenomena has roots deep in history" but describes the 1930's-1960's period as foundational for the development and popularization of the survey method involving structured questions, random sampling and statistical inference. It was also a golden age with respect to response rates, perhaps due to the novelty and the small numbers of surveys carried out, relative to today. Understandably, the earlier historical discussions in this article are backed up by fewer references than paragraphs covering more recent decades. Nevertheless, the author is well regarded and prolific on this subject matter. As a potted history of surveys and questionnaires, the article provides a very plausible interpretation of the influence of sociological and technological factors which explain why the survey method became so ubiquitous up to and during the 1990's but began to see a decline in usage thereafter. For example, one suggestion is that the popularity of the method was driven in part by usage in the consumer and service sectors as a means to gain customer feedback and thereby maximize profits. This speaks to economic common sense. The aid of computers in the 1960's reducing processing costs and allowing greater numbers of participants e.g. hundreds of thousands [@schultz2015psychology p.32] and more sophisticated computational analysis would have been another driver both in commerce and government research. In academia, the publication of archived data "permitted the rise of quantitative methods in many social science disciplines," @groves2011three [p. 865]. 
+@groves2011three [p. 861] states that "the systematic observation of social and economic phenomena has roots deep in history" but describes the 1930's-1960's period as foundational for the development and popularization of the survey method involving structured questions, random sampling and statistical inference. It was also a golden age with respect to response rates, perhaps due to the novelty and the small numbers of surveys carried out, relative to today. Understandably, the earlier historical discussions in the article are backed up by fewer references than paragraphs covering more recent decades. Nevertheless, the author is well regarded and prolific on this subject matter. As a potted history of surveys and questionnaires, the article provides a very plausible interpretation of the influence of sociological and technological factors which explain why the survey method became so ubiquitous up to and during the 1990's but began to see a decline in usage thereafter. For example, one suggestion is that the popularity of the method was driven in part by usage in the consumer and service sectors as a means to gain customer feedback and thereby maximize profits. This speaks to economic common sense. The aid of computers in the 1960's reduced processing costs dramatically, allowing greater numbers of participants, up to hundreds of thousands, @schultz2015psychology. As well as brute force, more sophisticated computational analysis would have been another driver both in commerce and government research. In academia, the publication of archived data "permitted the rise of quantitative methods in many social science disciplines," @groves2011three [p. 865]. 
 
-Consistent with the description of a decline in popularity, @sheehan2001mail posits that even the change from face-to-face and postal to email-based surveys provided only a temporary stay in the overall decline in usage in more recent times. However, there is no shortage of examples to suggest that the method is still incredibly important today, [@shrive2006dealing; @schultz2015psychology] *more citations*. In fact @schultz2015psychology suggests that merely carrying out a survey in an industrial/organisational setting can raise staff morale and reduce conflict between management and unions. 
+Consistent with the description of a decline in popularity in the 1990's, @sheehan2001mail posits that even the change from face-to-face and postal to email-based surveys provided only a temporary stay in the overall decline in usage in more recent times. However, there is no shortage of examples to suggest that the method is still incredibly important today, [@schultz2015psychology; @pantanowitz2008evaluating; @bono2007missing; @shrive2006dealing; @evans2005value]. 
 
-@groves2011three goes on to make a number of reasoned predictions about future adaptations of the survey method in light of the emergence of a multitude of new data sources (of which the author's description matches what is now commonly coined as "Big Data") and continues to suggest that these new sources of data are collected organically, i.e. they are "unstructured", so there's an ongoing requirement for the designed data of surveys. One technological development is not discussed in detail in the article, namely the emerging popularity of online surveys construction software (SurveyMonkey, Qualtrix, www.onlinesurveys.ac.uk, SmartSurvey, SogoSurvey to name but a few). This could be because the article is not recent enough or perhaps as @solomon2001conducting describes, because of the caution with which this new technology was viewed by the academic community. Such caution may relate to statistical issues such as coverage bias resulting from "the skew in demographics of the internet population versus the general public" [@hayslett2005pixels p. 78] combined with the practical need for researchers to become more familiar with the technology before being able to construct surveys with sufficiant statistical rigour. Nevertheless, @schultz2015psychology states that most companies now use web-based surveys and @evans2005value shows that online surveys were already a rapidly growing, multi-million dollar industry by the early 2000's. The article describes many weaknesses as well as strengths in the sector. Indeed, it was very much a clarion call for addressing the weaknesses to consolidate the value of online surveys for the modern day. It would be safe to assume that these have been addressed for there has been a rise and rise of services for the creation of casual surveys and polls by the "citizen analyst" as well as seasoned pollsters which are distributed through social media and quick customer ratings devices. These technological innovations may introduce the need for development of new methods that stand up to analytical scrutiny but they do offer new opportunities given their widespread dissemination.
+@groves2011three goes on to make a number of reasoned predictions about future adaptations of the survey method in light of the emergence of a multitude of new data sources (of which the author's description matches what is now commonly coined as "Big Data") and continues to suggest that these new sources of data are collected organically, i.e. they are "unstructured", so there's an ongoing requirement for the "designed data" of surveys. One technological development is not discussed in detail in the article, namely the emerging popularity of web services for the design and distribution of online surveys (SurveyMonkey, Qualtrix, www.onlinesurveys.ac.uk, SmartSurvey, SogoSurvey to name but a few). This could be because the article is not recent enough or perhaps as @solomon2001conducting describes, because of the caution with which this new technology was viewed by the academic community. Such caution may relate to statistical issues such as coverage bias resulting from "the skew in demographics of the internet population versus the general public" [@hayslett2005pixels p. 78]. It may be combined with the practical need for researchers to become more familiar with the technology before being able to construct surveys with sufficiant statistical rigour. Nevertheless, @schultz2015psychology states that most companies now use web-based surveys. In fact, the authors suggest that the value to business is not limited to customer feedback as merely carrying out a survey in an industrial/organisational setting can raise staff morale and reduce conflict between management and unions.
 
-## Characteristics of Survey Data and Prevalent Data Types
+@evans2005value shows that online surveys were already a rapidly growing, multi-million dollar industry by the early 2000's. The article describes many weaknesses as well as strengths in the sector. Indeed, it was very much a clarion call for addressing the weaknesses to consolidate the value of online surveys for the modern day. It would be safe to assume that these have been addressed for there has been a rise and rise of services for the creation of casual surveys and polls by the "citizen analyst" as well as seasoned pollsters, which are distributed through social media and quick customer ratings devices throughout malls, airports and other public infrastructure. These technological innovations introduce the need for development of new methods that stand up to analytical scrutiny and offer many new opportunities given their widespread dissemination.
 
-@johnson2009working states that nominal and ordinal variables are predominant in surveys. When collecting demographic information, apart from height and weight, most routine information will be categorical in nature, e.g. eye colour, hair colour, ethnic origin. Beyond these simple categorizations, researchers in the social sciences and other disciplines often use surveys to collect data on subjective attitudes, perceptions and psychological traits. Indeed, @christensen2010ordinal [p.3] states that "Ordered categorical data, or simply ordinal data, are commonplace in scientific disciplines where humans are used as measurement instruments." Ordinal variables are ideal for capturing gradings, ratings, opinions, degree of agreement, rankings, levels of attainment and so on. They are also very practical in terms of survey design considerations. In this respect @schultz2015psychology [p.37] explains that "fixed-alternative questions simplify the survey and allow more questions to be asked," and also "answers to fixed-alternative questions can be recorded more easily and accurately than can answers to open ended questions."
+## Characteristics of Survey Data
+
+@johnson2009working states that nominal and ordinal variables are the predominant data types in surveys. This is certainly in line with anecdotal and personal experience at least. When collecting demographic information, most routine information will be categorical, e.g. eye colour, hair colour, ethnic origin. Height, weight, income and age are frequently discretized in to buckets or intervals. Beyond these simple segmentations, market researchers, researchers in the social sciences and other disciplines often use surveys to collect data on subjective attitudes, perceptions and psychological traits. Indeed, @christensen2010ordinal [p.3] states that "ordered categorical data, or simply ordinal data, are commonplace in scientific disciplines where humans are used as measurement instruments." Ordinal variables are ideal for capturing gradings, ratings, opinions, degree of agreement, rankings, levels of attainment and so on. They are also very practical in terms of survey design considerations. In this respect @schultz2015psychology [p.37] explains that "fixed-alternative questions simplify the survey and allow more questions to be asked," and also "answers to fixed-alternative questions can be recorded more easily and accurately than can answers to open ended questions."
 
 There are two categories of ordinal data, according to @anderson1984regression cited in @gertheiss2009penalized
 
 * grouped continuous variables (GCV) - an underlying, continuous variable discretized into buckets, shingles or categories, such as might be returned by a histogram function over age, height or weight. 
 * assessed ordered categorial variables (AOCV) - a judgement given by some actor or assessor on the grade, level or rank of a set of information which is not among the observed variables.
 
-Ordinal data generally take the form of a categorical variable with levels $k = \{0,\dots,K\}$ or $k = \{1,\dots,K\}$ or sometimes a symmetric form $k = \{-K,\dots,0,\dots,K\}$ and all are interpreted as a monotonic, ranking representation $Least \succ Less \succ More \succ Most$. Ordinal variables of type AOCV can be used individually but are often combined in a survey as multiple related items (multiple-item response scales). Likert scales are a special case of ordinal variable and a special case of multiple-item response, whereby a collection of statements are scored by the respondent using an integer series which is anchored to phrases of sentiment or attitude (e.g. 1 = strongly disagree, 5 = strongly agree). The collection of responses measure the outwardly manifested facets of some latent concept or factor. The respondents' positions on the latent factor can then be estimated by appropriately summing, averaging or otherwise transforming the multiple responses of the individual items [@carpita2011imputation]. Likert scales are ubiquitous in behavioural science, marketing, usability, customer feedback, psychological and clinical research. Although the term Likert scale is sometimes used in the literature to refer to single items following the classic agree/disagree scoring, the correct definition refers to a combined scale as described here. A thorough definition is given in @gliem2003calculating.
+Ordinal data generally take the form of a categorical variable with levels $k \in \{0,\ \dots,\ K\}$ or $k \in \{1,\ \dots,\ K\}$ or sometimes a symmetric form $k \in \{-K,\ \dots,\ 0,\ \dots,\ K\}$ and all are interpreted as a monotonic, ranking representation $Least \succ Less \succ More \succ Most$. Ordinal variables of type AOCV can be used individually but are often combined in a survey as multiple related items (multiple-item response scales). Likert scales are a special case of ordinal variable and a special case of multiple-item response, whereby a collection of statements are scored by the respondent using an integer series which is anchored to phrases of sentiment or attitude (e.g. 1 = strongly disagree, 5 = strongly agree). The collection of responses measure the outwardly manifested facets of some latent concept or factor. The respondents' positions on the latent factor can then be estimated by appropriately summing, averaging or otherwise transforming the multiple responses of the individual items [@carpita2011imputation]. Likert scales are ubiquitous in behavioural science, marketing, usability, customer feedback, psychological and clinical research. Although the term Likert scale is sometimes used in the literature to refer to single items following the classic agree/disagree scoring, the correct definition refers to a combined scale as described here. A thorough treatment of Likert scales is given in @gliem2003calculating.
 
-It is common in the literature to find misunderstandings and disagreement about how ordinal variables ought to be treated analytically. In fact, this is one of the great debates of statistics in the last few decades. A range of conflicting views which is typical of the long-running discussion is reviewed in @gertheiss2011testing reviews. The disagreements centre on the question of whether it is appropriate to use the integer class labels directly as explanatory variables in a regression model. @johnson2009working gives detailed examples of why ordinal variables cannot be treated the same as numerical scales and @gertheiss2009penalized explains how this assertion holds even when the ordinal variable is a discretised version of an underlying continuous scale. Essentially, this is because the interpretation depends on arbitrarily assigned categories and mid-point estimates. Upper and lower unbound categories may hide any number of extreme values. This would seem to be very sound reasoning and @joreskog2005structural provides a formalization of the concept of inferred discretization, reproduced in \@ref(eq:ordvar1)-\@ref(eq:ordvar2). These show the relationship between $z$, an observed ordinal variable which varies between 1 to $m$ integer values and $z^*$, an underlying, unobserved variable which has a range from $-\infty$ to $\infty$.
+It is common in the literature to find misunderstandings and disagreement about how ordinal variables ought to be treated analytically. In fact, this is one of the great debates of statistics in the last few decades. A range of conflicting views which is typical of the long-running discussion is reviewed in @gertheiss2011testing reviews. The disagreements centre on the question of whether it is appropriate to use the integer class labels directly as explanatory variables in a regression model. @johnson2009working gives detailed examples of why ordinal variables cannot be treated the same as numerical scales and @gertheiss2009penalized explains how this assertion holds even when the ordinal variable is a discretised version of an underlying continuous scale, as in GCV. Essentially, this is because the interpretation depends on arbitrarily assigned categories and mid-point estimates. Upper and lower unbound categories may hide any number of extreme values. This would seem to be very sound reasoning and @joreskog2005structural provides a formalization of the concept of inferred discretization, reproduced in \@ref(eq:ordvar1)-\@ref(eq:ordvar2). These show the relationship between $z$, an observed ordinal variable which varies between 1 to $m$ integer values and $z^*$, an underlying, unobserved variable which has a range from $-\infty$ to $\infty$.
 
 \begin{equation} 
-  z = i \Longleftrightarrow \tau_{i-1} < z^* < \tau_i, \quad i = \{1, 2, \dots, m\}
+  z = i \Longleftrightarrow \tau_{i-1} < z^* < \tau_i, \quad i = \{1, 2,\ \dots,\ m\}
   (\#eq:ordvar1)
 \end{equation}
 
@@ -35,15 +37,15 @@ where
   (\#eq:ordvar2)
 \end{equation}
 
-The $\tau$ terms are unknown population parameters. These arbitrary threshold values may be estimated in some circumstances, such as from percentage counts of responses $z$ when $z^*$ is assumed to be normally distributed.
+The $\tau$ terms are arbitrary thresholds and are unknown population parameters.Their values may be estimated in some circumstances, such as from percentage counts of responses $z$ when $z^*$ is assumed normal.
 
-When analyzing individual items of Likert and similar scales the debates are even more polarized. @joreskog2005structural takes the firm position that it is wrong even to use means, variances and covariances. The reasons given are that the integer values do not represent a continuous scale. They should not be attributed metric properties as they have neither an origin nor units. @jamieson2004likert goes even further, stating that it is also wrong to presume that intervals between categories are equal. There is no assumption in \@ref(eq:ordvar2) that the $\tau$ terms follow a regular pattern. In practice, this means that the barrier to reach the highly polarised strongly disagree or strongly agree may be inconsistent with a move from neutral to either agree or disagree. Also, these types of scales are often skewed or multimodal and require non-parametric tests such as Mann-Whitney-Wilcoxon (MWW) for analysis. @gliem2003calculating asserts that these data types are intended to be used as a combined scale measuring a latent concept, and asserts that their individual analysis leads to erroneous conclusions. The evidence for this assertion is fairly strong, but potentially flawed. In the paper, an experiment is conducted in which respondents are asked to respond to the same single item a second time after a three week interval. The retest reliability coefficient turns out to be very low at 0.11. This result is compared to a well designed, Likert based survey. A possible short-coming of this experimental design is the fact that when asked a single question, respondents may react very differently to when they are presented with a ten-item questionnaire. Respondents may be prone to providing trivial responses to a single question based on mood alone, rather than weighing up the varied statements of the multi-item scale. A differently designed experiment might provide a number of unrelated items, simulating a Likert based survey.
+When analyzing individual items of Likert and similar scales the debates are even more polarized. @joreskog2005structural takes the firm position that it is wrong even to use means, variances and covariances. The reasons given are that the integer values do not represent a continuous scale. They should not be attributed metric properties as they have neither an origin nor units. @jamieson2004likert goes even further, stating that it is also wrong to presume that intervals between categories are equal. There is no assumption in \@ref(eq:ordvar2) that the $\tau$ terms follow a regular pattern. In practice, this means that the barrier to reach the highly polarised strongly disagree or strongly agree may be inconsistent with a move from neutral to either agree or disagree. Also, these types of scales are often skewed or multimodal and require non-parametric tests such as Mann-Whitney-Wilcoxon (MWW) for analysis. @gliem2003calculating asserts that these data types are intended to be used as a combined scale measuring a latent concept, and asserts that their individual analysis leads to erroneous conclusions. In the paper, an experiment is conducted in which respondents are asked to respond to the same single item a second time after a three week interval. The retest reliability coefficient turns out to be very low at 0.11. This result is compared to a well designed, Likert based survey. Unfortunately, this experimental design is potentially flawed because the test conditions do not resemble the control condition. Under test, respondents are asked a single question and may react very differently to when they are presented with a ten-item questionnaire. Respondents may be prone to providing trivial responses to a single question based on mood alone, rather than weighing up the varied statements of the multi-item scale. A differently designed experiment should provide the test group with a number of unrelated items that better approximate the look and feel of a Likert based questionnaire.
 
-Other authors [@norman2010likert; @carifio2008resolving] strongly rebut these arguments, citing various sources of empirical evidence of the robustness of parametric tests. @de2010five compares the type I and type II error rates of the t-test against the MWW test using synthetic data which finds that there is no benefit to either test with respect to type I errors and slight differences in performance with type II error rates, and consequently the power of the test. The direction of these differences depends on the underlying populations and may favour t-tests in some cases and MWW in others. Crucially, this article only tests one (synthetic) variable at a time, so while it is useful in the context of individual ordinal variables, it does little to settle the debate on Likert scales.
+Other authors [@norman2010likert; @carifio2008resolving] strongly rebut these arguments, making the case for the robustness of parametric tests and citing various sources of empirical evidence. @de2010five compares the type I and type II error rates of the t-test against the MWW test using synthetic data which finds that there is no benefit to either test with respect to type I errors and slight differences in performance with type II error rates, and consequently the power of the test. The direction of these differences depends on the underlying populations and may favour t-tests in some cases and MWW in others. Crucially, this article only tests one (synthetic) variable at a time, so while it is useful in the context of individual ordinal variables, it does little to settle the debate on Likert scales.
 
-Valuable contributions to the discussion come from authors and statistical researchers who specialize in discrete data analysis. Among these, the *proportional odds model* (also known as *cumulative logit model* and *ordered logit model*) is favoured for statistical analysis where the dependent variable is ordinal [@friendly2016discrete; @R-ordinal; @christensen2010ordinal; @agresti2013categorical]. *Penalized likelihood estimation* and *penalized regression* are favoured where the predictors are ordinal [@R-ordPens; @gertheiss2009penalized]. Tests based on these models are shown to perform better than models based on either linear assumptions [@gertheiss2011testing] and predictions will always fall within the range of possible responses without the need for rounding, truncation, approximation etc, @christensen2010ordinal.
+Valuable contributions to the discussion come from authors and statistical researchers who specialize in discrete data analysis. Among these, the *proportional odds model* (also known as *cumulative logit model* and *ordered logit model*) is favoured for statistical analysis where the dependent variable is ordinal [@friendly2016discrete; @R-ordinal; @christensen2010ordinal]. *Penalized likelihood estimation* and *penalized regression* are favoured where the predictors are ordinal [@R-ordPens; @gertheiss2009penalized]. Tests based on these models are shown to perform better than models based on linear assumptions [@gertheiss2011testing] and predictions will always fall within the range of possible responses without the need for rounding, top-coding and truncation, approximation etc, @christensen2010ordinal.
 
-Fortunately, there is agreement that combining individual responses into their intended scale leads to the least controversial usage and analytical or probabilistic techniques over single items in a Likert scale should be avoided where possible. Cronbach's alpha is the conventionally used statistic for measuring reliability, although even on this topic there has been some contention over acceptable sample size. Sample sizes of less than 300 were not advised although more recently the test was found to be robust down to sample sizes of 30 on condition that the first eigenvalue is greater than 6. Also, the general rule of thumb that an alpha of 0.7 or greater is acceptable should be treated with caution for scales greater than six individual items, [@kline1986handbook; @yurdugul2008minimum; @cortina1993coefficient] cited in @cas2016statistical. In addition to Cronbach's alpha, Exploratory Factor Analysis (EFA) has become more common in recent years for reliability analysis and validation of untested scales and McDonald's omega is more reliable when inter-item correlations can't be assumed constant. This last assumption is probably true in practice far more frequently than not.
+Fortunately, there is agreement that combining individual responses into their intended scale leads to the least controversial usage and analytical or probabilistic techniques over single items in a Likert scale should be avoided where possible. Cronbach's alpha is the conventionally used statistic for measuring reliability (inter-item correlation), although even on this topic there has been some contention over acceptable sample size. Sample sizes of less than 300 were not advised although more recently the test was found to be robust down to sample sizes of 30 on condition that the first eigenvalue is greater than 6. Also, the general rule of thumb that an alpha of 0.7 or greater is acceptable should be treated with caution for scales greater than six individual items, [@kline1986handbook; @yurdugul2008minimum; @cortina1993coefficient] cited in @cas2016statistical. In addition to Cronbach's alpha, Exploratory Factor Analysis (EFA) has become more common in recent years for reliability analysis and validation of untested scales and McDonald's omega is more reliable when inter-item correlations can't be assumed constant. This last assumption is probably true in practice far more frequently than not.
 
 This discussion has been detailed and extensive for good reason. Correct and appropriate analysis of ordinal and Likert scales is essential for the success of this research project. A set of reliable tests is required to determine whether imputation has had a detrimental effect on the statistical properties of target variables.
 
@@ -53,13 +55,19 @@ This discussion has been detailed and extensive for good reason. Correct and app
 
 @honaker2011amelia [p.1]
 
-The practicalities of running surveys means that they regularly suffer the problem of non-response and missing data [@plumpton2016multiple; @bono2007missing; @kamakura2000factor]. In the broadest terms, non-response can occur at two levels: Unit and Item. Unit non-response occurs when one or more respondents fail to return anything to the survey organisers. This may be a one-off survey, or may be one in a series of surveys in a longitudinal study. If the non-response rate is high, this can impact the overall sampling frame. Item non-response occurs when individual items (questions) in a survey are skipped, but the whole survey is returned to the organisers. Both types of non-response have serious consequences. However, this work is concerned only with item non-response which will be the focus for the remainder of the review, unless otherwise stated. Understanding the model (patterns, mechanism and magnitude) of missingness in data is critical when selecting or designing techniques to recover from the resulting issues. Fortunately, there has been an enormous amount of research in this area over recent decades.
+The practicalities of running surveys means that they regularly suffer the problem of non-response and missing data [@plumpton2016multiple; @bono2007missing; @kamakura2000factor]. In the broadest terms, non-response can occur at two levels: Unit and Item. 
 
-As always, routine exploratory analysis is the best starting point. For example, when examining the effect of survey length on response rates, @sheehan2001mail reports numerous prior studies that illustrate how longer surveys tend to reduce overall (unit) response rates, particularly for business-oriented surveys. Only one example is given of a study that found the opposite pattern but it is unclear if this is enough to call the overall trend into question. Crucially, there is no discussion of the implication of survey length on any pattern of item non-response and specifically whether longer surveys suffer more incomplete items towards the end than near the beginning. From the historical outline given in @groves2011three, this must be assumed to be the case, given that the focus shifted to shorter questionnaires to reduce hang-up rates at the same time as an increase in popularity of surveys by telephone. A ragged tail pattern of non-response would be a clear indicator of a survey that respondents found overly long.
+* Unit non-response occurs when one or more respondents fail to return anything to the survey organisers. This may be a one-off survey, or may be one in a series of surveys in a longitudinal study. If the non-response rate is high, this can impact the overall sampling frame. An alternative definition of unit non-response is given in @leite2010performance which states that this is a block of variables all missing for a number of cases that are complete for all other variables. This sometimes occurs for structural reasons in the survey design.
+
+* Item non-response occurs when individual items (questions) in a survey are skipped for any reason, but the whole survey is returned to the organisers.
+
+Both types of non-response have serious consequences. However, this work is concerned only with item non-response and will be the focus for the remainder of this section, unless otherwise stated.
+
+Understanding the model (patterns, mechanism and magnitude) of missingness in data is critical when selecting or designing techniques to recover from the resulting issues. Fortunately, there has been an enormous amount of research in this area over recent decades. For example, when examining the effect of survey length on response rates, @sheehan2001mail reports numerous prior studies that illustrate how longer surveys tend to reduce overall (unit) response rates, particularly for business-oriented surveys. Only one example is given of a study that found the opposite pattern but this is not enough to call into question the overall trend. Crucially, there is no discussion of the implication of survey length on the pattern of item non-response. Specifically it would be useful to determine whether longer surveys suffer more incomplete items towards the end than near the beginning. From the historical outline given in @groves2011three, this must be assumed to be the case. The article describes a shift to shorter questionnaires with the express purpose of reducing  hang-up rates at the same time as surveys by telephone became more popular. A ragged tail pattern of non-response, when visualised, would be a clear indicator of a survey that respondents found overly long.
 
 ```{r nonresp-reasons}
-reason <- c("Failure to complete the whole questionnaire"
-          , "Failure to complete the whole questionnaire"
+reason <- c("Failure to complete the questionnaire"
+          , "Failure to complete the questionnaire"
           , "Unwillingness to answer"
           , "Unwillingness to answer"
           , "Data entry errors"
@@ -69,10 +77,10 @@ reason <- c("Failure to complete the whole questionnaire"
 cause <- c("Absent-mindedness"
           , "Skipping a page in error"
           , "Personal issues: income, status, health"
-          , "Perceived not relevant to study: drug use, sexual orientation"
+          , "Perceived not relevant: drug use, sexual orientation"
           , "Manual conversion of paper forms"
-          , "Using incorrect marking of papers e.g. check instead of filled box"
-          , "Some questions only apply depending on previous answers"
+          , "Using incorrect marking e.g. check instead of filled box"
+          , "Questions skipped depending on previous answers"
           , "Poorly designed e.g. too long"
            )
 reasonstable <- data.frame(Reason = reason
@@ -81,8 +89,6 @@ knitr::kable(reasonstable
              , caption = "Reasons for item non-response")
 ```
 
-Table \@ref(tab:nonresp-reasons) is shows a non-exhaustive list of examples of reasons for item non-response. In a single survey instance, more than one such reason could be at play for different items. These different underlying models have various consequences and researchers may have no way of knowing for sure what are the mechanisms behind missingness in the data.
-
 ```{r nonresp-patterns}
 pattern <- c("Univariate"
              , "Multivarate"
@@ -90,17 +96,17 @@ pattern <- c("Univariate"
              , "Missing blocks"
              , "Missing blocks"
              , "Missing regular")
-explanation <- c("Only one item has missing responses"
-                 , "Missing responses throughout, seemingly at random"
+explanation <- c("Only one item has missing data"
+                 , "Missing data throughout, seemingly random"
                  , "Missing all after a certain question"
-                 , "Groups of respondents reply to different questions"
-                 , "Groups of respondents reply to different questions"
-                 , "Questions skipped depending on prior responses")
-posscause <- c("Badly worded or irrelevant question"
+                 , "Groups reply to different questions"
+                 , "Groups reply to different questions"
+                 , "Questions skipped depending on previous")
+posscause <- c("Badly worded, irrelevant question"
                , "Any"
                , "Survey is too long"
-               , "Data fusion: different surveys combined"
-               , "A subsample participate in follow ups"
+               , "Data fusion: combined surveys"
+               , "A subsample are followed up"
                , "Structural constraints")
 patternstable <- data.frame(Pattern = pattern
                             , Explanation = explanation
@@ -111,7 +117,7 @@ knitr::kable(patternstable
              , booktabs = TRUE)
 ```
 
-Table \@ref(tab:nonresp-patterns) and figures \@ref(fig:univmissingness), \@ref(fig:multmissingness), \@ref(fig:mtailmissingness), \@ref(fig:dfusmissingness), \@ref(fig:sbsmmissingness) and \@ref(fig:stdgmissingness) are adapted from @kamakura2000factor to illustrate patterns of both unintentional (1-3) and intentional (4-6) non-response in surveys. These also demonstrate the usefulness of the missing values map, @unwin1996interactive. This is a simple, exploratory plot of a missing indicator matrix. This is a binary matrix representing presence or absence of a value for each respondent and item. Some articles [@he2010missing] recommend using a one to represent a missing value and a zero for present values as this reflects binomial success of the non-response process. However, other authors [@gelman2006data] put forward cases where the reverse makes sense. Clearly, it can be argued that this choice does not matter, so long as the research method is implemented with clarity.
+Table \@ref(tab:nonresp-reasons) is shows a non-exhaustive list of reasons for item non-response. In a single survey instance, more than one such reason could be at play for different items. These different underlying models have hallmark patterns that researchers can observe to try to determine the mechanisms behind missingness in data. As always, routine exploratory analysis is the best starting point. Table \@ref(tab:nonresp-patterns) and Figures \@ref(fig:univmissingness) to \@ref(fig:stdgmissingness) are adapted from @kamakura2000factor to illustrate patterns of both unintentional (1-3) and intentional (4-6) non-response in surveys. These also demonstrate the usefulness of the missing values map, @unwin1996interactive. Here a simple, exploratory plot is made of a *missing indicator matrix* which is a binary matrix representing presence or absence of a value for each respondent and item. The exact format differs according to taste. @he2010missing recommends using a one to represent a missing value and a zero for present values as this reflects success of a binomial process for the non-response. However, @gelman2006data put forward cases where the reverse makes sense. This choice is somewhat trivial, so long as the research method is implemented with clarity.
 
 ```{r univmissingness, fig.height=2, fig.width=2, fig.cap="Missing Values Map showing univariate missingness"}
 set.seed(101)
@@ -231,11 +237,9 @@ image(t(stdg)
       , col = c("ivory", "darkslateblue"))
 ```
 
-@joreskog2005structural provides and alternative missing data map in a collapsed form showing all possible patterns. Here a missing indicator matrix with a 1 indicating missingness is used. Note that eleven cases had five or more out of six responses missing and would be useless in any analysis. This format is of most use when there aren't too many items to create a combinatorial explosion. In fact, in the article a subset of just six items is used, which represent the items of a single multiple-item response variable. Some questionnaires may run up to hundreds of individual items, including datasets used in this research project so the format may be too unwieldy, unless this is done separately for each multiple-item response. Another question to consider is what sorting criteria did the author use to present this information as it is not obvious from the layout shown, which has been reproduced exactly in Table \@ref(tab:missmapclpse).
+@joreskog2005structural provides an alternative missing data map in a collapsed form showing all possible patterns. Here, a missing indicator matrix with a 1 indicating missingness is used. Note that eleven cases had five or more out of six responses missing and would be useless in any analysis. This format is no use for more than a handful of items as more can lead to a combinatorial explosion which would not easily be analysed by hand. In fact, in the article a subset of just six items is used, which represent the items of a single multiple-item response variable. Another question to consider is what sorting criteria to use to present the information. The layout shown in Table \@ref(tab:missmapclpse) has been reproduced exactly as it is in the original article and the significance of the ordering of response patterns is neither obvious nor discussed.
 
 ```{r missmapclpse}
-
-
 Frequency <- c(1554, 16, 12, 1, 4, 11, 31, 1, 2, 1, 4, 1, 32, 1, 1, 1, 5, 2, 1, 1, 14, 4, 4, 2, 1, 1, 2, 9)
 Pattern <- c("000000"
              , "100000"
@@ -272,25 +276,33 @@ knitr::kable(missingtable
 
 ```
 
-Secondary citation of Roth 1994 in @plumpton2016multiple that conspicuously little research done on missing data analysis, despite importance in the social sciences, and there is still a gap in practice with what is recommended in the literature with 45% of papers surveyd using complete case analysis and only 8% using MI @plumpton2016multiple secondary citation of Bell ML, Fiero M, Horton NJ, et al. Donald B. Rubin is widely cited for seminal works on modeling, recovering (imputing) and inference using missing data e.g. @rubin2004multiple. Of particular importance in this body of work is formalization of the relationship between the missing values, the incomplete variable and the other variables. The patterns arising from these relationships are categorized as:
+@carpita2011imputation provides an excellent formalization of useful measures and descriptors for missingness in a Likert based dataset, which are adapted and summarized as follows:
+
+If the dataset $X$ is an $n \times p$ matrix and:
+
+$$X = \{x_{ij} :\ i \in \{1,\ 2,\ \dots,\ n\}\ ,\ j \in 1,\ 2,\ \dots,\ p\}\ \}$$
+
+then $M$, the missing indicator matrix, is also an $n \times p$ matrix and
+
+$$M = \{m_{ij} :\ i \in \{1,\ 2,\ \dots,\ n\}\ ,\ j \in 1,\ 2,\ \dots,\ p\}\ \}$$
+
+The respondent $i$ has no missing data when $m_{i+} = \sum^p_{j=1} m_{ij} = 0$ and data is missing when $m_{i+} = \sum^p_{j=1} m_{ij} > 0$. The items for respondent $i$ where data are not missing are counted as $p_{i+} = p - m_{i+}$ and their indices are collected in the set $A(i)$.
+
+Likewise, the item $j$ has no missing data when $m_{+j} = \sum^n_{i=1} m_{ij} = 0$ and data is missing when $m_{+j} = \sum^n_{i=1} m_{ij} > 0$. There are $n_{+j} = n - m_{+j}$ respondents with observed data and the indices of these are collected for item $j$ in set $B(j)$
+
+Donald B. Rubin is widely cited for seminal works, including @rubin1987multiple, on modeling, recovering (imputing) and inference using missing data. Of particular importance in this body of work is his formalization of the relationship between the missing values, the incomplete variable and the other variables. The patterns arising from these relationships are categorized as:
 
 * Missing completely at random (MCAR) if process that causes the missing data is distinct from any parameter $\theta$ of the data. In other words the distribution of missing data is unrelated to the value of any variable in the dataset. It is also suggested in @gelman2006data that the probability of non-response is the same for all points of the missing indicator matrix. The missing/non-missing state of individual data points cannot be predicted from any information whatever, whether observed or unobserved other than the overall missingness rate.
 
-* Missing at random (MAR) is the most common scenario according to @schafer1997analysis and applies if the distribution of missing data may be related to available information. That is, other variables in the dataset but not the variable itself. The mechanism is correlated with the observed data according to @gelman2006data, it is often reasonable to model this as a logistic regression. The article continues to assert that it is generally not possible to be certain even of an MAR assumption because a correlation with unobserved data or a latent variable can never be ruled out altogether.
+* Missing at random (MAR) is the most common scenario according to @schafer1997analysis **secondary citation** and applies if the distribution of missing data may be related to information available in other variables in the dataset but not the variable itself. The mechanism is correlated with or conditional on the observed data according to @gelman2006data, and it is often reasonable to model the missing indicator matrix as a logistic regression. 
 
-* Missing not at random (MNAR) if the distribution of missing data is related to data that is unobserved. @gelman2006data further sub-divides this category in two. Firstly, when missingness depends on unobserved predictors, for example, dissatisfied customers being less likely to respond than satisfied customers would generate a MNAR unit non-response. An example of an MNAR unit non-response might be a survey where people in a particular education bracket responded less frequently to questions about income where there were no questions identifying the level of educational attainment. The second sub-division is where the distribution of missing data is related to the value of the partially missing variable itself, such that answers given by complete respondents differ substantially from answers that would have been given by non-respondents. For example, if respondents from a lower income bracket are reluctant to respond to questions about earnings. This is the most challenging situation to recover and of most concern to researchers. In fact, @tsikriktsis2005review states that there are no statistical means to recover when missing data is MNAR and no way to ameliorate the potential bias in results based on analysis of such data. While it is not explicit in the article, @tsikriktsis2005review must be referring to this second sub-division of the category. @gelman2006data contradicts this assertion by suggesting that the problem can be mitigated by adding more predictors. However, this assumes that more data is available when it would be expected that most researchers would provide all the data they have. 
+* Missing not at random (MNAR) if the distribution of missing data is related to data that is unobserved. @gelman2006data further sub-divides this category in two.
+    * When missingness depends on unobserved predictors. For example, if dissatisfied customers are less likely to respond than satisfied customers, this would generate MNAR unit non-response. Another example might be a survey where people in a particular education bracket responded less frequently to questions about income but there were no questions identifying the level of educational attainment. 
+    * Where the distribution of missing data is related to the value of the partially missing variable itself, such that answers given by complete respondents differ substantially from answers that would have been given by non-respondents. For example, if respondents from a lower income bracket are reluctant to respond to questions about earnings.
+    
+MNAR is the most challenging situation to recover and of most concern to researchers. In fact, @leite2010performance [p.73] asserts that "missing data methods cannot handle MNAR data" and @tsikriktsis2005review states that there are no statistical means to recover when missing data is MNAR and no way to ameliorate the potential bias in results based on analysis of such data. While it is not explicit, both must be referring to the second sub-division. @gelman2006data contradicts this assertion by suggesting that the problem can be mitigated by adding more predictors. The idea is to make the MAR assumption more tenable by adding more information. However, this advice assumes that more data is available. In fact, it is most likely that researchers would already provide all the data they have as it is widely recommended to use a more general model for imputation than the analytical model that follows. Perhaps more importantly than this, the advice does not actually address the MNAR limitation. Rather it tries to shift it into a different category. It would be of interest to discover methods that genuinely overcome this barrier.
 
-In a historic article, @rubin1976inference as cited in @wu2015comparison lays the foundation for these definitions, which are now used throughout the literature, and deteremines that ignoring the mechanism of non-response is the proper procedure when, and only when, the data is MCAR. Missingness in MAR cases is "ignorable" in regression models only when controlling for all the variables that correlate with non-response. This is an important milestone in statistics discourse and after this time, references to these assumptions and the terms "ignorable" and "not ignorable" (with respect to non-response) are seen in results analysis generally. Furthermore, @gelman2006data also suggests that most missingness is not MCAR. This means that most missingness is not ignorable, which is a crucially important point for any statistical analysis. It is vital to make clear statements of assumptions made about missingness in data and its treatment prior to releasing results. @white2011multiple secondary citation of Sterne et al. suggest reporting guidelines that include careful comparison of MI results with the results of complete-case analysis [46].  @plumpton2016multiple secondary citation of Bell ML, Fiero M, Horton NJ, et al. says this doesn't happen as much as it should. Up to 66% of papers surveyed in psychology there was an implication that missing data was present but no mention how it was handled.
-
-There is an abundance of examples in the literature of the adverse effects of missingness in survey data. These include biased parameter estimates (central tendency, dispersion and correlation coefficients) and loss of statistical power [@madow1983incomplete; @bean1995long; @roth1999missing; @raaijmakers1999effectiveness]. **Check if these discuss the recovery method used**
-
-Carpita has some useful stuff on models of missing data
-
-@white2011multiple quoted  Inadequate handling of the missing data in a statistical analysis can lead to biased and/or inefficient estimates of parameters such as means or regression coefficients, and biased standard errors resulting in incorrect confidence intervals and significance tests. In all statistical analyses, some assumptions are made about the missing data. Little and Rubin’s framework [1] is often used to classify the missing data as being (i) missing completely at random (MCAR—the probability of data being missing does not depend on the observed or unobserved data), (ii) missing at random (MAR—the probability of data being missing does not depend on the unobserved data, conditional on the observed data) or (iii) missing not at random (MNAR—the probability of data being missing does depend on the unobserved data, conditional on the observed data). For example, blood pressure data are MAR if older individuals are more likely to have their blood pressure recorded (and age is included in the analysis), but they are MNAR if individuals with high blood pressures are more likely to have their blood pressure recorded than other individuals of the same age. It is not possible to distinguish between MAR and MNAR from the observed data alone, although the MAR assumption can be made more plausible by collecting more explanatory variables and including them in the analysis.
-
-10. facotr analysis method
-500. plausible values
-has some stuff on missing data simul.
+In a historic article, @rubin1976inference cited in @wu2015comparison lays the foundation for these definitions, which are now used throughout the literature, and determines that ignoring the mechanism of non-response is the proper procedure when, and only when, the data is MCAR. Missingness in MAR cases is "ignorable" in regression models only when controlling for all the variables that correlate with non-response. This is an important milestone in statistics discourse and after this time, references to these assumptions and the terms "ignorable" and "not ignorable" (with respect to non-response) are seen in results analysis generally. Furthermore, @gelman2006data also suggests that most missingness is not MCAR. This means that most missingness is not ignorable (as the MAR case must at least be confirmed and controlled for before recovery). This is a crucially important point for any statistical analysis. It means that it is vital to make clear statements of assumptions made about the mechanisms of missingness found in data, and its treatment prior to evaluating results. @plumpton2016multiple reports that there is still a gap in practice with what is recommended in the literature. 66% of papers surveyed in psychology journals found an implication that missing data was present but no mention of how it was handled. 45% of papers surveyed were using complete case analysis which is riddled with counter-indications and only 8% using multiple imputation (MI), which is the state of the art for recovery from missing data problems.
 
 ## Techniques for Recovering from Missingness
 
@@ -300,9 +312,19 @@ has some stuff on missing data simul.
 
 The author is unequivocal on the first point, and while it is stating the obvious that prevention is always better than cure, it does bear repeating. The second point provides support for the motivation behind this research. Analytical and processing techniques should be carefully chosen to meet the challenges of a given situation. The prevalence of surveys which collect mostly categorical data calls for methods better suited to data with these characteristics. 
 
-The problems with missing data are many and of great concern to researchers. The problems are reputational as well as technical. @plumpton2016multiple also reports that "poor handling and reporting of missing data may result in misleading conclusions and are one of the main reasons for publication rejections." @gelman2006data provides a very comprehensive treatment of the topic which serves as the basis for much of this section. The authors describe non-response in a social indicators survey as "a distraction to our main goal of studying trends in attitudes and economic conditions, and we would like to simply clean the dataset so it could be analyzed as if there were no missingness" @gelman2006data [p.529]. This  statement perfectly sums up the motivation for missing data analysis and recovery per se illustrates why many techniques have been developed. Researchers want to analyze their data with confidence and statistical rigour, despite the prevalence of non-response.
+The problems with missing data are many and of great concern to researchers. There technical problems widely discussed in the literature and best summed up as follows:
 
-Many statistical functions and operations simply do not work with missing data, whether calculated manually or by software. Many software systems (e.g. R, SAS, SPSS), sometimes with a warning and sometimes silently, will perform a list-wise deletion to automatically exclude cases with *any* missing values in the variables and analyze only the complete cases. If there is only one missing value out of tens or hundreds of potential predictor variables, then much valuable information is lost. Even in the era of "Big Data," where TeraBytes may be trawled for accidental insight, a well-designed survey may still have a high cost per respondent may still be high due to the discipline of sampling and selection. Rather than simply allowing statistical software to make default, often inappropriate choices, it is advisable to carry out a formal missing data analysis. Then, based on these findings, to implement some other form of pre-processing that recovers a dataset. The method chosen will have a significant impact on the reliability of any subsequent analysis. 
+> "Inadequate handling of the missing data in a statistical analysis can lead to biased and/or inefficient estimates of parameters such as means or regression coefficients, and biased standard errors resulting in incorrect confidence intervals and significance tests."
+
+@white2011multiple [p.377]
+
+There is an abundance of examples in the literature of the adverse effects of missingness in survey data. These include biased parameter estimates (central tendency, dispersion and correlation coefficients) and loss of statistical power [@madow1983incomplete; @bean1995long; @roth1999missing; @raaijmakers1999effectiveness]. **Check if these discuss the recovery method used** ** these are all secondary citations - check **
+
+@white2011multiple quoted  Inadequate handling of the missing data in a statistical analysis can lead to biased and/or inefficient estimates of parameters such as means or regression coefficients, and biased standard errors resulting in incorrect confidence intervals and significance tests. In all statistical analyses, some assumptions are made about the missing data. 
+
+The problems are reputational and a nuisance as well as technical. @plumpton2016multiple also reports that "poor handling and reporting of missing data may result in misleading conclusions and are one of the main reasons for publication rejections." @gelman2006data provides a very comprehensive treatment of the topic which serves as the basis for much of this section. The authors describe non-response in a social indicators survey as "a distraction to our main goal of studying trends in attitudes and economic conditions, and we would like to simply clean the dataset so it could be analyzed as if there were no missingness" @gelman2006data [p.529]. This  statement perfectly sums up the motivation for missing data analysis and recovery per se and illustrates why many techniques have been developed. Researchers want to analyze their data with confidence and statistical rigour, despite the prevalence of non-response.
+
+Many statistical functions and operations simply do not work with missing data, whether calculated manually or by software. Many software systems (e.g. R, SAS, SPSS), sometimes with a warning and sometimes silently, will perform a list-wise deletion to automatically exclude cases with *any* missing values in the variables and analyze only the complete cases. If there is only one missing value out of tens or hundreds of potential predictor variables, then much valuable information is lost. Even in the era of "Big Data," where TeraBytes may be trawled for accidental insight, a well-designed survey may still have a high cost per respondent due to the discipline of sampling and selection. Rather than simply allowing statistical software to make default, often inappropriate choices, it is advisable to carry out a formal missing data analysis. Then, based on these findings, to implement some other form of pre-processing that recovers a dataset. The method chosen will have a significant impact on the reliability of any subsequent analysis. 
 
 @carpita2011imputation describes four categories of recovery procedures as follows:
 
@@ -311,25 +333,33 @@ Many statistical functions and operations simply do not work with missing data, 
 1. Model-based procedures
 1. Imputation procedures
 
-Each method has advantages and disadvantages. For example, (1) includes list-wise deletion which is simplest to implement but potentially introduces significant problems. @bono2007missing sums up advice which is well-supported throughout the literature; Although list-wise deletion is a default option, is only appropriate for data which is MCAR and the proportion of missing data is small. However, this instruction will not hold if the dataset is wide (having many variables). In this case, even a low proportion of missing data could lead to a very high number of rows being discarded as the missing data are dispersed throughout the dataset. @plumpton2016multiple imposes a further condition; that the missingness is only found in the dependent variable. Although this was not specifically mentioned in any of the other texts reviewed it certainly caps a plethora of significant limitations with the deletion method. The only article found to encouraged list-wise deletion under specific circumstances other than those listed was @joreskog2005structural, which offers the common sense advice that list-wise deletion is recommended for cases with all or most responses missing. Obviously these individual data rows would add little value to any statistical model. In practice, the MCAR conditions themselves are rarely provable. (1) also includes simply omitting a data point from an aggregate or multiple-item scale. This will obviously result in an underestimated score on the latent variable and would probably never be recommended up to date research methodologies.
+Each method has advantages and disadvantages. For example, (1) includes list-wise deletion which is simplest to implement but potentially introduces significant problems. @bono2007missing sums up advice which is well-supported throughout the literature; Although list-wise deletion is a default option, it is only appropriate for data which is MCAR. If this assumption does not hold, @plumpton2016multiple states that the complete case sample will not be representative of the underlying population. Also, the proportion of missing data must be small. However, this instruction will not hold if the dataset is wide (having many variables) because the distribution of missing data among the variables leads to geometric losses with increasing number of variables. @he2010missing reports that that for missingness between 1%-5% over only 20 variables, the proportion of discarded rows is $\approx 36\%$. In fact the expected loss for 5% MCAR data in all 20 variables would be $1-(1-0.05)^{20} \approx 64\%$ discarded cases.
 
-Methods in category (2) can be applied after list-wise deletion to rebalance a sample and can even be used to deal with unit non-response. Essentially remaining cases are weighted or duplicated so the desired sampling and stratification proportions are restored. @groves2011three points out that the theoretical assumptions for this method to be valid could never be met and @gelman2006data posits that weighting becomes too complicated if more than one variable contains non-response. Indeed support for these older methods is either thin or non-existent in the contemporary literature. A modification of this method is called available case analysis. It uses subsampling of the complete cases to answer different research questions. This has the problem that analyses may be based on inconsistent subsamples, representing potentially different populations. Given all the shortcomings associated with complete case analysis and following the emergence of ubiquitous computing power to run more sophisticated methods, it is not surprising they have fallen out of favour. Nevertheless, some authors [@plumpton2016multiple] **others?** suggest that routine applications of these methods persist.
+@plumpton2016multiple imposes a further condition; that the missingness be found only in the dependent variable. Although this was not specifically mentioned in any of the other texts reviewed it certainly caps a plethora of significant limitations with the deletion method. The only article found to encouraged list-wise deletion under specific circumstances other than those listed was @joreskog2005structural, which offers the common sense advice that list-wise deletion is recommended for cases with all or most responses missing. Obviously these individual data rows would add little value to any statistical model. In practice, the MCAR conditions themselves are rarely provable, and even if they are, the consequence of data loss is loss of statistical power from a smaller smaple size which is highly undesirable.
+
+Category (1) also includes simply omitting a data point from an aggregate or multiple-item scale. @carpita2011imputation mentions that this will result in an underestimated score on the latent variable. This seems like a very ill-thought out approach and would probably never be recommended in up to date research methodologies. @wu2015comparison reports that some researchers average over the remaining variables and does not recommend doing so as this will still result in bias.
+
+Methods in category (2) can be applied after list-wise deletion to rebalance a sample and can also be used to deal with unit non-response. Essentially remaining cases are weighted or duplicated so the desired sampling and stratification proportions are restored. @he2010missing explains that this suffers the same problem as complete case analysis, in that partial data from incomplete cases is discarded and also that extreme correction will lead to erratic variance estimates. @groves2011three points out that the theoretical assumptions for this method to be valid could never be met and both @he2010missing and @gelman2006data posit that weighting becomes too complicated if more than one variable contains non-response. Indeed support for these older methods is either thin or non-existent in the contemporary literature. 
+
+A modification of (2) is called available case analysis. It uses subsampling of the complete cases to answer different research questions. This has the problem that analyses may be based on inconsistent subsamples, representing potentially different populations. Given all the shortcomings associated with complete case analysis and following the emergence of ubiquitous computing power to run more sophisticated methods, it is not surprising they have fallen out of favour. Nevertheless, some authors [@plumpton2016multiple] **others?** suggest that routine applications of these methods persist.
 
 @carpita2011imputation introduces category (3) but only in passing and gives Expectation Maximization (EM) and data augmentations (the Bayesian counterpart of EM) as examples. @gelman2006data [p.540] also only briefly describes (3) as a process in which a "multivariate model is required, and this can be particularly tricky when some of the variables are discrete" which also implies EM, but then unexpectedly associates this with non-ignorable missing data models, in which domain knowledge is used to model the mechanism of missingess. This latter point is somewhat inconsistent. EM algorithms form the basis of multiple imputation techniques which will be discussed shortly, so perhaps this rather brief treatment of (3) indicates that it is a foundational concept for a more sophisticated technique. The remainder of this subsection with deal with (4).
 
-@bono2007missing explains that imputations strategies replace missing data points with substitute values that are estimated from patterns or relationships found in the observed data. This means the full sample can be used for analysis. Many methods are well developed for continuous variables, but sources indicate that there has been much less research for datasets comprising categorical and ordinal variables, [@finch2010imputation; @leite2010performance]. Furthermore, there is strong evidence of significant differences in the performance of various imputation strategies over datasets exhibiting different underlying characteristics [@wu2015comparison}; @rodwell2014comparison; @sim2015missing]. These experimental results indicate a need to take into account not only the model and magnitude of missingness but also other characteristics particular to the target data. For this reason there is real benefit in having a range of imputation methods from which to choose the most suitable in a given situation. **anything wrong with those experiments?**
+@bono2007missing explains that imputation strategies replace missing data points with substitute values that are estimated from patterns or relationships found in the observed data. This allows the full sample to be used for analysis. Many methods are well developed for continuous variables, but sources indicate that there has been much less research for datasets comprising categorical and ordinal variables, [@wu2015comparison; @finch2010imputation; @leite2010performance]. The latter give the mitigation that might be that state of the art techniques depend on specialised software but at the time of writing, most of the statistical software available today was already available. Additionally, this literature review finds that it continues to be the case. The state of the art techniques required additional configuration, transformation of variables and return results that are out of the natural variable scale, such as real, non-integer and/or non-positive values for ordinal variables.
+
+Furthermore, there is strong evidence of differences in the performance of various imputation strategies over datasets exhibiting different underlying characteristics [@wu2015comparison; @sim2015missing; @rodwell2014comparison; @bono2007missing]. These differences were significant in real world experiments as well as with simulated data. In some cases, biased parameter estimates and incorrect confidence intervals, would have affected the choice of predictors included into a statistical model. The model and magnitude of missingness as well as other characteristics of the data were all found to determine the best performing strategy. For this reason there is real benefit in having a range of imputation methods from which to choose the most suitable in a given situation. **anything wrong with those experiments?**
 
 There are many different kinds of imputation strategies and different ways to categorize them:
 
 * Single (or point) versus Multiple Imputation
-* Parametric versus non-parametric Imputation
-* Simple versus predictive
+* Parametric versus Non-parametric Imputation
+* Deterministic processes versus Non-deterministic processes
 
 Of these, the most important distinction is probably Single versus Multiple.  
 
 ### Single Imputation
 
-Single imputation strategies are often quick and simple to implement but lead to biased parameter estimates. This can happen for two reasons. Firstly, because the analysis is done as if the simulated value is a true, observed value. Secondly, depending on the techniques, the choice of substitute value can affect the statistical properties of the imputed variable. Consider a univariate normal scenario where all missing values are replaced with the mean of the observed data. While this action preserves the mean of the random variable, the variance is depressed. This is demonstrated by way of a Monte Carlo simulation, following the methodology given in @robert2009introducing:
+Single imputation strategies are often quick and simple to implement but lead to biased parameter estimates. This can happen for two reasons. Firstly, as @azur2011multiple explains, the analysis proceeds as if the simulated value is a true, observed value, not taking any uncertainty into account. Secondly, the choice of substitute value can affect the statistical properties of the imputed variable. Consider a univariate normal scenario where all missing values are replaced with the mean of the observed data. While this action preserves the mean of the random variable, the variance is depressed. This is demonstrated by way of a Monte Carlo simulation, following the methodology given in @robert2009introducing:
 
 ```{r sim_grandmean_imp}
 set.seed(1)
@@ -414,13 +444,13 @@ knitr::kable(mcmc_results(vars)
             , caption = "Empirical variance of X, X with missing data and imputed X"
             , booktabs = TRUE)
 ```
-```{r sim-grandmean-imp-plot, fig.cap="Monte Carlo simulation of biased variance estimate after mean imputation"}
+```{r sim-grandmean-imp-plot, fig.cap="Monte Carlo simulation of biased variance estimate after mean imputation. Note how the imputed distribution are leptokurtic, with more of the density concetrated in the centre."}
 c(d[[1]], d[[2]], d[[3]], d[[4]])
 ```
 
-This informative example shows how the mean and variance of the MCAR data is almost identical to the underlying distribution. Using mean imputation gives a mean which is identical to the MCAR data to many decimal places, as can be seen in Table \@ref(tab:sim-grandmean-imp-means). However, the variance is much reduced in the imputed dataset, Table \@ref(tab:sim-grandmean-imp-vars). Density plots of selected bootstrap iterations show very clearly what has happened \@ref(fig:sim-grandmean-imp-plot). Not shown here, but also notable, is that bivariate correlations would also be artificially reduced by using a constant value to replace missing data.
+This informative example shows how the mean and variance of the MCAR data is almost identical to the underlying distribution. Using mean imputation gives a mean which is identical to the MCAR data to many decimal places, as can be seen in Table \@ref(tab:sim-grandmean-imp-means). However, the variance is much reduced in the imputed dataset, Table \@ref(tab:sim-grandmean-imp-vars). Density plots of selected bootstrap iterations show very clearly what has happened. See Figure \@ref(fig:sim-grandmean-imp-plot). Not shown here, but also notable, is that bivariate correlations would also be artificially reduced by using a constant value to replace missing data.
 
-Mean imputation, or any other technique that relies only on a measure of central tendency is too simplistic an approach for many missing data problems. Aside from the issues demonstrated here, the method takes no information from other variables if they are available. If data are MAR, then a dependency between the missingness and the observed data has been established and should be exploited. Other simple, parametric imputation methods that do so include group mean imputation, where the mean stratified over one of more categorical variable is used. Predictive mean imputation is better still, generating suitable values from a predictive model (usually linear, or whatever is appropriate for the data).
+Mean imputation, or any other technique that relies only on a measure of central tendency is too simplistic an approach for many missing data problems. Aside from the issues demonstrated here, the method takes no information from other variables if they are available. If data are MAR, then a dependency between the missingness and the observed data has been established and should be exploited. Other simple, parametric imputation methods that do so include group mean imputation, where the mean stratified over one of more categorical variable is used. Regression imputation is better still, generating suitable values from a predictive model (usually linear, or whatever is appropriate for the data).
 
 ```{r sim_predmean_imp}
 set.seed(2)
@@ -450,9 +480,11 @@ for (i in 1:n) {
   
   nonresp <- rbinom(m, size = 1, prob = p)
 
-  fit_star <- lm(y_star[nonresp == 0] ~ x[nonresp == 0])
+  df <- data.frame(y = y_star[nonresp == 0]
+                 , x = x[nonresp == 0])
+  fit_star1 <- lm(y ~ x, data = df)
   y_imp <- y_star
-  y_pred <- predict(fitxy
+  y_pred <- predict(fit_star1
                     , newdata =
                       data.frame(x =
                                    x[nonresp == 1]))
@@ -470,7 +502,7 @@ for (i in 1:n) {
                panel.xyplot(x[nonresp == 1]
                            , y_pred)
              }
-             , main = "Scatter plot before and after predictive mean imputation"
+             , main = "Scatter plot before and after regression imputation"
              , xlab = "Bootstrap samples 250, 500, 750 and 1000"
              , ylab = "Bootstrapped and Imputed Y"
              , auto.key = list(columns = 2)
@@ -484,67 +516,184 @@ corrs <- list(sim_corr = corxy
 
 ```{r sim-predmean-imp-corrs}
 knitr::kable(mcmc_results(corrs)
-            , caption = "Empirical correlation of X with Y and imputed Y"
+            , caption = "Regression imputation: Empirical correlation of X with Y and imputed Y"
             , booktabs = TRUE)
 ```
-```{r sim-predmean-imp-plot, fig.cap="Monte Carlo simulation of biased correlation estimate after predictive mean imputation. Original values in open circles, fuchsia colour. The imputed dataset shares most of the same values in filled circles, green colour, de-emphasised with transparency. Predicted values have been emphasised in darker green."}
+```{r sim-predmean-imp-plot, fig.cap="Monte Carlo simulation of regression imputation. Original values in open circles, fuchsia colour. The imputed dataset shares most of the same values in filled circles, green colour, de-emphasised with transparency. Predicted values have been emphasised in darker green. Note how they all fall on the regression line."}
 c(d[[1]], d[[2]], d[[3]], d[[4]])
 ```
 
-Again, it is very informative to run a simulation of the predictive mean imputation technique to understand its shortcomings. Following again the methodology given in @robert2009introducing:
+Again, it is very informative to run a simulation of the regression imputation technique to understand its shortcomings. Following again the methodology given in @robert2009introducing:
 
 1. A random variable $X = x_1...x_{250},\ X \sim \mathcal{N}(10, 2)$ is generated.
 1. A linearly dependent variable $Y$ is generated using the linear equation $Y = \beta_0 + \beta_1X + e, \ \beta_0 = 3, \ \beta_1 = 0.5, e \sim \mathcal{N}(0, 1)$
 1. An OLS regression is performed on $Y \sim X$ and the residuals are saved as $err$.
 1. $N =$ `r n` samples $Y^*$ are generated by bootstrapping $err$ and adding the result to $Y$.
 1. For each $Y^*$, $Y^*_{mis}$ is generated by setting `r p * 100`% of values to missing by a coin flip (Bernoulli) function.
-1. A new OLS regression is performed on $Y^*_{mis} \sim X$
-1. $Y^*_{imp}$ is generated by predicting new values from $X$ where $Y^*_{mis} \notin Y^*$
+1. A new OLS regression is performed on $Y^*_{mis} \sim X,\ Y^*_{mis_i} \in Y^*_i$
+1. $Y^*_{imp}$ is generated by predicting new values from $X$ using $X_i,\ Y^*_{mis_i} \notin Y^*_i$
 1. The empirical correlations $Cor(X, Y^*)$ and $Cor(X, Y^*_{imp})$ are returned with their 95% credible intervals.
 
-The results in Table \@ref(tab:sim-predmean-imp-corrs) show a systematic over-estimate of bivariate correlation because all the imputed values fall directly on the regression line.
+The results in Table \@ref(tab:sim-predmean-imp-corrs) show a systematic over-estimate of bivariate correlation because all the imputed values fall directly on the regression line. See Figure \@ref(fig:sim-predmean-imp-plot).
 
-The examples serve to demonstrate why imputation is quite a different process to prediction. The purpose of imputation is not to achieve a measure of accuracy or smoothing, but instead to faithfully represent a distribution. As such, methods that estimate a posterior distribution of the parameters of the observed data have grown in popularity
+The examples serve to demonstrate why imputation is quite a different process to prediction. The purpose of imputation is not to achieve a measure of accuracy or smoothing, but instead to faithfully represent a distribution. As such, methods that estimate a posterior distribution of the parameters of the observed data have grown in popularity.
 
-In contrast to grand mean, group mean or predictive mean imputation, simple (naive) random imputation is the process of sample with replacement values from the observed data but ignores any useful information from the other variables. Hence methods have been developed that that do take into account information from all available variables. For example, methods that use multivariate normal models to infer sampling distributions for imputation. @gelman2006data describes this as a complicated task, especially where the missingness is multivariate. This requires an iterative process, in which some starting value is set for all missing values, and new values are imputed one variable at a time using all other values (initialised and complete). When all variables have been imputed, this completes a cycle, and the process iterates until convergence. These methods become more and more complex when modeling non-normal multivariate data, e.g. stratified, clustered, hierarchical etc. Such automated models must be checked for convergence and validity before the results can be used in further analysis.
+In contrast to grand mean, group mean or regression imputation, non-deterministic processes can be applied. The most basic of these is simple (naive) random imputation, whereby imputed values are generated by sampling with replacement from the observed data. Clearly this ignores any useful information from the other variables, which is undesirable. Hence methods have been developed that that do take into account information from all available variables. For example, @gelman2006data [p.536] proposes random regression imputation, which modifies the result of deterministic regression imputation by adding a random error drawn from a normal distribution with the residual standard error from the underlying linear model. It might also be valid to add a bootstrapped sample of the residual errors to the linear prediction.
 
-Can use zero coding, top/bottom coding to reduce sensitivity to extreme values and improve the predictive power of the model. A simple cutoff or a transform above a cutoff. Linear model prediction increases central tendency - see @gelman2006data for equations why based on R squared page 536. Random prediction imputation, for univariate normal data, or data which has been transformed to be so, can create a random normal vector from the vector of pred values (means) and resid st.devs as the st.dev so the scatter is defived from the unexplained variance in the model. Transforms and multi-stage imputations required for non-normal data (counts, zero-inflated modes and so on.)
+```{r sim_randpred_imp}
+d <- list()
+for (i in 1:n) {
+  y_star <- y + sample(errs
+                      , size = m
+                      , replace = TRUE)
+  corxy[i] <- cor(x, y_star)
+  
+  nonresp <- rbinom(m, size = 1, prob = p)
 
-There are also non-parametric alternatives of single imputation. Many are best suited for specific situations. For example, "last value carried forward" is only applicable in longitudinal, or time-based surveys. It can result in erratic reeadings for trends analysis. For missing data in a nominal variable it is sometimes acceptable simply to add a new category, "missing." Logical rules, survey structure or domain knowledge can be applied. For example, a respondent reporting low or moderate drinking might have the number of alcohol units per week imputed if missing. Similarly, someone reporting they worked zero hours per week might be also assigned an income of zero.
+  df <- data.frame(y = y_star[nonresp == 0]
+                   , x = x[nonresp == 0])
+  fit_star <- lm(y ~ x, data = df)
+  sm_fit <- summary(fit_star)
+  y_imp <- y_star
+  y_pred <- predict(fit_star
+                    , newdata =
+                      data.frame(x =
+                                   x[nonresp == 1])) +
+    # random component
+    rnorm(sum(nonresp)
+          , mean = 0
+          , sd = sm_fit$sigma)
+  y_imp[nonresp == 1] <- y_pred
+  corxyimp[i] <- cor(x, y_imp)
+  
+  if ((i / n * k) %in% 1:k) {
+    d[[i / n * k]] <- 
+      xyplot(y_star + y_imp ~ x
+             , pch = c(1, 19)
+             , cex = c(0.8, 0.6)
+             , alpha = c(1, 0.3)
+             , panel = function(x, y, ...) {
+               panel.xyplot(x, y, ...)
+               panel.xyplot(x[nonresp == 1]
+                           , y_pred)
+             }
+             , main = "Scatter plot before and after random regression imputation"
+             , xlab = "Bootstrap samples 250, 500, 750 and 1000"
+             , ylab = "Bootstrapped and Imputed Y"
+             , auto.key = list(columns = 2)
+             , par.settings = MyLatticeTheme
+             , scales = MyLatticeScale)  
+  }
+}
+corrs <- list(sim_corr = corxy
+              , imp_corr = corxyimp)
+```
 
-The most important non-parametric imputation methods are generally referred to as "similar pattern response matching" [@joreskog2005structural p.3] and also Hot-deck imputation. @gelman2006data seems to refer to Hot-deck and matching interchangeably, which seems reasonable given the descriptions of these elsewhere in the literature. @joreskog2005structural defines the intuition behind matching imputations as follows; If an individual with missing variable *x* has same response pattern in other variables as another case, then it's likely that variable *x* also matches. The article goes on to say that if multiple individuals are found with the matching response pattern then that's even stronger evidence for value *x*. @gelman2006data [p.538] describes the process as a "non-parametric version of regression" but it is not clear what the grounds are for this description. Certainly the method is useful where (linear) regression is challenging.
+```{r sim-randpred-imp-corrs}
+knitr::kable(mcmc_results(corrs)
+            , caption = "Random Regression imputation: Empirical correlation of X with Y and imputed Y"
+            , booktabs = TRUE)
+```
+```{r sim-randpred-imp-plot, fig.cap="Monte Carlo simulation of random regression imputation. Original values in open circles, fuchsia colour. The imputed dataset shares most of the same values in filled circles, green colour, de-emphasised with transparency. Predicted values have been emphasised in darker green. Note how they faithfully replicate the original distribution"}
+c(d[[1]], d[[2]], d[[3]], d[[4]])
+```
 
-It should be noted that Cold-deck imputation is also mentioned in the literature, but only as a brief aside [@bono2007missing; ]  ** more ** In this process, substitute values are found by refernece to prior studies, not the same dataset where the missing values are found. Perhaps it  is not discussed much because the literature generally focuses on statistical and computational techniques. Or perhaps it is simply not considered to be important or useful. This is not made clear.
+As can be seen from Table \@ref(tab:sim-randpred-imp-corrs) and Figure \@ref(fig:sim-randpred-imp-plot), the distribution of the imputed variable has been better preserved by this imputation process. The credible interval for the coefficient of bivariate correlation is also wider which is a desirable property as it reflects that the imputed variables have added some uncertainty. However, this is only apparent because of the Monte-Carlo simulation and would not be detected after a single imputation process. This is where multiple imputation adds value and will be discussed shortly. It is clear that wholly deterministic processes have undersirable properties for imputation and it highlights a very important issue for the current research. Association rules mining is deterministic in nature when carried out under normal circumstances. Some consideration will need to be given to the impact this might have on the proposed novel technique.
 
-The detail of Hot-deck imputation is in the way matches are made and donor cases found. Similarity between individual cases can be based a distance function, such as Euclidean distance. In such cases, there would be an assumption that the matching variables would be numeric scales, where regression models presumably would also work. In such cases, the question of how to choose the right method becomes more nuanced.
+The random regression imputation procedure can be extended to a multivariate scenario, where data is missing in more than one variable by setting up a joint multi-variate normal model. @azur2011multiple states that this is rarely appropriate for wide datasets with possibly hundreds of predictor variables. @gelman2006data describes it as a complicated task better left to software supports its automation and instead suggests an "iterative regression imputation" @gelman2006data [p.539] but goes on to describe what other authors call the chained equations algotrithm. This iterative process also underpins multiple imputation with chained equations, as described by most authors, but here the result is only a single imputation. See the next section on MICE for a formal description.
 
- is suitable for continuous and MCAR and secondary citation Brown 1994 says compares well to listwise deletion. 
+These methods become more and more complex when modeling data which is not multivariate normal. Such automated models must be checked for convergence and validity before the results can be used in further analysis. The authors of @gelman2006data go on to say that diagnostic tools for multivariate imputation models are an area that requires further research because there was nothing analogous to residual plots and tests at the time of publication. Subsequently, this is addressed in R package *mi*, [@R-mi; @su2011multiple], in which the same authors are involved.
 
-Importantly, shows that missing values can remain after this method and should be removed by listwise deletion. This point corroborates what this current research is hoping to achieve. The intention of this research is to go a step further and find all the similarity patterns.
+Further to the formalization of measures of missingness in a dataset, @carpita2011imputation continues by defining a set of imputatation strategies reported to be particularly effective for Likert scales. Adapted from the same article, the specific case for Likert scales is given as a prelude to the definitions of the strategies themselves:
+
+Recalling the data matrix $X$ and its corresponding missing indicator matrix $M$, let $K$ be the number of ordinal categories in each item, then the value of $x_{ij}$, respondent $i$'s answer to item $j$, is: 
+
+$$x_{ij} =
+\begin{cases} 
+k \in \{1,\ 2, \ \dots, \ K\ \},\ \text{if}\ m_{ij} = 1 \\
+\text{missing}, \text{otherwise}
+\end{cases}, \ m_{ij} \in \{0,\ 1\}$$
+
+The person mean is: $$\bar{x_{i+}} = \frac{\sum_{j \in A(i)}x_{ij}}{p_{i+}}$$
+
+The item mean is: $$\bar{x_{+j}} = \frac{\sum_{i \in B(j)}x_{ij}}{n_{+j}}$$
+
+The person item mean is the mean of item means for each observed item for respondent $i$:
+$$\bar{\bar{x_{i+}}} = \frac{\sum_{j \in A(i)}\bar{x_{+j}}}{p_{i+}}$$ 
+
+Note that the total of observed data is:
+$$n_{++} = \sum^n_{i=1}p_{i+} = p_{++} = \sum^p_{j=1}n_{+j}$$
+and the total mean is:
+$$\bar{x_{++}} = \frac{\sum^n_{i=1}\bar{x_{i+}}p_{i+}}{p_{++}} = \frac{\sum^p_{j=1}\bar{x_{+j}}n_{+j}}{n_{++}}$$
+
+With these definitions for the special case of Likert scale data and in addtion, let $[w]$ be the integer part of $w$ and $[\circ]w = frac(w)$ is the fractional part of $w$, then various single imputation methods are defined as:
+
+PM Person Mean imputation
+$$\hat{x_{ij}}^{(PM)} = [\bar{x_{i+}}] + \epsilon_{i},\ \epsilon_{i} \sim B(1, [\circ]\bar{x_{i+}})$$
+
+CIM Corrected Item Mean imputation
+$$\hat{x_{ij}}^{(CIM)} = [\bar{x_{ij}}^{(CIM)}]  + \epsilon_{v} = [\frac{\bar{x_{i+}}}{\bar{\bar{x_{i+}}}} \bar{x_{+j}}] + \epsilon_{v},\ \epsilon_{v} \sim B(1, [\circ]\bar{x_{ij}}^{(CIM)})$$
+
+The use of the $\epsilon_{ij}$ term is a non-deterministic adaptation of the classical method which used ordinary rounding.
+
+ICS Item Correlation Substitution
+$$\hat{x_{vi}}^{(IC)} = x_{ig},\ g = \underset{l \in A(i),\ l \ne j}{argmax}\ \rho_{jl}(i)$$
+where $\rho_{jl}(i)$ is the correlation between between items $j, l$ and item $l$ is observed for subject $i$.
+
+There are also non-parametric alternatives of single imputation. Many are best suited for specific situations. For example, "last value carried forward" is only applicable in longitudinal, or time-based surveys. It can result in erratic reeadings for trends analysis. For missing data in a nominal variable it is sometimes acceptable simply to add a new category, "missing." Logical rules, survey structure or domain knowledge can be applied. For example, a respondent reporting low or moderate drinking might have the number of alcohol units per week imputed if missing. Similarly, someone reporting they worked zero hours per week might be also assigned an income of zero. @wu2015comparison mentions the use of a random forest in the literature which is explored because it can be applied to all kinds of categorical data, requires no distributional assumption and can model multi-way interaction. It is implemented in R in the missForest package, @R-missForest.
+
+The most important non-parametric imputation methods are generally referred to as "similar pattern response matching" [@joreskog2005structural p.3] and also Hot-deck imputation.  @gelman2006data seems to refer to Hot-deck and matching interchangeably, which seems reasonable given the descriptions of these elsewhere in the literature. @joreskog2005structural defines the intuition behind matching imputations as follows; If an individual with missing variable *x* has same response pattern in other variables as another case, then it's likely that variable *x* also matches. The article goes on to say that if multiple individuals are found with the matching response pattern then that's even stronger evidence for value *x*. @gelman2006data [p.538] describes the process as a "non-parametric version of regression" but it is not clear what the grounds are for this description. Certainly the method is useful where (linear) regression is challenging. Only @bono2007missing seems to differ, stating that the substitute value "may be selected simpy at random or using an elaborate scheme," the latter referring to similarity with other cases. This definition does not seem to be entirely correct in that the random case would be no different to naive random imputation and wouldn't use any information from the other cases. In fairness, the author quite rightly points out the main disadvantages with the method, which are defining and programmatically configuring the customized lookup and selection process for each variable.
+
+It should be noted that Cold-deck imputation is also mentioned in the literature, but only as a brief aside [@kowarik2016imputation; @bono2007missing; @gelman2006data]. In this process, substitute values are found by reference to prior studies, not the same dataset where the missing values are found. The names refer to old punch-card computer systems. The cold-deck was a previous run, while the Hot-deck was the current run literally still hot out of the card-reader. Cold-deck imputation is barely even mentioned, perhaps because it is just a historical curiosity and not considered useful. This is not made clear in any of the sources. The literature generally focuses on statistical and computational techniques.
+
+The physical, punch card based process would have been to sort the cards in a particular order and impute with the nearest available value. The computational evolution of Hot-deck imputation is to find donor cases using similarity scores between individual cases, using Euclidean distance, for example. In such cases, there would be an assumption that the matching variables would be numeric scales, where regression models presumably would also work and there would be a question as to why this method were chosen over one based on normal or multivariate normal assumptions. However, other similarity scores are available that suit categorical data better, and this is where the use of association rules may be fruitful.
+
+Importantly, the sources show that missing values can remain after this method and should be removed by listwise deletion. This point corroborates what this current research is hoping to achieve. The intention of this research is to go a step further and find all the similarity patterns.
 
 on a scoring functionAnother way is to use other variable to create a score for propensity to missingness and then use these values to impute missing. This one doesn't quite make sense and one has to assume it means use propensity score to find the donor cases to then impute missing.
 
-
-
-
-
-
-
-@shrive2006dealing as example of a "self-report" ordinal scale where multiple impute worked best, even for very high rates of missingness. Also one missing response in the whole instrument - makes it a real waste to use listwise deletion.
-
-@he2010missing stat on how many records lost in listwise deletion and good comparison of technique
-
-
-
-@plumpton2016multiple Complete case analysis is appropriate for MCAR but not if missing in covariates or parts of a composite outcome. If MCAR assumption does not hold, the complete case data will not be representative of the underlying population.
-
 ### Mulitple Imputation (MI)
 
-@graham2007many states that MI and FIML (full information maximum likelihood) are the two most common techniques used with missing data, but FIML is far more computationally expensive. @white2011multiple explains how MI uses EM to generate a multivariate normal model, in the form of a posterior distribution of the model parameters conditional on the observed data. Random draws are taken from this distribution to create a predictive model (usually a linear regression) which is then used to predict values for the missing data in the dataset, one variable at a time. The imputed values are introduced to the predictive model as it progresses over each variable. The predictions are repeated iteratively over each variable until the model converges or the maximum number of iterations is expended. The random draw and iterative prediction process are repeated m times, to create m completed datasets, differing only in the values of the substituted variables. Statistical and other analysis can be performed on the m imputations, and the results pooled. The variability in the imputed items introduces uncertainty into the analysis and the variance in estimates attributable to the missing data to be easily calculated.
+@graham2007many states that MI and FIML (full information maximum likelihood) are the two most common techniques used with missing data, but FIML is far more computationally expensive. @wu2015comparison lists a number of other disadvantages of FIML so for the purpose of this research, only MI will be considered to be the state of the art. Different authors refer to EM, data augmentation and Gibbs sampling underpinning MI but @wu2015comparison argues that all these are special cases of MCMC, so it would be fair to say that MI is a MCMC process, whatever the specific implementation.
 
-The name multiple imputation actually refers to the m imputations, but the literature contains many variations, referring sometimes to the EM algorithm, the multivariate model, the possibility of imputing more than one missing variable or the iterative process used to converge each of the m imputations. It is easy to see why the literature is inconsistent on this matter!
+** review the distinction between single and multiple - iterative process and MI **
+@wu2015comparison "The univariate approach is also called chained equation or sequential regression equation imputation because the variables are imputed separately and sequentially at each iteration." This is MICE - flexible to accomodated different data types.
 
-The theory established by @rubin2004multiple cited in @graham2007many and @schafer1997analysis cited in @graham2007many suggest m = 3-5 is enough imputations. These articles are cited very widely and are conferred a great deal of authority by other authors. Nevertheless, there are some disagreements; @wu2005role states that there is no support in the literature for the number 5 and that one imputation is often enough. In stark contrast, @graham2007many posits that 3-5 is nowhere near enough and @white2011multiple develops this further to suggests 1 imputation per 1% of missing data provides the same rule of thumb arrived at through other logic (go back and get precise) so it should be concluded that this is a very valuable method. With the power of modern computing today, it seems unnecessary to stick to a bare minimum number of runs. These days, it is probably trivial to increase m for all but the largest datasets, and there are no counter-indications for doing so.
+
+
+To begin, a random starting value is set for all missing values by sampling with replacement from the observed values or randomly drawn from a posterior distribution. Then new values are imputed one variable at a time, usually in order of ascending missingness, using all other values. When all variables have been imputed, this completes a cycle. For the first cycle, observed and initialized values are used. In subsequent cycles, observed and currently imputed values are used. The process iterates until convergence, i.e. the currently imputed values no longer change from one cycle to the next. After convergence, the model can be used to save imputations at specified intervales to avoid autocorrelations. The Amelia II package implements EM with boostrapping, in which boostrapped samples are used to generate the EM estimates of the prediction parameters. This can run in parallel and each bootstrap can generate separate, uncorrelated imputations.
+
+@wu2015comparison strategies for applying this to ordinal. Assume normality and accept imputation values on a continuous scale. Either use them raw or round them. Or use MICE with discriminant analysis to predict as categorical, or use multinomial or prop. odds. Prop odds assumes predictors have same influence over all categories, multinom does not. Prop. odds has fewer parameters. Finally can use latent variable strategy - predict as is normal then discretize based on threshold parameters.
+
+@white2011multiple explains how MICE uses EM to generate a multivariate normal model, in the form of a posterior distribution of the model parameters conditional on the observed data. Up to this point, the process is similar to the EM process described for single imputation. The multiple imputation procedure is to take random draws are taken from this distribution to create a predictive model (usually a linear regression) which is then used to predict values for the missing data in the dataset, one variable at a time. The imputed values are introduced to the predictive model as it progresses over each variable. The predictions are repeated iteratively over each variable until the model converges or the maximum number of iterations is expended. The random draw and iterative prediction process are repeated $m$ times, to create $m$ completed datasets, differing only in the values of the substituted variables. The name multiple imputation actually refers to the $m$ imputations, but the literature contains many variations, referring sometimes to the EM algorithm, the multivariate model, the possibility of imputing more than one missing variable or the iterative process used to converge each of the $m$ imputations. It is easy to see why the literature is inconsistent on this matter!
+
+@schafer1997analysis cited in @wu2015comparison describes the MI process as being made up of two steps. The posterior P-step and the imputation I-step. A dataset $D$ is comprised of observed data $D_{obs}$ and missing data $D_{mis}$. On iteration step $t$, P-step is to a random set of imputation are drawn parameter values $\theta^t$, is drawn from the posterior distribution of $\theta$ which is typically a vector of means and the corresponding covariance matrix.
+
+$$\theta^t \sim P(\theta \mid D_{obs}, \ D^{t-1}_{mis}) $$
+
+I-step is make a draw random for new values for $D^t_{mis}$ from the predictive distribution.
+$$D^t_{mis} \sim P(D_{mis} \mid D_{obs}, \ \theta^t)$$
+
+In the iterative univariate approach, the same process is followed for one variable at a time. Instead of two steps there are 2p steps where p is the number of variables.
+
+
+Any further statistical analysis should be performed on the each $m$ imputations and pooled. @graham2007many ** more  ** reports that the resulting estimates are unbiased. Furthermore, the variance in estimates attributable to the missing data can also be easily estimated using Rubin's rules. 
+
+The following example is adapted from @graham2007many and @leite2010performance. Let $q$ be a paremeter of interest, to be estimated from $m$ imputations.
+
+The point estimate be calculated as $\bar{q} = \frac{1}{m} \sum^m_{i = 1}\hat{q_i}$
+
+The within imputation variance $W_q = \frac{1}{m} \sum^m_{i = 1} SE^2_{\hat{q_i}}$
+
+The between imputation variance $B_q = \frac{1}{m-1} \sum^m_{i = 1} (\hat{q_i}-\bar{q})$
+
+The total imputation variance $T_q = W_q + (1 + \frac{1}{m})B_q$ and standard error $SE_q = \sqrt{T_q}$ which can be used for calculating the t-value of the parameter estimate and degrees of freedom is calculated as $df = (m-1)(1+\frac{mW_q}{m+1}B_q)^2$
+
+Another important formula in MI is the fraction of missing imformation (FMI). Although the proportion of missing data $\frac{|D_{mis}|}{|D|}$ may be useful in the simplest of cases, it doesn't account for increased information available if variables are highly correlated. FMI is estimated for each parameter that has been estimated from MI, using the specific $W$ and $B$ for that parameter estimate.
+
+Let $FMI = \gamma = \frac{\frac{r+2}{df + 3}}{r+1}$ where $r = \frac{1 + \frac{1}{m}B}{W}$
+
+FMI is used to determine the appropriate number for $m$, under the theory established by @rubin1987multiple cited in @graham2007many and @schafer1997analysis cited in @graham2007many. These authors are cited very widely and are conferred a great deal of authority by other authors. They suggest that $m$ = 3-5 is usually enough imputations. Nevertheless, there are some disagreements; @leite2010performance reports that $m$ = 5-10 is standard. It is not clear why there is this difference as the same secondary sources are cited. @wu2005role states that there is no support in the literature for the $m$ = 5 and that one imputation is often enough, but during this review it was the only article found to make the case that MI methods should be used for single imputation! A non-academic source was found which only used $m$ = 1 but this appeared to be a misunderstanding of the method. In stark contrast, @graham2007many demonstrates that $\gamma$ is poorly estimated for small values of $m$ using Monte-Carlo simulations and posits that 3-5 is nowhere near enough. In particular, they show that statistical power is very sensitive to small values of $m$. This is a crucial point because preserving statistical power is one of the major reasons for not using a simpler technique, such as list-wise deletion. @white2011multiple goes further, also using Monte-Carlo simulations, stating that results are not reproducible when $m$ is too low. The latter ran experiments showing a loss of precision of 3% which could make the difference between a p-value of 0.03 and 0.08, depending on the imputed values in the $m$ imputations. The authors cite other experiments that show a clear link between confidence interval widths and the fraction of missing information in tne dataset. As a result, they endorse the suggestion of 1 imputation per 1% of missing data. From the variety of experimental and formal evidence, it should be concluded that this is a valuable rule of thumb. With the power of modern computing today, it seems unnecessary to stick to a bare minimum number of runs for anything other than massive datasets with high incidence of missing data, @azur2011multiple. It should be fairly trivial to increase $m$ and there are no counter-indications for doing so.
 
 @plumpton2016multiple MI has taken a long time to gain in popularity despite the proven benefits. But there are specific issues with applying it to surveys with multi-item scales. Likert scales are not specifically mentioned but it is safe to assume this specific case is covered by the arguments given.
 
@@ -563,11 +712,17 @@ QUOTED
 
 King et al (2001) review many of the practical costs and benefits of multiple imputation. 
 
+Combined multiple impute equations on gelman p. 542
+and White on page 2
 
+
+@wu2015comparison [p.6] calls it "fully conditional imputation because prediction of missing data on one variable is conditional on the current values of all of the other variables at a specific iteration." @white2011multiple [p.378] call this "proper imputation, because it incorporates all sources of variability and uncertainty in the imputed values, including prediction errors of the individual values and errors of estimation in the fitted coefficients of the imputation model." @leite2010performance [p.65] states that "restores two sources of variability: the variability of each variable and the variability of the sample covariance matrix." A multivariate regression model is generated for each variable $z$ in turn, resulting in $\hat{\beta}$ and $V$, the vector of regression coefficients and corresponding covariance matrix. Let $\beta^*$ be a random draw from $\beta^* \sim MVN(\hat{\beta}, V)$. Imputed values for $z$ are drawn from this posterior prdictive distribution. MOSTLY QUOTED
+
+@white2011multiple describes how MICE handles different variable types. Handles non-normality by transformation or **predictive mean matching**. This is important because it is a concession that non-normality has to be addressed with a non-parametric process!
 
 @plumpton2016multiple quoted Multiple imputation for a single incomplete variable works by constructing an imputation model relating the incomplete variable to other variables and drawing from the posterior predictive distribution of the missing data conditional on the observed data [1]. The approach allows for uncertainty in the missing data values by introducing variability in the imputed items. In MICE, variables are initially ordered by level of missingness. Missing values are initially replaced for each variable, for example by drawing at random from the observed values of that variable. Imputation is then conducted on each variable sequentially using the observed and currently imputed values of all other variables in the imputation model. In order to stabilise, this imputation step (known as a cycle) is repeated (typically 10 times) to produce one imputed data set. The process is repeated until the desired number of imputed data sets is reached 
 
-@white2011multiple Multiple imputation by chained equations In large data sets it is common for missing values to occur in several variables. Multiple imputation by chained equations (MICE) [9] is a practical approach to generating imputations (MI Stage 1) based on a set of imputation models, one for each variable with missing values. MICE is also known as fully conditional specification [10] and sequential regression multivariate imputation [11]. Initially, all missing values are filled in by simple random sampling with replacement from the observed values. The first variable with missing values, x1 say, is regressed on all other variables x2,...,xk, restricted to individuals with the observed x1. Missing values in x1 are replaced by simulated draws from the corresponding posterior predictive distribution of x1. Then, the next variable with missing values, x2 say, is regressed on all other variables x1,x3,...,xk, restricted to individuals with the observed x2, and using the imputed values of x1. Again, missing values in x2 are replaced by draws from the posterior predictive distribution of x2. The process is repeated for all other variables with missing values in turn: this is called a cycle. In order to stabilize the results, the procedure is usually repeated for several cycles (e.g. 10 or 20) to produce a single imputed data set, and the whole procedure is repeated m times to give m imputed data sets. 
+@white2011multiple Multiple imputation by chained equations In large data sets it is common for missing values to occur in several variables. Multiple imputation by chained equations (MICE) [9] is a practical approach to generating imputations (MI Stage 1) based on a set of imputation models, one for each variable with missing values. MICE is also known as fully conditional specification [10] and sequential regression multivariate imputation [11]. Initially, all missing values are filled in by simple random sampling with replacement from the observed values. The first variable with missing values, x1 say, is regressed on all other variables x2,...,xk, restricted to individuals with the observed x1. Missing values in x1 are replaced by simulated draws from the corresponding posterior predictive distribution of x1. Then, the next variable with missing values, x2 say, is regressed on all other variables x1,x3,...,xk, restricted to individuals with the observed x2, and using the imputed values of x1. Again, missing values in x2 are replaced by draws from the posterior predictive distribution of x2. The process is repeated for all other variables with missing values in turn: this is called a cycle. In order to stabilize the results, the procedure is usually repeated for several cycles (e.g. 10 or 20) to produce a single imputed data set, and the whole procedure is repeated $m$ times to give $m$ imputed data sets. 
 
 Particular attention to multi-item scales: QUOTED
 As missing data in a single item of a multi-item scale leads to a missing total, the rate of missing data in scale totals can be very high. Imputing at the level of scale total whilst ignoring individual items may therefore introduce unnecessary bias.
@@ -580,6 +735,10 @@ However, the size and complexity of large survey data can cause complete MI pred
 QUOTED
 
 
+
+
+@shrive2006dealing as example of a "self-report" ordinal scale where multiple impute worked best, even for very high rates of missingness. Also one missing response in the whole instrument - makes it a real waste to use listwise deletion.
+
 MI is a maximum likelihood estimation, along with expectation maximization (EM). @plumpton2016multiple MI is robust to departures from normality, small sample sizes and high proportion of missing data. MI also less computationally expensive.
 
 but graphs in @plumpton2016multiple clearly show an attempt to use MI for continuous variables and it's not clear how this translates to categorical.
@@ -587,14 +746,152 @@ but graphs in @plumpton2016multiple clearly show an attempt to use MI for contin
 
 If missing data differ systematically from non-missing data, this is the MNAR case and is non-ignorable. Specifically, this means that list-wise deletion will lead to biased estimates of population parameters.
 
-## Measuring the Benefit of Imputation
+10. facotr analysis method
+500. plausible values
+has some stuff on missing data simul.
 
-The goal of imputation is to find substitute values for missing data that are neutral to or (preferably) enhance the results of subsequent data analysis. This requires different measures than a classification problem which measures accuracy by comparing predicted values to known values (although this can still be useful to do). Also, @jonsson2004evaluation shows that hot-decking methods, (which covers the association rules based method under investigation) do not always find a suitable donor value. This means that a final round of listwise deletion of remaining incomplete cases may still be necessary, with all the inherent assumptions and risks of such action. It suggests that succuss measures of an association rules based imputation method need to take into account the efficacy as well. Various metrics for evaluating and benchmarking imputation methods are suggested in the reference texts. Alternative approaches exist; pantanowitz2008evaluating is an example of indirectly ascertaining the quality of imputation by measuring the effect on prediction accuracy of a classification technique.
+From mi package vignette @su2011multiple
+The predictive mean matching method (mi.pmm()) works in the following way. For each observation
+with a missing value on a given variable, we find the observation (from among those
+with observed values on that variable) with the closest predictive mean for that variable.
+The observed value from this “match” is then used as the imputed value. Currently, these
+predictions are obtained from bayesglm(). However, we plan to extend the predictive mean
+matching options in the future. This method can be problematic when rates of missingness
+are high or when the missing values fall outside the range of the observed data. We are
+continuing to develop more flexible imputation models to better address the issue of creating
+appropriate imputations.
+
+carpita - approximate bayesian bootstrap. Draw a bootstrap sample from the observed data, then from this, draw with replacement some values for the imputation. Repeat for mulitple imputamtion, Do so within calsses for the Approximate bayesian bootstrap with propensity. They propose novel technique ABPN appox bayes boot with propensity and  nearest naightbour. Focus on likert byt say it could be used elsewhere. QUOTE  The bootstrap step allows to sample the parameters of the empirical distribution of the observed data before drawing from the posterior distribution of the incomplete data. QUOTE The propensity step is a logistic regression (L step) fo teh predictor variables against missing / non- missing - from a balanced sample. Sort by propensity into classes (P step) into n classes (carpita chose 4) Draw a bootstrap sample from within each class.
+Nearest neighbour N step: A fraction of complete cases from teh same class are taken,the nearest naighbours are found and a (ABB step) bootrap sample of these is taken. The donor case is randomly taken from these. Update the non-missing from the donor case.
 
 
-This work will use a combination of reference measures and indirect classification techniques to benchmark against state of the art imputation methods with a variety of datasets.
+carpita also raises the validity of treating "don't know" answers as missing, presumably could add this to "rather not say"
 
-@graham2007many has good formulas for calculating the variances properly. These formulas allow fo cases where independent variables are correlated with the missing data, so the fraction of missing information is sometimes less than the fraction of missing data. This fraction of missing information is unreliably estimated unless number of imputations is large. The biggest problem of not having enough imputations is the loss of statistical power compared to conventional wisdom of the subject and is most relevant in situations where accuarately identifying levels of risk is of most importance, such as reduction of risk and prevention science.
+## Success Criteria and Benchmarking of Imputation Techniques
+
+There has been much comparable research done on benchmarking imputation techniques. The following discussion covers the most noteworthy of these that will be used to inform the experimental design adopted for this project.
+
+The goal of imputation is to maximize the use of collected data by reducing or eliminating the incidence of missingness in the dataset. This is achieved by finding substitute values for the missing data. The results of analysing the imputed dataset should be enhanced when compared to a complete case analysis. As has been demonstrated in earlier sections, this is not achieved by minimising prediction error as in a regression problem. Similarly, comparing imputed values to known values is not the best way to measure success, although this can still be useful to do. It is more important to demonstrate that the statistical properties of the imputed variables have been maintained, and to be able to measure the additional uncertainty around any parameter estimates given the initial missing state of the data. Also, @jonsson2004evaluation shows that Hot-decking methods, (which covers the association rules based method under investigation) do not always find a suitable donor value. A poor quality imputation (one which yields inaccurate analyses) is worse than no imputation at all. Thus, there may be a trade-off between finding a value to substitute each and every missing data points and preserving statistical parameters. This means that a final round of listwise deletion of remaining incomplete cases may still be necessary, with all the inherent assumptions and risks of such action. These factors suggests that the succuss (or otherwise) of an association rules based imputation method also needs take into account the efficacy of finding substitute values. 
+
+Various statistics for evaluating and benchmarking imputation methods are suggested in the reference texts. Alternative approaches also exist; @pantanowitz2008evaluating is an example of indirectly ascertaining the quality of imputation by measuring the effect of imputation on prediction accuracy of a classification technique over the imputed dataset. As mentioned previously, @gelman2006data argued that there weren't well developed diagnostic tools to determine whether imputation had introduced any systematic problems, but some work has been done since the time of writing to develop these. Histograms and density plots, as well as scatter plots that highlight imputed data points are still a useful check.
+
+```{r leite-design-matrix, results='asis'}
+factor_name <- c("Number of ordinal categories"
+                , "Sample size"
+                , "Proportion of missing data"
+                , "Skewness and Kurtosis"
+                , "Missingness"
+                , "Inter-item correlation")
+factor_options <- c("3, 5, 7"
+                , "400"
+                , "10%, 20%, 30%"
+                , "See Leite and Beretvas (2010)"
+                , "MCAR, MAR by grouping variable"
+                , "0.2, 0.8 (uniformly applied)")
+
+bs_design_matrix <- knitr::kable(data.frame(
+  "Design Factor" = factor_name
+  , Options = factor_options
+  , check.names = FALSE)
+        , caption = "Experimental Design Matrix. Adapted from source: Leite and Beretvas (2010)")
+
+bs_design_matrix
+```
+
+@leite2010performance uses synthetic data generating 10 variables from a MVN model and an experimental design matrix as described in Table \@ref(tab:leite-design-matrix). Skewness and kurtosis are introduced after the MVN draw using a rather complicated transformation compared to other papers reviewed such as @plumpton2016multiple and @wu2015comparison. After these steps are complete, the variables are discretised to ordinal data types but a lot of care had to be taken with the thresholds to try to preserve the initial settings. 
+
+There are a number of problems with this research design. Firstly the MVN assumption that MI relies on has been built into the underlying data model. The MVN model also means that normality has been forced at the level of the individual items, and not at the level of a latent variable that the items represent. The inter-item correlation being uniformly set between all variables is also counter to the expectation that inter-item correlation should be high between related items of a scale but only coincidental between unrelated items. The authors claim that a ten-item scale approximates a survey, but doesn't account for Hinkin's recommended scale design of four to six items, @hinkin1997scale cited in @cas2016statistical. Just in terms of efficiency of a process, it seems that great care is taken to set up precise experimental conditions with a rather laborious process prior to the discretization step, only to have to measure everything again after and use the new values as starting conditions. 
+
+For the analysis phase, the coefficient of correlation for each pair of variables is analysed on the discretized data before and after imputation. Holding the sample size constant for all the experiments means that the within imputatation variance $W$ was also constant. This is a convenient way to avoid having explicitly to calculate according to Rubin's rules. The variance of the correlation estimate in the one thousand replicates of each condition could be taken as $B$, the between imputation variance. Unlike other papers, these authors don't exploit the Monte-Carlo error and emperical distribution to report 95% CI for the various statistics reported.
+
+The coefficient of correlation was measured in this experiment using Fisher's r-to-$Z_r$ transformation which corrects for non-normality in sampling distributions: 
+
+$$Z_r = \frac{1}{2} log(\frac{1+r}{1-r})$$
+The relative bias was also calculated as follows:
+
+$$B(\hat{Z_r}) = \frac{\hat{Z_r} - \zeta_p}{\zeta_p}$$
+where $\zeta_p$ is the population parameter, based up the initializing conditions. A value of < 0.05 is acceptable. 
+
+Under the conditions described, $B(\hat{Z_r})$ was always negative. The interpretation of this is that imputation always reduced the correlation between variables. The paper describes this as a desirable side-effect because it will reduce the power of statistical tests in accordance with the uncertainty introduced by missing data. However, no mention is made of the importance of reliability (iter-item correlations) for Likert scale analysis to be validated, which seems to be an important omission. The authors report that the MI process has been robust to violations of non-normality because the degree of skewness and kurtosis was not a significant factor in their results but, as mentioned, the underlying MVN may not have provided sufficient challenge to the MI technique.
+
+```{r wu-design-matrix1, results='asis'}
+var_type <- c("Both"
+              , "Both"
+              , "Both"
+              , "Ordinal only"
+              , "Ordinal only"
+              , "Dichotomous only"
+              , "Dichotomous only")
+imputation_methods <- c("Normal"
+                        , "Naive Rounding"
+                        , "Latent"
+                        , "Multinomial"
+                        , "Proportional Odds Model"
+                        , "Logistic Regression"
+                        , "Discriminant")
+ws_design_matrix <- knitr::kable(data.frame(
+  "Appropriate Data Type" = var_type
+  , "Imputation Strategy" = imputation_methods
+                  , check.names = FALSE)
+        , caption = "Withing Subjects Experimental Design Matrix: Imputation Strategies. Adapted from source: Wu et al. (2015)")
+
+ws_design_matrix
+```
+
+```{r wu-design-matrix2, results='asis'}
+factor_name <- c("Number of ordinal categories"
+                , "Sample size"
+                , "Proportion of missing data"
+                , "Asymmetry thresholds"
+                , "Imputation Strategy")
+factor_options <- c("2, 3, 5, 7"
+                , "125, 500"
+                , "30%, 50%"
+                , "See Rhemtulla et al. (2012)"
+                , "Simulation & Experimental")
+
+bs_design_matrix <- knitr::kable(data.frame(
+  "Design Factor" = factor_name
+  , Options = factor_options
+  , check.names = FALSE)
+        , caption = "Between Subjects Experimental Design Matrix: Conditions. Adapted from source: Wu et al. (2015)")
+
+bs_design_matrix
+```
+
+@wu2015comparison compares a number of single impuation techniques shown in Table \@ref(tab:wu-design-matrix1) by examining how well each recovers the reliability coefficient Cronbach's alpha, mean scale scores and coefficients estimated by regressing one scale on another. The data types in the design matrix unusually include a dichotomous ordinal option, leading to a slight flaw in that not every imputation strategy suits all the data so like-for-like comparisons can't be made across all conditions. Nevertheless, this is very useful when considering which is the right tool for the job at hand. 
+
+The design matrix show in Table \@ref(tab:wu-design-matrix2) is fairly typical of similar experiments except in the missing data proportions which were unusually high. The reason given by the authors was to shine a light on the differences between the methods. However, it cannot be stated with certainty that this is a sound approach because all methods perform poorly at this level of missingness. Such an experimental design risks missing the "sweet spot" where the more modestly performing techniques start to fail while the better techniques continue to do well. Another consequence of this is the higher computational requirement as $m = 50$ imputations were generated for each run, in accordance with @white2011multiple.
+
+Another key difference from other authors is that experimental design factors were listed by the authors as between subjects and within subjects. This was to provide clarity on the analytical method used for benchmarking and put emphasis on the purpose of the study, which was to compare different imputation strategies. The results were evaluated by means of a repeated measures ANOVA test.
+
+Synthetic data was generated from two underlying (latent) variables with loadings or 0.7, to yield 12 ordinal variables in two six-item scales, A and B. The mean within item correlation was 0.49 and between items was 0.15. Skewness was introduced by selection of appropriate thresholds for discretization accoding to the method in @rhemtulla2012can cited in @wu2015comparison. A single large dataset (N=500000) was generated to estimate the population parameters. The reasoning behind this was that the parameters cannot be analytically determined after the discretization process. This seems to be a much more pragmatic approach and gives an improved representation of Likert scales data than the one used in @leite2010performance. 
+
+**put the thresholds used in the my appendices**
+
+To create a MAR process, two auxiliary, continuous variables were created and used to generate the missing values on the ordinal variables. Aux 1 was rank ordered and assinged a probability of $P = 1 - \frac{rank(Aux1)}{N}$. Values of A1-3 were set to missing if the probability of random variable $X \sim \mathcal{U}(0,\ 1) < P$. A similar process was carried out for variables B1-3. They were set to missing if $X < P = 1 - \frac{rank(Aux1 + Aux2)}{N}$ and the process was stopped after the desired missing proportion was reached.
+
+For the various statistical analyses conducted on the imputed data, the standardised bias of any parameter $\theta$ was calculated as:
+
+$$B_{std} = \frac{(\frac{1}{q}\sum^q_{i=1}\hat{\theta_i}) - \theta_p}{s_{\theta}}$$
+where $q$ is the number of replications of the experiment and $s_{\theta}$ the empirical standard deviation of parameter across all replications.
+
+And the mean squared error as:
+$$MSE =\frac{1}{q}\sum^q_{i=1}(\hat{\theta_i} - \theta_p)^2$$
+
+The ratio of MSE of any test model to the MSE of the benchmark (normal) model was also measured:
+
+$$MSE\ Ratio = \frac{MSE_{test}}{MSE_{norm}}$$
+A model performing better than the benchmark will have $MSE\ Ratio < 1$.
+
+Confidence intervals at the 95% level were also calculated using the usual Student's T distribution, while for Cronbach's alpha, the following calculation was used:
+
+$$CI_{upper} = 1 - [(1 - \hat{\alpha}) \times \mathcal{F}_{(\gamma/2, \ df_1, \ df_2)}] $$ 
+$$CI_{lower} = 1 - [(1 - \hat{\alpha}) \times \mathcal{F}_{(1-\gamma/2, \ df_1, \ df_2)}] $$ 
+Where $\mathcal{F}$ is the F distribution, $\gamma$ is the desired significance level, $n$ is the sample size, $p$ is the number of items, $df_1 = (n-1)$ and $df2 = (n-1)(p-1)$.
+
+CI coverage was also calculated as the proportion of 95% CIs (generated by one thousand replications of each experiment) that contained the population parameter. This is a well chosen use of the empirical distribution of CIs as it specifically addresses the research question of how well the underlying population parameters are recovered by the various imputation strategies.
+
 
 
 ## Association Rules
@@ -602,7 +899,7 @@ This work will use a combination of reference measures and indirect classificati
 Association rules mining (ARM) was first popularised by the development of a fast algorithm for large databases, *apriori*, in @agrawal1993mining. It was developed in response to the vast amount of data collected by large retail enterprises on their customer purchase data. 
 Many of the fundamental concepts of ARM were formalised in @agrawal1993mining article and its follow up, @agrawal1994fast which are considered to be the seminal works on the topic. The following definitions are adapted from @agrawal1994fast [p.2] and @tan2005chapter6 [pp.329-330]:
 
-Let $I = \{i_1, i_2,\dots, i_k\}$ be the set of all items. Let $T = \{t_1, t_2,\dots,t_N\}$ be a set of $N$ transactions where each transaction $t_j \subseteq I$. A transaction $t_j$ is said to contain an itemset $X$ (a set of some items in $I$) if $X \subseteq t_j$.
+Let $I = \{i_1,\ i_2,\ \dots,\ i_k\}$ be the set of all items. Let $T = \{t_1,\ t_2,\ \dots,\ t_N\}$ be a set of $N$ transactions where each transaction $t_j \subseteq I$. A transaction $t_j$ is said to contain an itemset $X$ (a set of some items in $I$) if $X \subseteq t_j$.
 
 The brute force method of computing all possible rules in a transaction set of N possible items is $O(3^N)$. When it emerged, *apriori* was described as a "fast" algorithm because it outperformed everything that came before. It is still widely used today. @tan2005chapter6 explains that to achieve its objective of efficiently finding useful association rules, ARM must solve two distinct problems:
 
@@ -611,7 +908,7 @@ The brute force method of computing all possible rules in a transaction set of N
 
 These challenges are addressed under the *apriori* algorithm by searching the database iteratively for itemsets that occur more frequently than a given probabilistic threshold, known as *support*. Rule discovery is deferred until all frequent itemsets are found i.e those occuring with > minimum support.
 
-**Support for itemset $X$ in Transaction Data $T = \{t_1, t_2,\dots,t_N\}$** $$Supp(X) = |\{t_j|X \in\ t_j, t_j \in T\}| = \frac{|X|}{N}$$
+**Support for itemset $X$ in Transaction Data $T = \{t_1,\ t_2,\ \dots,\ t_N\}$** $$Supp(X) = |\{t_j|X \in\ t_j, t_j \in T\}| = \frac{|X|}{N}$$
 
 At iteration n, the support for each itemset of size n is calculated. So the first iteration finds all the individual items. Each subsequent iteration, new candidate itemsets with n members are formed by merging smaller itemsets from the growing collection using a method to ensure duplication does not occur (not discussed here). At each iteration, any that fail to meet the minimum *support* are pruned and ignored henceforth. This rapidly reduces the search space and works because of the anti-monotone property of support; $\forall X,Y : (X \subseteq Y) \longrightarrow Supp(Y) \le Supp(X)$, that is to say, support for an itemset never exceeds support for any of its subsets, @tan2005chapter6.
 

@@ -39,7 +39,8 @@ options(xtable.comment = FALSE)
 knitr::write_bib(c(
   .packages(), 'bookdown', 'knitr'
   , 'rmarkdown', 'lattice'
-  , 'arules'
+  , 'arules', 'arulesViz'
+  , 'missForest', 'mi'
   , 'ordPens', 'ordinal'
 ), 'packages.bib')
 library(lattice)
@@ -53,7 +54,7 @@ With special thanks to my supervisor, Professor Mohamed Medhat Gaber for guidanc
 
 To my mother, without whom none of this would be possible.\newline
 
-To Daniel, "you are a positive motivating force within my life."\newline
+To Daniel, "you are a positive, motivating force within my life."\newline
 
 OxIS 2013 databases provided by the Oxford Internet Institute on 21/04/2017.\newline
 

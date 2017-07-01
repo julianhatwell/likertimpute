@@ -160,6 +160,7 @@ z.out.imp <- zelig(tariff ~ polity +
 summary(z.out.imp)
 
 # VIM
+library(VIM)
 # good information in vignette about other packages
 # VIM vignette package demo using MCAR
 # VIM is single imputation methods
@@ -405,3 +406,8 @@ summary(iris.combi)
 beta <- MIextract(model1, fun=coef)
 vars <- MIextract(model1, fun=vcov)
 summary(MIcombine(beta,vars))
+
+library(mi)
+resp <- char_to_na(responses)
+mi.info(resp)
+resp.mi <- mi::mi(resp)

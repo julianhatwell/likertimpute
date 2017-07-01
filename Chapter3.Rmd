@@ -1,5 +1,53 @@
 # Research Methods
 
+This work will use a combination of reference measures and indirect classification techniques to benchmark against state of the art imputation methods with a variety of datasets.
+
+The experiments designed for similar research follow a common pattern. Firstly, various design factors can be manipulated to assess imputation methods under different conditions:
+
+* Sample size choice was quite variable among the papers reviewed, ranging between 200 to 1250.
+* The proportion of missing data is usually varied in regular increments between 0.1 and 0.5
+* The most common missingness mechanism tested in MAR because this is well suited to testing the performance of MI. MCAR is less well test, presumably because it is considered ignorable and rare in real world scenarios. Tests of MNAR are fewer in number, perhaps because the general consensus in the literature is that this is an intractable problem. However, @carpita2011imputation is investigating a non-parametric method and does explore the MNAR scenario, offering methods to synthesise this kind of data.
+* Statistical properties of the variables are varied. It is common to see investigations of the effects of different levels of inter-item correlation, and skewness introduced into synthetic datasets.
+* Vary item score of Likert scales between 3, 5 and 7.
+* Vary m the number imputation for MI
+
+Most researchers conducted each experiment in their design matrix 1000 times and followed a process generally similar to the following:
+
+Master step, optional: For synthetic data, a huge sample e.g. 500000 was generated and the population statistics were measure from this. 
+
+1. If synthetic data was used, this was generated using a non-deterministic process. In the case of real-world data, the common practice was to take bootstrap samples from the complete cases for each run. 
+1. Once the experimental data were generated, the statistics of interest were measured on the complete dataset.
+1. A synthetic missing data process was run.
+1. Optional step: The statistics of interest were estimated in the complete cases scenario.
+1. The imputation method was run.
+1. The statistics of interest were estimated were measured again.
+
+This method is useful as it introduces Monte Carlo error into the estimation process. Researchers were then able to quote a mean with 95% confidence from the empirical distribution of each statistical test.
+
+
+@white2011multiple uses 100 imputations on MI when comparing methods and looks at regression coefficients and st. err. Very little detail. Not clear which is correct as only values given and not relative to something. Recommends Wald tests (Likelihood ratio - ordpesns, I think)
+
+@graham2007many uses monte carlo sims. has good formulas for calculating the variances properly. These formulas allow fo cases where independent variables are correlated with the missing data, so the fraction of missing information is sometimes less than the fraction of missing data. This fraction of missing information is unreliably estimated unless number of imputations is large. The biggest problem of not having enough imputations is the loss of statistical power compared to conventional wisdom of the subject and is most relevant in situations where accuarately identifying levels of risk is of most importance, such as reduction of risk and prevention science.
+
+
+
+
+@plumpton2016multiple conducts an assessment of a novel method of multiple imputation because the MI of their chosen dataset is computationally infeasible. The dataset came from a peer-reviewed study and there is no reason to doubt the suitability of it for their experiment. They also assess the feasibility of their approach. They assess their results using a simulation study and compare with other approaches. They repeated their test 1000 times. Simulated MAR data in two variables. They followed the 1 imputation for 1% missing data.
+
+– Base case: 35% had all items missing for a scale; 8% had one or two items missing.  – More incomplete observations with partial data: 18% had all items missing for a scale; 25% had one or two items missing. – Fewer observations with complete data: 55% had all items missing for a scale; 15% had just one or two missing.
+
+They analysed statistics (means, slope/coefficient, st.errs) and measured the % bias compared to complete case analysis. 95% confint with Monte-Carlo. Also coverage and efficiency. Provide a table of the missing data patterns in the results. Also measure difference in significance/confidence. Standard errors of CC should be bigger because fewer cases. Use of forest plots to show bias and confint differences. And dot plots.
+
+
+
+Comparative methods: Complete case, Within scale mean (for a specified likert scale), replace partially missing scale with an imputed scale sum (comment that this is wasteful of observed data). MI as standard.
+
+
+
+From @su2011multiple When imputing large-scale surveys to create public-use multiply
+imputed datasets, several hundred variables might need to be imputed.
+
+
 ## refer to 1002. Computer Science Research Methods Amaral 2011
 
 Research is the order you do things to meet your objectives.
@@ -26,6 +74,52 @@ penalised regression - do parameters change?
 
 don't forget to use utility functions to get MSE, RMSE, MAD etc.
 
+carpita drew complete cases from his real data 500, 1000 and 2000 samples.
+Good way of simlulating different MAR MNAR etc. 0.1, 0.2 and 0.3 proportions missing.
+Repeat experiments 1000 times.
+
+
+
+Imputation methods shown to be effective on Likert:
+
+
+Missing data mechanisms:
+MCAR - fixed proportion randomly deleted.
+Let $Z$ be the vector or covariates e.g. if the are two covariates then $z_{ih}$.
+Randomly divide the data in two parts. 3/5 subjected to the mechanism and 2/5 are held back to ensure there is a high enough proportion of complete.
+
+MAR
+$$P(m_{ij} = 0 \mid z_{i1},\ z_{i2}) = \frac{exp(\alpha_0 + \beta_1z_{i1} + \beta_2z_{i2})}{1 + exp(\alpha_0 + \beta_1z_{i1} + \beta_2z_{i2})}$$
+MNAR (NRX)
+$$P(m_{ij} = 0 \mid \bar{x_{i+}},\ \bar{x_{+j}}) = \frac{exp(\alpha_0 + \gamma_1 \bar{x_{i+}} + \gamma_2 \bar{x_{+j}})}{1 + exp(\alpha_0 + \gamma_1 \bar{x_{i+}} + \gamma_2 \bar{x_{+j}})}$$
+
+MNAR (NRXZ) - not at random with covariates
+$$P(m_{ij} = 0 \mid z_{i1},\ z_{i2},\ \bar{x_{i+}},\ \bar{x_{+j}}) = \frac{exp(\alpha_0 + \beta_1z_{i1} + \beta_2z_{i2} + \gamma_1 \bar{x_{i+}} + \gamma_2 \bar{x_{+j}})}{1 + exp(\alpha_0 + \beta_1z_{i1} + \beta_2z_{i2} + \gamma_1 \bar{x_{i+}} + \gamma_2 \bar{x_{+j}})}$$
+
+In carpita, the $\beta$ and $\gamma$ terms are held constant and $\alpha_0$ is varied to alter the proportion of missing values to get the desired amount. Item is classified as missing if $P(m_{ij} = 0 \mid,\ \dots\ ) \le u_{ij},\ u_{ij} \sim \mathcal{U}(0,\ 1)$
+
+There are various corrections to keep the data missing proportions exact.
+
+Measure Cronbach's alpha relative error:
+
+$$CAE^* = \frac{\alpha^* - \alpha}{\alpha}$$
+Can give an equation for alpha
+
+Scale Score Error. Let $A'(i)$ be the set of indices of non-available items for subject $i$ and $B'(j)$ be the set of indices non-available subjects for item $j$
+Consider the total score obtained for $k$ items with complete data $x_{i+}$ and with imputed data $\hat{x}^{(*)}_{i+}$ For subject $i$ the scale score error is
+
+$$c^{(*)}_{i+} = \hat{x}^{(*)}_{i+} - x_{i+} = \sum^n_{j \in A'(i)} (\hat{x}^{(*)}_{iv} - x_{iv}),\ i \in B'(j)$$
+Mean Absolute Scale Error
+$$MASE^{(*)} = \frac{\sum^p_{i \in B'} |c^{(*)}_{i+}|}{q},\ q = count(B')$$
+
+
+$$\sum(\hat{x^*}$$
+
+Shrive - mean and sd, compare with known. Spearmans corrlation of overall scale score, and kappa of classification accuracy.
+
+Plots of observed vs predicted - very useful
+has an interesting looking write up / evaluation.
+
 ## R Packages
 
 psych (cronbachs)
@@ -33,6 +127,13 @@ ordPens, ordinal
 arules (apriori and eclat), arulesViz
 arulesCBA, arulesNBminer (classification)
 amelia, vim, mice, mi
+
+polr ordered categorigal (Market Research R book to check) and also 
+https://www.analyticsvidhya.com/blog/2016/02/multinomial-ordinal-logistic-regression/
+
+mi is written by gelman and hill (and others)
+
+mi package has possibility to add noise on different rounds of imputation. (dealing with determinism)
 
 VIM good information in vignette about other packages
 KNN imputation is computationally expensive because of calculating dist each time. ref vim vignette
@@ -152,3 +253,12 @@ more in Carpita
 Future work could try a non-deterministic approach, using a choice from the top n donor values rather than picking the top 1.
 
 Future work, could try a MICE approach - iterative cycle over imputation and look for a convergence.
+
+## Packages
+Go through imputation play and vignettes agains to use as demos
+
+packages norm cat mix pan
+
+
+There's an empirical example at the end. Worth following up. (Wu2015)
+Wu's results and conclusions, worth writing up? Question remains (they raise themselves) that their experimental data was generated by latent variable model and this model performed very well in there simulation.
