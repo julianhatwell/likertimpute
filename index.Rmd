@@ -41,6 +41,7 @@ knitr::write_bib(c(
   , 'rmarkdown', 'lattice'
   , 'arules', 'arulesViz'
   , 'missForest', 'mi'
+  , 'Amelia'
   , 'ordPens', 'ordinal'
 ), 'packages.bib')
 library(lattice)

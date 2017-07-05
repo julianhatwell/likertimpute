@@ -6,20 +6,20 @@ In this section, the motivation and rationale are established along with a prime
 
 Surveys are an ubiquitous research tool, used in the widest variety of disciplines. Due to the practicalities of running surveys, they are highly prone to non-response and therefore, missing data. If handled incorrectly, this can cause loss of statistical power and biased parameter estimates. The consequences of which are an increase in the likelihood of drawing incorrect inferences and erroneous conclusions from the research. These are non-trivial problems which at best can tarnish reputations and incur expense of repeated studies, and at worst can affect social and economic policy making, business strategies and clinical results. 
 
-** evidence **
+**evidence**
 
 A problem of such magnitude would not have gone ignored to date, and there is much academic research including seminal works dating back to the last four decades. As a result, there exist already well-performing techniques to recover statistical analysis from the situation of missing data in proportions even as high as thirty per cent. Most important of these techniques is imputation, which is to substitute missing values with suitable or "plausible" values. However, these techniques rely on assumptions about the data, such as multi-variate normality, which simply do not hold for surveys which are mostly made up of categorical data types (binary, nominal, ordinal and Likert). There is a gap in the research around techniques more suitable for caterogical data types.
 
-** evidence **
+**evidence**
 
 Since association rules mining (ARM) was proposed, the concept has been the subject of intense research. ARM is best suited to applications on categorical data. While the technique is inherently a descriptive, knowledge discovery tool, it has been successfully adapted for classification but a detailed review of the literature finds no previous examples of an association rules based method for imputation, despite compelling evidence that such a method should give useful results.
 
-** evidence **
-** why has no-one tried it **
+**evidence**
+**why has no-one tried it**
 
 This project attempts to bridge gaps in these areas of research by investigating whether a novel technique, based on ARM for the imputation of categorical data, would be more effective than the current state of the art. This will be quantitative research, based on well-established experimental designs for assessing the performance of data imputation techniques and benchmarking against the state of the art. Theoretical performance is evaluated using synthetic datasets and case studies with real world data are used to demonstrate common issues faced in practical application.
 
-** citations of the experimental designs **
+**citations of the experimental designs**
 
 ## Contribution of This Work
 
