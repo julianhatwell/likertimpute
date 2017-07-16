@@ -41,13 +41,28 @@ knitr::write_bib(c(
   , 'rmarkdown', 'lattice'
   , 'arules', 'arulesViz'
   , 'missForest', 'mi'
-  , 'Amelia'
+  , 'Amelia', 'VIM'
+  , 'psych', 'cocor'
+  , 'lavaan'
   , 'ordPens', 'ordinal'
 ), 'packages.bib')
 library(lattice)
 library(latticeExtra)
 source("MarketingTheme.R")
 ```
+
+# List of Abbreviations {-}
+
+EM - Expectation Maximization\newline
+FIML - Full Information Maximum Likelihood\newline
+FMI - Fraction of Missing Information\newline
+MCMC - Monte Carlo Markov Chain\newline
+MCAR - Missing Completely at Random\newline
+MAR - Missing at Random\newline
+MNAR - Missing not at Random\newline
+MI - Multiple Imputation\newline
+MICE - Multiple Imputation with Chained Equations\newline
+SEM - Structural Equation Model\newline
 
 # Acknowledgements {-}
 

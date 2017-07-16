@@ -2,3 +2,16 @@
 .Rhistory
 .RData
 .Ruserdata
+*.csv
+*.pdf
+*.xml
+*.jpg
+*.sav
+*.bbl
+*.log
+*.toc
+*.xls
+*.txt
+/_book
+/_bookdown_files
+/figure

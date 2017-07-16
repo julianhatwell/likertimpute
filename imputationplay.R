@@ -411,3 +411,10 @@ library(mi)
 resp <- char_to_na(responses)
 mi.info(resp)
 resp.mi <- mi::mi(resp)
+
+
+
+
+# TestDataImputation has a PersonMean and others
+
+# maybe get alpha confidence intervals by bootstrapping psych package.

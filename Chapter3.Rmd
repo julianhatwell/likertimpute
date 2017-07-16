@@ -1,11 +1,205 @@
-# Notes still to tidy
+# Research Methods
+
+Common design patterns have been identified from similar research found in the literature. These were discussed in the literature review section. The following paragraphs provide a further evaluation with a view to formulating a template experimental design for the applied experimental stage of this project.
+
+## Experimental Design Factors
+
+\textbf{Sample size choice:} This was quite variable among the papers reviewed, ranging between 200 to 2000. The choice is frequently a trade off between precision and computational cost. This research will test three different samples sizes; 500, 1000, 1500 which covers a broad range.
+
+\textbf{Proportion of missing data:} This was usually varied in regular increments between 0.1 and 0.3, though ranged as high as 0.55 in the articles reviewed. A proportion of 0.5 or greater is only suitable for finding the limits of a technique, rather than benchmarking, because all techniques are challenged. This research will use proportions of 0.1, 0.2 and 0.3.
+
+\textbf{Missingness patterns:} The most common missingness mechanism tested is MAR because many papers on this topic refer specifically to MI, with its underlying MVN assumptions. MCAR is less well tested, presumably because it is considered ignorable and rare in real world scenarios. Tests of MNAR are even fewer in number, perhaps because the general consensus in the literature is that this is an intractable problem. However, the most relevant paper to this research describes an experimental process with detail on the generation of two different kinds of MNAR patterns which are relatively trivial to implement. As this project is investigating a novel approach, it would be interesting to look for any niche applications of the technique, such as effectiveness in the MNAR scenario. Therefore this project will make use of a wide variety of patterns, including MNAR.
+
+\textbf{Range of item scores:} Articles that focussed on ordinal and Likert scales varied the number of levels among 2, 3, 5, 6, and 7. In the literature on Likert scales, the values of 5 and 7 are very common and others are rarely seen. Therefore, to maintain this project's focus on Likert scales and similar types, the values will be restricted to 5 or 7.
+
+\textbf{Range of technique applied in benchmarking:} The relevant articles are very varied on this point and many report the inclusion of mean imputation, regression imputation and list-wise deletion. This may be a symptom of the relative age of some of the research, or potentially flaws in the research design. It is not considered worthwhile to compare any novel technique to those techniques regarded as flawed or outdated in the modern literature. This research will focus on techniques that are considered state of the art and those that are proven to be effective on surveys and questionnaires and non-normally distributed data types. MICE, non-parametric (Hot-deck and nearest neighbours), ABP, person-item mean, two-way imputation and item correlation substitution are considered. List-wise deletion is of interest for comparison only in the MCAR case, but will be applied across all experiments to ease the automation.
+
+\textbf{The number of imputations in multiply imputed techniques:} Based on the findings in the literature review, a rule of thumb of 1 imputation per 1% of missing data will be applied for any techniques that perform any kind of MI.
+
+\textbf{Data distributions:} Some experiments generated synthetic data with different levels of skew, kurtosis and bi/multi-modality and inter-item correlation. There was a great variety of methods implemented, ranging from the very precise but very complicated, to the more pragmatic and approximate. During the literature review, it was observed that there is no real value added by creating very precise distributional qualities on an initially continuous variable, given the fact synthetic data synthetic data has to be discretized into an ordinal scale for the experimental work. This research will therefore adopt the more pragmatic approach, generating the data required using approximate techniques and accepting the resulting empirical distributions as population parameters for the starting conditions. This also means that experiments with synthetic and real-world data are easier to compare.
+
+\textbf{Synthetic or real-world data:} Many experimenters use synthetic data because of the possibility to set up precise initial conditions. However, there is a possibility to introduce design bias through the choice of model that generates the data. As this project is investigating a novel approach, it would be interesting to look for any niche applications of the technique, such as effectiveness in data with unusual underlying models or distributions. Therefore this project will make use of a selection of generative methods as well as real-world data.
+
+\textbf{Number of experimental replications:} One thousand replications per set of initial conditions was a consistent choice among the papers review.
+
+```{r hatwell-design-matrix, results='asis'}
+factor_name <- c("Number of ordinal categories"
+                , "Sample size"
+                , "Proportion of missing data"
+                , "Missing data mechanism"
+                , "Imputation Strategy"
+                , "Benchmark Methods"
+                , "Experimental Data")
+factor_options <- c("5, 7"
+                , "500, 1000, 1500"
+                , "10%, 20, 30%"
+                , "MCAR, MAR, MNAR"
+                , "Benchmarking novel ARM-based method"
+                , "PM, CIM, TW, ICS, MICE, ABP, H-d"
+                , "Synthetic, semi-synthetic and real-world sub-sample")
+
+cp_design_matrix <- knitr::kable(data.frame(
+  "Design Factor" = factor_name
+  , Options = factor_options
+  , check.names = FALSE)
+        , caption = "Experimental Design Matrix: Conditions. Adapted from source: Carpita and Manisera (2011)")
+
+cp_design_matrix
+```
+
+
+## Methodology
+
+The practical application of the chosen methodology is as follows:
+
+For one set of initial conditions:
+
+1. For synthetic data, a very large sample of 500000 was generated and the population statistics were measured from this. For real-world data, the sample statistics are taken as population statistics prior to any further data preparation (bootstrapping,  subsampling, etc)
+1. Generate (synthesis or bootstrapping) one thousand replicates of the dataset
+1. Generate the missing data pattern on each replicate
+1. Run each imputation method with its own copy of the replicate
+1. Estimate the statistics of interest included comparisons relative to population.
+1. Pool results
+
+This method is useful as it introduces Monte Carlo error into the estimation process. All statistics of interest can be quoted as a mean with 95% confidence from the empirical distribution of each statistical test. ANOVA tests are possible to look for significant difference is performance between the design factors, if required.
+
+## Datasets
+
+To generate synthetic datasets containing 5-level item scales, the parameters given in @de2010five are used. These distributions are categorized by friendly names such as "Very Strongly Agree" and "Neutral to Disagree." The expected values for the meta-population statistics are given in the article and can be easily compared to the generated data to ensure it fits the intended distribution.
+
+To generate synthetic datasets containing 7-level item scales, the steps given in @wu2015comparison are followed:
+
+1. Generate data on a continuous scale using SEM [lavaan package; @R-lavaan] with the desired inter-item relationships.
+1. Discretize the resulting data using the thresholds given in @rhemtulla2012can cited in @wu2015comparison. This provides a standard method for 7-level items with symmetric, moderately skewed and severely skewed distributions are possible.
+
+The following real-world datasets have also been assessed:
+
+* wiki4HE dataset (UCI Machine Learning Repository) [@meseguer2014factors; @gunduzfokoue2013]
+
+```{r wiki4HE_data}
+wiki4 <- read.csv("wiki4HE.csv"
+                  , sep = ";"
+                  , na.strings = "?")
+```
+
+* Turkiye Student Evaluation (UCI Machine Learning Repository) @gunduzfokoue2013
+
+```{r turkiye}
+turk <- read.csv("turkiye.csv")
+```
+
+* Young People's Survey Dataset [@yps2013]
+
+```{r young}
+yps <- read.csv("responses.csv")
+```
+
+* Job Satisfaction and Procedural Fairness data sets @carpita2011imputation
+
+```{r carpita}
+library(xlsx)
+read_jspf <- function(sheet, cols) {
+  read.xlsx2("JSPF.xls"
+          , sheetName = sheet
+          , stringsAsFactors = FALSE
+          , colClasses = c("numeric"
+                           , "character"
+                           , rep("numeric", cols)))
+}
+
+js <- read_jspf("JS", 13)
+pf <- read_jspf("PF", 10)
+```
+
+* OxIS 2013 databases provided by the Oxford Internet Institute on 21/04/2017.
+
+```{r oxis}
+oxis <- read.csv("oxis.csv")
+names(oxis)[1] <- "qa01a"
+```
+
+* The [Online Personality Test (not clinically administered)](http://personality-testing.info/)
+
+```{r optest}
+temp <- tempfile()
+download.file("http://personality-testing.info/_rawdata/BIG5.zip", temp, mode="wb")
+perstest <- read.table(unz(temp, "BIG5/data.csv"), header = TRUE, sep="\t")
+unlink(temp); rm(temp)
+```
+
+## Programming Environment
+
+The R programming environment, @R-base has been selected for the implementation of this project. Only R and Python offer pre-existing sets of relevant, open source libraries and functions plus unlimited extensibility through a functional and object oriented programming paradigm but R is selected based on the Skills Audit conducted for the project research proposal. Other tools considered and ruled out were:
+
+* SAS Software. All analytical procs are compiled programmes and can't be extended. Macro language is a limited set of data and file manipulation functions.
+* Oracle Data mining. A point and click canvas, lacking the programmability required.
+* RapidMiner. A point and click canvas, lacking the programmability required.
+* Python. This could be a viable alternative but would require additional time for the researcher to reach an adequate level of competence. Python offers a native library based on the FP-growth algorithm, which is significantly faster than *apriori* which is an advantage over R. An FP-growth reference implementation is available to R but only via C integration. However, the efficiency of the ARM algorithm should only be of concern for huge datasets and not under the experimental conditions foreseen for this project.
+
+## R Packages
+
+R's extensive library of add-on packages has been surveyed in parallel with literature review. The following is a listing of packages that contain at least one key function or dataset that will be used during the applied phase of the project:
+
+* psych, @R-psych contains a suite of functions for analysing Cronbach's alpha, McDonald's Omega as well as a Fisher's r-to-$Z_r$ transformation.
+
+* cocor, @R-cocor contains functions for comparing correlations in detail
+
+* lavaan, @R-lavaan is a library dedicated to Latent Variable Analysis. It contains a suite of functions for generating synthetic data based on any specified model of latent and interacting factors. It will be used to model data in a similar manner to the experiments carried out in @wu2015comparison following the techniques described in @chapman2015r
+
+* Amelia II, @R-Amelia is a package for running a modified version of classic MI, i.e. based on EM and a MVN joint distribution and not chained equations. The computational challenges are overcome by a bootstrapping step. For ordinal data, the package authors recommend either accepting a continuously valued imputation, or applying a built-in transformation which is essentially the same as the non-deterministic rounding described in @carpita2011imputation. It is a very comprehensive implementation with advanced features such as the ability to configure cell level priors to introduce domain knowledge into the model and diagnostic features to check goodness of fit.
+
+* VIM, @R-VIM is a package that provides some imputation methods not available elsewhere including Hot-deck and nearest neighbours as well as a huge suite of diagnostic plots for visualizing missingness and imputed values.
+
+* Other packages may be used for utility functions but not all will be listed where not specifically related to the research.
+
+ordPens, ordinal
+arules (apriori and eclat), arulesViz
+arulesCBA, arulesNBminer (classification)
+mice, mi
+semTools, semPlot
+car (nice splom) and RColourBrewer
+
+polr ordered categorigal (Market Research R book to check) and also 
+https://www.analyticsvidhya.com/blog/2016/02/multinomial-ordinal-logistic-regression/
+
+mi is written by gelman and hill (and others)
+
+mi package has possibility to add noise on different rounds of imputation. (dealing with determinism)
+
+## Package Authoring
+
+To facilitate the automation of experiments, the novel technique will be developed as an R package. This will encapsulate all the programmatic code and will ensure code re-use to help minimize scripting errors. In addition to the imputation method, a number of utility and convenience functions will also be contained in the package.
+
+By following the best practice guidance in @Wickham:2015:RP:2904414, it is hoped that the package will be produced of a quality suitable for publication on the Comprehensive R Archive Network (CRAN), which is the primary repository for published R packages. It is curated to ensure that packages meet a set of strict guidelines, which helps to ensure consistency and reliability for other users.
+
+
+## Notes still to tidy
+
+
+
+use a combination of reference measures and indirect classification techniques to benchmark against state of the art imputation methods with a variety of datasets.
+
 
 @white2011multiple alternative descriptions of Normal, Logistic and other models of imputation used in Wu et al. uses 100 imputations on MI when comparing methods and looks at regression coefficients and st. err. Very little detail. Not clear which is correct as only values given and not relative to something. Recommends Wald tests (Likelihood ratio - ordpesns, I think). Their apporach is deliberately "not meant to be definitive." Guards against using normal assupmtions on skewed data because results will not resemble the original scale ("lack of face value validity" p.381). Describes transformation by box cox and PMM as ways to deal with non-normality
 
-## MVN definitiion
-If we denote the ($n×k$) dataset as $D$ (with observed part $D^{obs}$ and unobserved part $D^{mis}$), then this assumption is
-$$D \sim N_k(\mu, \Sigma)$$
-which states that D has a multivariate normal distribution with mean vector mu and covariance matrix Sigma. 
+
+@shrive2006dealing as example of a "self-report" ordinal scale where multiple impute worked best, even for very high rates of missingness. Also one missing response in the whole instrument - makes it a real waste to use listwise deletion.
+
+If missing data differ systematically from non-missing data, this is the MNAR case and is non-ignorable. Specifically, this means that list-wise deletion will lead to biased estimates of population parameters.
+
+
+
+10. facotr analysis method
+500. plausible values
+has some stuff on missing data simul.
+
+
+carpita also raises the validity of treating "don't know" answers as missing, presumably could add this to "rather not say"
+
+
+
+If we denote the $n \times p$ dataset as $D$ (with observed part $D^{obs}$ and unobserved part $D^{mis}$), 
+
 
 @joreskog2005structural uses a variance ratio of matching compared to missing (maybe for pre-imputation work)
 
@@ -30,144 +224,19 @@ $$m_{ij} =
 complete case
 multiple imputation (mice package used prop. odds if vars are ordinal)
 single impute ordinal logistic regression (cumulative odds model)
-Rubin and Schenker (1986) proposed the Approximate Bayesian Bootstrap (ABB) (carpita)
+Rubin and Schenker (1986) proposed the Approximate Bayesian Bootstrap (ABB) (carpita) LaplacesDemon
 
 Go through imputation play and vignettes agains to use as demos
+
+carpita's ABPN method?
 
 There's an empirical example at the end. Worth following up. (Wu2015)
 Wu's results and conclusions, worth writing up? Question remains (they raise themselves) that their experimental data was generated by latent variable model and this model performed very well in there simulation.
 
 @shrive2006dealing a good methodology paper
 
-# Research Methods
-
-This work will use a combination of reference measures and indirect classification techniques to benchmark against state of the art imputation methods with a variety of datasets.
-
-The experiments designed for similar research follow a common pattern. Firstly, various design factors can be manipulated to assess imputation methods under different conditions:
-
-* Sample size choice was quite variable among the papers reviewed, ranging between 200 to 1250.
-* The proportion of missing data is usually varied in regular increments between 0.1 and 0.5
-* The most common missingness mechanism tested in MAR because this is well suited to testing the performance of MI. MCAR is less well test, presumably because it is considered ignorable and rare in real world scenarios. Tests of MNAR are fewer in number, perhaps because the general consensus in the literature is that this is an intractable problem. However, @carpita2011imputation is investigating a non-parametric method and does explore the MNAR scenario, offering methods to synthesise this kind of data.
-* Statistical properties of the variables are varied. It is common to see investigations of the effects of different levels of inter-item correlation, and skewness introduced into synthetic datasets.
-* Vary item score of Likert scales between 3, 5 and 7.
-* Vary m the number imputation for MI
-
-Most researchers conducted each experiment in their design matrix 1000 times and followed a process generally similar to the following:
-
-Master step, optional: For synthetic data, a huge sample e.g. 500000 was generated and the population statistics were measure from this. 
-
-1. If synthetic data was used, this was generated using a non-deterministic process. In the case of real-world data, the common practice was to take bootstrap samples from the complete cases for each run. 
-1. Once the experimental data were generated, the statistics of interest were measured on the complete dataset.
-1. A synthetic missing data process was run.
-1. Optional step: The statistics of interest were estimated in the complete cases scenario.
-1. The imputation method was run.
-1. The statistics of interest were estimated were measured again.
-
-This method is useful as it introduces Monte Carlo error into the estimation process. Researchers were then able to quote a mean with 95% confidence from the empirical distribution of each statistical test.
-
-## Measures of effectiveness of technique
 
 
-## R Packages
-
-psych alpha - with inter-item, item-totals, alpha drop and r drop.
-
-psych fisherz - 
-
-cocor package for comparing correlations
-
-NOTE CAE in carpita section is just relative bias.
-
-MSE ratio, no point in coding up
-
-maybe get alpha confidence intervals by bootstrapping psych package.
-
-ordPens, ordinal
-arules (apriori and eclat), arulesViz
-arulesCBA, arulesNBminer (classification)
-amelia, vim, mice, mi
-
-polr ordered categorigal (Market Research R book to check) and also 
-https://www.analyticsvidhya.com/blog/2016/02/multinomial-ordinal-logistic-regression/
-
-mi is written by gelman and hill (and others)
-
-mi package has possibility to add noise on different rounds of imputation. (dealing with determinism)
-
+KNN imputation. VIM and elsewhere
 VIM good information in vignette about other packages
 KNN imputation is computationally expensive because of calculating dist each time. ref vim vignette
-
-Amelia II uses Expectation Maximisation with bootstrapping as a fast, stable algo for MI. Can configure cell level priors to introduce domain knowledge into the MI process. Diagnostic features to check goodness of fit. ASSUMES DATA IS MULTIVARIATE NORMAL
-
-Although MI is thought to be robust to this assumption of MVN, Amelia II offers some transformations to address needs of real world data sets. MI also assumes that data is MAR. Missingness depends on the observed data $D^{obs}$
-
-## Datasets
-
-@de2010five synthetic based on these distributions
-
-This work makes use of the following datasets:
-
-wiki4HE dataset (UCI Machine Learning Repository) [@meseguer2014factors; @gunduzfokoue2013]
-
-```{r wiki4HE_data}
-wiki4 <- read.csv("wiki4HE.csv"
-                  , sep = ";"
-                  , na.strings = "?")
-```
-
-Turkiye Student Evaluation (UCI Machine Learning Repository) @gunduzfokoue2013
-
-```{r turkiye}
-turk <- read.csv("turkiye.csv")
-```
-
-Young People's Survey Dataset [@yps2013]
-
-```{r young}
-yps <- read.csv("responses.csv")
-```
-
-@carpita2011imputation
-
-```{r carpita}
-library(xlsx)
-read_jspf <- function(sheet, cols) {
-  read.xlsx2("JSPF.xls"
-          , sheetName = sheet
-          , stringsAsFactors = FALSE
-          , colClasses = c("numeric"
-                           , "character"
-                           , rep("numeric", cols)))
-}
-
-js <- read_jspf("JS", 13)
-pf <- read_jspf("PF", 10)
-```
-
-OxIS 2013 databases provided by the Oxford Internet Institute on 21/04/2017.
-
-```{r oxis}
-oxis <- read.csv("oxis.csv")
-names(oxis)[1] <- "qa01a"
-```
-
-## online personality test, not clinically administered
-temp <- tempfile()
-download.file("http://personality-testing.info/_rawdata/BIG5.zip", temp, mode="wb")
-perstest <- read.table(unz(temp, "BIG5/data.csv"), header = TRUE, sep="\t")
-unlink(temp); rm(temp)
-
-
-## benchmarks
-### Accuracy
-
-
-## Packages
-
-packages norm cat mix pan
-
-Research is the order you do things to meet your objectives.
-Consider alternative research methods for each objective.
-Research methods enable you to achieve your objectives.
-
-Ethnography, Lit review, Structured questions, Experimentation, Survey. Case Study.
