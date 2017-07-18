@@ -48,7 +48,13 @@ knitr::write_bib(c(
 ), 'packages.bib')
 library(lattice)
 library(latticeExtra)
+library(arulesimp)
+library(psych)
+library(VIM)
+library(Amelia)
 source("MarketingTheme.R")
+source("run_experiments_header.R")
+source("synth_wu_data.R")
 ```
 
 # List of Abbreviations {-}
@@ -56,6 +62,8 @@ source("MarketingTheme.R")
 EM - Expectation Maximization\newline
 FIML - Full Information Maximum Likelihood\newline
 FMI - Fraction of Missing Information\newline
+KNN - K-Nearest Neighbours\newline
+MASE - Mean Absolute Scale Error\newline
 MCMC - Monte Carlo Markov Chain\newline
 MCAR - Missing Completely at Random\newline
 MAR - Missing at Random\newline
@@ -63,6 +71,9 @@ MNAR - Missing not at Random\newline
 MI - Multiple Imputation\newline
 MICE - Multiple Imputation with Chained Equations\newline
 SEM - Structural Equation Model\newline
+SPRM - Similar Pattern Response Matching\newline
+SSE - Scale Score Error\newline
+
 
 # Acknowledgements {-}
 
@@ -80,6 +91,6 @@ Job Satisfaction and Procedural Fairness data provided by Prof. Maurizio Carpita
 
 **this will have to change once the research method and resutls come through**
 
-Surveys are an ubiquitous research tool, used in the widest variety of disciplines. The data collected mainly includes categorical types (binary, nominal, ordinal and Likert). Due to the practicalities of running surveys, they are highly prone to non-response and therefore, missing data. The magnitude, pattern and distribution of missingness depends on the underlying cause and has consequences for the analysis of results. These problems include serious loss of statistical power and biased parameter estimates. There are many techniques to recover the analysis with varying degrees of success. Most important of these is imputation, which is to substitute  missing values with suitable or "plausible" values. Successful imputation depends on the features of the data and the characteristics of missingness. Such techniques are very well developed for continuous, numerical data but much less so for caterogical types.
+Surveys are an ubiquitous research tool, used in the widest variety of disciplines. The data collected mainly includes categorical types (binary, nominal, ordinal and Likert). Due to the practicalities of running surveys, they are highly prone to non-response and therefore, missing data. The magnitude, pattern and distribution of missingness depends on the underlying cause and has consequences for the analysis of results. These problems include serious loss of statistical power and biased parameter estimates. There are many techniques to recover the analysis with varying degrees of success. Most important of these is imputation, which is to substitute  missing values with suitable or "plausible" values. Successful imputation depends on the features of the data and the characteristics of missingness. Techniques are very well developed for continuous, numerical data but much less so for caterogical types where there are still gaps in the literature.
 
-Since association rules mining (ARM) was proposed, the concept has been the subject of intense research. ARM is best suited to applications on categorical data. While the technique is inherently a descriptive, knowledge discovery tool, it has been successfully adapted for classification but never used for imputation. This project proposes a novel technique based on ARM for the imputation of categorical data, especially ordinal and Likert scales.
+Since association rules mining (ARM) was proposed, the concept has been the subject of intense research. ARM is best suited to applications on categorical data. While the technique is inherently a descriptive, knowledge discovery tool, it has been successfully adapted for classification but never used for imputation. This project proposes a novel technique based on ARM for the imputation of categorical data, especially ordinal and Likert scales. A simulation experiment is used to benchmark the novel technique against popular and state of the art methods.

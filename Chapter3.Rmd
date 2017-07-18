@@ -4,15 +4,15 @@ Common design patterns have been identified from similar research found in the l
 
 ## Experimental Design Factors
 
-\textbf{Sample size choice:} This was quite variable among the papers reviewed, ranging between 200 to 2000. The choice is frequently a trade off between precision and computational cost. This research will test three different samples sizes; 500, 1000, 1500 which covers a broad range.
+\textbf{Sample size choice:} This was quite variable among the papers reviewed which used two or three sample sizes, ranging between 200 to 2000. The choice is frequently a trade off between precision and computational cost which is greater for larger samples and increases the number of experiments geometrically for each factor. This research will test two samples sizes; 500, 1500 which covers a broad range.
 
-\textbf{Proportion of missing data:} This was usually varied in regular increments between 0.1 and 0.3, though ranged as high as 0.55 in the articles reviewed. A proportion of 0.5 or greater is only suitable for finding the limits of a technique, rather than benchmarking, because all techniques are challenged. This research will use proportions of 0.1, 0.2 and 0.3.
+\textbf{Proportion of missing data:} This was usually varied in regular increments between 0.1 and 0.3, though ranged as high as 0.55 in the articles reviewed. A proportion of 0.5 or greater is only suitable for finding the limits of a technique, rather than benchmarking, because all techniques are challenged. This research will just use proportions of 0.1 and 0.3 to span the useful range but limit the number of factors.
 
 \textbf{Missingness patterns:} The most common missingness mechanism tested is MAR because many papers on this topic refer specifically to MI, with its underlying MVN assumptions. MCAR is less well tested, presumably because it is considered ignorable and rare in real world scenarios. Tests of MNAR are even fewer in number, perhaps because the general consensus in the literature is that this is an intractable problem. However, the most relevant paper to this research describes an experimental process with detail on the generation of two different kinds of MNAR patterns which are relatively trivial to implement. As this project is investigating a novel approach, it would be interesting to look for any niche applications of the technique, such as effectiveness in the MNAR scenario. Therefore this project will make use of a wide variety of patterns, including MNAR.
 
-\textbf{Range of item scores:} Articles that focussed on ordinal and Likert scales varied the number of levels among 2, 3, 5, 6, and 7. In the literature on Likert scales, the values of 5 and 7 are very common and others are rarely seen. Therefore, to maintain this project's focus on Likert scales and similar types, the values will be restricted to 5 or 7.
+\textbf{Range of item scores:} Articles that focussed on ordinal and Likert scales varied the number of levels among 2, 3, 5, 6, and 7. In the literature on Likert scales, the values of 5 and 7 are very common and others are rarely seen. Therefore, to maintain this project's focus on Likert scales and limit the number of factors, the values will be restricted to 5 or 7.
 
-\textbf{Range of technique applied in benchmarking:} The relevant articles are very varied on this point and many report the inclusion of mean imputation, regression imputation and list-wise deletion. This may be a symptom of the relative age of some of the research, or potentially flaws in the research design. It is not considered worthwhile to compare any novel technique to those techniques regarded as flawed or outdated in the modern literature. This research will focus on techniques that are considered state of the art and those that are proven to be effective on surveys and questionnaires and non-normally distributed data types. MICE, non-parametric (Hot-deck and nearest neighbours), ABP, person-item mean, two-way imputation and item correlation substitution are considered. List-wise deletion is of interest for comparison only in the MCAR case, but will be applied across all experiments to ease the automation.
+\textbf{Range of technique applied in benchmarking:} The relevant articles are very varied on this point and many report the inclusion of mean imputation, regression imputation and list-wise deletion. This may be a symptom of the relative age of some of the research, or potentially flaws in the research design. It is not considered worthwhile to compare any novel technique to those techniques regarded as flawed or outdated in the modern literature. This research will focus on techniques that are considered state of the art and those that are proven to be effective on surveys and questionnaires and non-normally distributed data types. MICE, non-parametric (Hot-deck and nearest neighbours), ABP, person-item mean, two-way imputation and item correlation substitution are considered. List-wise deletion is of interest for comparison only in the MCAR case, but will be applied across all experiments to facilitate the automation.
 
 \textbf{The number of imputations in multiply imputed techniques:} Based on the findings in the literature review, a rule of thumb of 1 imputation per 1% of missing data will be applied for any techniques that perform any kind of MI.
 
@@ -31,8 +31,8 @@ factor_name <- c("Number of ordinal categories"
                 , "Benchmark Methods"
                 , "Experimental Data")
 factor_options <- c("5, 7"
-                , "500, 1000, 1500"
-                , "10%, 20, 30%"
+                , "500, 1500"
+                , "10%, 30%"
                 , "MCAR, MAR, MNAR"
                 , "Benchmarking novel ARM-based method"
                 , "PM, CIM, TW, ICS, MICE, ABP, H-d"
@@ -136,42 +136,213 @@ The R programming environment, @R-base has been selected for the implementation 
 * RapidMiner. A point and click canvas, lacking the programmability required.
 * Python. This could be a viable alternative but would require additional time for the researcher to reach an adequate level of competence. Python offers a native library based on the FP-growth algorithm, which is significantly faster than *apriori* which is an advantage over R. An FP-growth reference implementation is available to R but only via C integration. However, the efficiency of the ARM algorithm should only be of concern for huge datasets and not under the experimental conditions foreseen for this project.
 
-## R Packages
-
-R's extensive library of add-on packages has been surveyed in parallel with literature review. The following is a listing of packages that contain at least one key function or dataset that will be used during the applied phase of the project:
-
-* psych, @R-psych contains a suite of functions for analysing Cronbach's alpha, McDonald's Omega as well as a Fisher's r-to-$Z_r$ transformation.
-
-* cocor, @R-cocor contains functions for comparing correlations in detail
-
-* lavaan, @R-lavaan is a library dedicated to Latent Variable Analysis. It contains a suite of functions for generating synthetic data based on any specified model of latent and interacting factors. It will be used to model data in a similar manner to the experiments carried out in @wu2015comparison following the techniques described in @chapman2015r
-
-* Amelia II, @R-Amelia is a package for running a modified version of classic MI, i.e. based on EM and a MVN joint distribution and not chained equations. The computational challenges are overcome by a bootstrapping step. For ordinal data, the package authors recommend either accepting a continuously valued imputation, or applying a built-in transformation which is essentially the same as the non-deterministic rounding described in @carpita2011imputation. It is a very comprehensive implementation with advanced features such as the ability to configure cell level priors to introduce domain knowledge into the model and diagnostic features to check goodness of fit.
-
-* VIM, @R-VIM is a package that provides some imputation methods not available elsewhere including Hot-deck and nearest neighbours as well as a huge suite of diagnostic plots for visualizing missingness and imputed values.
-
-* Other packages may be used for utility functions but not all will be listed where not specifically related to the research.
-
-ordPens, ordinal
-arules (apriori and eclat), arulesViz
-arulesCBA, arulesNBminer (classification)
-mice, mi
-semTools, semPlot
-car (nice splom) and RColourBrewer
-
-polr ordered categorigal (Market Research R book to check) and also 
-https://www.analyticsvidhya.com/blog/2016/02/multinomial-ordinal-logistic-regression/
-
-mi is written by gelman and hill (and others)
-
-mi package has possibility to add noise on different rounds of imputation. (dealing with determinism)
-
-## Package Authoring
+## Package Authoring: The arulesimp Package
 
 To facilitate the automation of experiments, the novel technique will be developed as an R package. This will encapsulate all the programmatic code and will ensure code re-use to help minimize scripting errors. In addition to the imputation method, a number of utility and convenience functions will also be contained in the package.
 
 By following the best practice guidance in @Wickham:2015:RP:2904414, it is hoped that the package will be produced of a quality suitable for publication on the Comprehensive R Archive Network (CRAN), which is the primary repository for published R packages. It is curated to ensure that packages meet a set of strict guidelines, which helps to ensure consistency and reliability for other users.
 
+The package is named arulesimp (*a*ssociation *rules imp*utation) as a nod to the arules package which it imports and invokes to run the ARM step of the novel imputation technique. In addition to this, there are other functions for generating synthetic data, simulating missingness pattern in data and various convenience functions for pre-processing data into a format suitable for the underlying arules package, such as converting all variables to factors. Some demonstration code follows:
+
+### Synthetic data functions
+```{r ari_dewinter_demo, echo=TRUE}
+set.seed(102130)
+# library(arulesimp) # already loaded
+
+# synthesise Likert data using
+# De Winter et al (2010) empirical distributions
+
+# pick a selection of distributions
+my_vars <- c("strongly_agree", "neutral_to_agree"
+             , "multimodal", "strongly_disagree")
+
+# a quick look at the generating parameters
+data("dewinter_dist")
+dewinter_dist[my_vars, ]
+
+# synthesise some data
+dw <- synth_dewinter(var_names = my_vars
+               , dists = my_vars
+               , 10000)
+
+# explore
+smry_dw <- as.data.frame(psych::describe(dw))
+smry_dw[, c("mean", "sd", "skew", "kurtosis")]
+head(dw, 10)
+```
+
+```{r ari_wu_demo, echo=TRUE}
+set.seed(100132)
+# synthesise Likert data using # Wu's two-factor model
+# and Rhemtulla's discretizing thresholds
+
+# this lavaan data model reproduces the configuration in Wu's paper
+wu_data_model <-
+"Factor1 =~ 0.7*A1 + 0.7*A2 + 0.7*A3 + 0.7*A4 + 0.7*A5 + 0.7*A6
+Factor2 =~ 0.7*B1 + 0.7*B2 + 0.7*B3 + 0.7*B4 + 0.7*B5 + 0.7*B6
+Factor1 ~~ 0.3*Factor2"
+
+# this function returns a list of 3 data sets
+# after discretizing the lavaan model
+# by Rhemtulla's thresholds for symmetric, 
+# moderately asymmetric and severely asymetric
+wu <- synth_wu_data(wu_data_model, sample_size = 1000)
+```
+
+```{r ari_wu_demo_plots}
+# symmetric
+lattice::barchart(~table(wu$sym$A1)
+                    , main = "Synthetic Data by Wu's model\n7-level Likert scale, symmetric"
+                    , ylab = "A1 symmetric"
+                    , xlab = "count"
+                    , par.settings = MyLatticeTheme
+                    , scales = MyLatticeScale)
+# severely asymmetric
+lattice::barchart(~table(wu$sasym$A1)
+                    , main = "Synthetic Data by Wu's model\n7-level Likert scale, severely asymmetric"
+                    , ylab = "A1 severely asymmetric"
+                    , xlab = "count"
+                    , par.settings = MyLatticeTheme
+                    , scales = MyLatticeScale)
+```
+
+### Synthetic missingness functions
+```{r ari_synmiss_demo, echo=TRUE}
+set.seed(120131)
+# generate missing data patterns to order
+# the default settings are MCAR, 
+# 0.2 proportion of missing and
+# all variables implicated
+head(synth_missing(dw)$data, 10)
+
+# MAR data can be generated by providing some covariates
+# and choosing a method from wu_ranking, carpita and princomp.
+# A plot can be ordered to show how the missingness pattern
+# was distributed by the covariates
+# This can be done through the syn_control parameter object
+# and its contructor function, missing_control()
+non_response_cols <- paste0(rep(c("A", "B"), each = 3), 1:3)
+non_response_cols
+
+wu_mar <- synth_missing(wu$sasym
+            , syn_control = missing_control("MAR"
+                                          , method = "princomp"
+                                          , nr_cols = non_response_cols
+                                          , dep_cols = c("A6", "B6")
+                                          , prob = 0.3)
+            , plot_probs = TRUE)
+
+head(wu_mar$data, 10)
+
+# The returned object contains
+# a missing indicator matrix
+# and other values suggested in
+# Carpita and Manisera (2011)
+# which are useful for calculating
+# Person Item means and other statistics
+# which pertain to Likert data and imputation
+head(wu_mar$mim$mim, 10) # missing indicator matrix
+head(wu_mar$mim$A_comp_i, 10) # indices of missing items for each respondent
+head(wu_mar$mim$B_comp_j$A1, 10) # indices of missing respondents for each item
+head(wu_mar$mim$B_comp_j$B1, 10) # indices of missing respondents for each item
+```
+
+```{r ari_synmiss_demo_plot}
+wu_mar$dplot$par.settings <- MyLatticeTheme
+wu_mar$dplot$scales <- MyLatticeScale
+wu_mar$dplot
+```
+
+### Benchmark Imputation Functions
+
+## Other R Packages
+
+R's extensive library of add-on packages has been surveyed in parallel with literature review. The following is a listing of packages that contain at least one key function or dataset that will be used during the applied phase of the project:
+
+* lavaan, @R-lavaan is a library dedicated to Latent Variable Analysis. It contains a suite of functions for generating synthetic data based on any specified model of latent and interacting factors. It will be used to model data in a similar manner to the experiments carried out in @wu2015comparison following the techniques described in @chapman2015r
+
+* Amelia II, @R-Amelia is a package for running a modified version of classic MI, i.e. based on EM and a MVN joint distribution and not chained equations. The computational challenges are overcome by a bootstrapping step. For ordinal data, the package authors recommend either accepting a continuously valued imputation, or applying a built-in transformation which is essentially the same as the non-deterministic rounding described in @carpita2011imputation. It is a very comprehensive implementation with advanced features such as the ability to configure cell level priors to introduce domain knowledge into the model and diagnostic features to check goodness of fit.
+
+```{r Amelia_demo, echo=TRUE}
+# library(Amelia) # already loaded
+
+# include all vars, note the time series
+a.out <- amelia(wu_mar$data, m = 3)
+# a quick look at the imputed data
+# imputation 1 of 3, variable A1
+head(a.out$imputations$imp1$A1, 10)
+range(a.out$imputations$imp1$A1)
+
+# even with rounding, this data makes no sense
+# as it exceeds the natural range of the scale
+
+# Amelia can be configured for ordinal data
+a.out <- amelia(wu_mar$data, m = 3, ords = "A1")
+# another quick look at the imputed data
+head(a.out$imputations$imp1$A1, 10)
+range(a.out$imputations$imp1$A1)
+
+# though it still uses MVN distribution under the hood
+# so it can be challenged by high skewed or multimodal data
+# which can be seen in diagnostic plots
+# especially the over-impute plot which shows that
+# the imputation may be no better than random
+```
+
+```{r Amelia_demo_plot}
+freqs <- as.data.frame(table(a.out$imputations$imp1$A1, wu_mar$mim$mim[, "A1"]))
+names(freqs) <- c("A1", "missing", "count")
+freqs$A1 <- as.integer(freqs$A1)
+
+MyTempTheme <- MyLatticeTheme
+MyTempTheme$plot.polygon$col <- NULL
+
+lattice::barchart(A1~count, data = freqs
+                  , col = rep(c(myPalDark[3]
+                  , myPal[4]), 2)
+                  , stack = FALSE
+                  , main = "Distribution after imputation by Amelia"
+                  , sub = "levels 4-7 were especially under-represented by the imputation"
+                  , ylab = "A1 severely asymmetric"
+                  , xlab = "count"
+                  , par.settings = MyTempTheme
+                  , scales = MyLatticeScale
+                  , key=simpleKey(text = c("not missing"
+                               , "imputed")
+                    , space="top", columns=2, points=FALSE
+                     , col = c(myPalDark[3], myPal[4])))
+
+compare.density(a.out, var = "A1")
+overimpute(a.out, var = "A1")
+```
+
+* VIM, @R-VIM is a package that provides some imputation methods not available elsewhere including Hot-deck and nearest neighbours as well as a huge suite of diagnostic plots for visualizing missingness and imputed values.
+
+```{r visualize_missingness, echo=TRUE}
+# library(VIM) # already loaded
+
+# The VIM package has some excellent vizualizations
+aggr_plot <- aggr(wu_mar$data
+          , col = c(myPalDark[3]
+                    , myPal[4])
+          , numbers = TRUE
+          , sortVars = TRUE
+          , labels = names(wu_mar$data)
+          , cex.axis = .7
+          , gap = 3
+          , ylab = c("Histogram of missing data","Pattern"))
+```
+
+* Other packages may be used for utility functions but not all will be listed where not specifically related to the research.
+
+arules (apriori and eclat), arulesViz
+arulesCBA, arulesNBminer (classification)
+mice, mi
+
+polr ordered categorigal (Market Research R book to check) and also 
+https://www.analyticsvidhya.com/blog/2016/02/multinomial-ordinal-logistic-regression/
+
+mi package has possibility to add noise on different rounds of imputation. (dealing with determinism)
 
 ## Notes still to tidy
 

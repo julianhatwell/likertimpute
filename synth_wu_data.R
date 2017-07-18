@@ -1,139 +1,77 @@
-synth_wu_data <- function(sample_size, seed) {
-  if (!(missing(seed))) set.seed(seed) # for reproducibility
-  
-  # this lavaan data model reproduces the configuration in Wu's paper
-  wu_data_model <- "Factor1 =~ 0.75*A1 + 0.75*A2 + 0.75*A3 + 0.75*A4 + 0.75*A5 + 0.75*A6
-  Factor2 =~ 0.65*B1 + 0.65*B2 + 0.65*B3 + 0.65*B4 + 0.65*B5 + 0.65*B6
-  Factor1 ~~ 0.25*Factor2"
-  
-  # a function that will generate the requested sample size
-  # already discretized and ready to go
-  synth_wu <- function(model, cut = TRUE, rhum_dist = "symmetric", sample_size) {
-    wu_data <- simulateData(model, sample.nobs=sample_size)
-    if (cut) wu_data <- cut_rhemtulla(wu_data, dist = rhum_dist, levs = 7)
-    
-    return(wu_data)
-  }
-  
-  wu_data_sym <- synth_wu(wu_data_model
-                          , sample_size = sample_size)
-  wu_data_masym <- synth_wu(wu_data_model
-                            , rhum_dist = "moderate_asym"
-                            , sample_size = sample_size)
-  
-  # do some manual cuts
-  wu_data_sasym <- synth_wu(wu_data_model
-                            , cut = FALSE
-                            , sample_size = sample_size)
-  wu_data_sasym[, c(1, 2, 6)] <- cut_rhemtulla(wu_data_sasym[, c(1, 2, 6)]
-                                              , dist = "severe_asym"
-                                              , levs = 7)
-  wu_data_sasym[, 3:5] <- cut_rhemtulla(wu_data_sasym[, 3:5]
-                                              , dist = "moderate_asym"
-                                              , levs = 7)
-  wu_data_sasym[, 7] <- cut_rhemtulla(wu_data_sasym[, 7]
-                                              , dist = "severe_asym"
-                                              , levs = 7)
-  wu_data_sasym[, 11] <- cut_rhemtulla(wu_data_sasym[, 11]
-                                              , dist = "moderate_asym"
-                                              , levs = 7)
-  wu_data_sasym[, c(8:10, 12)] <- cut_rhemtulla(wu_data_sasym[, c(8:10, 12)]
-                                              , levs = 7)
-  
-  return(list(sym = wu_data_sym
-              , masym = wu_data_masym
-              , sasym = wu_data_sasym))
-}
+# this lavaan data model reproduces the configuration in Wu's paper
+wu_data_model <- "Factor1 =~ 0.75*A1 + 0.75*A2 + 0.75*A3 + 0.75*A4 + 0.75*A5 + 0.75*A6
+Factor2 =~ 0.65*B1 + 0.65*B2 + 0.65*B3 + 0.65*B4 + 0.65*B5 + 0.65*B6
+Factor1 ~~ 0.3*Factor2"
 
 # collect stats function
-wu_collect_stats <- function(dt) {
-  alpha_A <- alpha(dt[,1:6])
-  alpha_B <- alpha(dt[7:12])
-  alpha_mix1 <- alpha(dt[c(1:3, 7:9)])
-  alpha_mix2 <- alpha(dt[c(1:3, 10:12)])
-  alpha_mix3 <- alpha(dt[c(4:6, 7:9)])
+wu_collect_stats <- function(dt, untreated, mim) {
+  alpha_A <- psych::alpha(dt[, 1:6])
+  alpha_B <- psych::alpha(dt[, 7:12])
+  # the halves that were subject to missingness
+  alpha_mix <- psych::alpha(dt[c(1:3, 7:9)])
   
+  # split half reliability
+  splith_A <- split_half(dt[, 1:3], dt[, 4:6])
+  splith_B <- split_half(dt[, 7:9], dt[, 10:12])
+  
+  # slope of B~A
   scale_A <- rowSums(dt[, 1:6])
   scale_B <- rowSums(dt[, 7:12])
   linmod <- lm(scale_B~scale_A)
   
-  return(list(
-    alpha_A = alpha_A$total
-    , alpha_B = alpha_B$total
-    , alpha_mix1 = alpha_mix1$total
-    , alpha_mix2 = alpha_mix2$total
-    , alpha_mix3 = alpha_mix3$total
+  results <- list(
+    alpha_A = alpha_A$total$std.alpha
+    , ave_r_A = alpha_A$total$average_r
+    , mean_A = alpha_A$total$mean
+    , sd_A = alpha_A$total$sd
+    , splith_A = splith_A
+    , alpha_B = alpha_B$total$std.alpha
+    , ave_r_B = alpha_B$total$average_r
+    , mean_B = alpha_B$total$mean
+    , sd_B = alpha_B$total$sd
+    , splith_B = splith_B
+    , alpha_mix = alpha_mix$total$std.alpha
+    , ave_r_mix = alpha_mix$total$average_r
+    , mean_mix = alpha_mix$total$mean
+    , sd_mix = alpha_mix$total$sd
     , slope = coefficients(linmod)[2]
-  ))
+  )
+  if (!missing(untreated) && !missing(mim)) {
+    # scale score errors
+    unt_scale_A <- rowSums(untreated[, 1:6])
+    
+    sse_A <- sum(scale_A - unt_scale_A) /
+      length(unique(unlist(mim$B_comp_j[1:3])))
+    
+    unt_scale_B <- rowSums(untreated[, 7:12])
+    
+    sse_B <- sum(scale_B - unt_scale_B) /
+      length(unique(unlist(mim$B_comp_j[7:9])))
+  
+    results$sse_A <- sse_A
+    results$sse_B <- sse_B
+  }
+  return(results)
 }
 
 # function to run the imputations and gather results
 # takes an object produced by synth_missing
-run_wu_benchmark <- function(to_impute) {
+run_wu_benchmark <- function(to_impute, untreated) {
   ti_data <- to_impute$data
   ti_mim <- to_impute$mim
-  n <- length(lik_imps)
-  benchmark <- list(
-  alpha_A = numeric(n)
-  , ave_r_A = numeric(n)
-  , mean_A = numeric(n)
-  , sd_A = numeric(n)
-  , alpha_B = numeric(n)
-  , ave_r_B = numeric(n)
-  , mean_B = numeric(n)
-  , sd_B = numeric(n)
-  , alpha_mix1 = numeric(n)
-  , ave_r_mix1 = numeric(n)
-  , mean_mix1 = numeric(n)
-  , sd_mix1 = numeric(n)
-  , alpha_mix2 = numeric(n)
-  , ave_r_mix2 = numeric(n)
-  , mean_mix2 = numeric(n)
-  , sd_mix2 = numeric(n)
-  , alpha_mix3 = numeric(n)
-  , ave_r_mix3 = numeric(n)
-  , mean_mix3 = numeric(n)
-  , sd_mix3 = numeric(n)
-  , slope = numeric(n)
-  )
-  benchmark <- lapply(benchmark, function(x) {
-    names(x) <- lik_imps
-    x
-  })
+
   # conduct imputations
-  for (li in lik_imps) {
-    bm <-
-      wu_collect_stats(LikertImpute(
-        ti_data, ti_mim
-        , li, rounding = nd_round))
-    benchmark <- within(benchmark , {
-         alpha_A[li] <- bm$alpha_A$std.alpha
-         ave_r_A[li] <- bm$alpha_A$average_r
-         mean_A[li] <- bm$alpha_A$mean
-         sd_A[li] <- bm$alpha_A$sd
-         alpha_B[li] <- bm$alpha_B$std.alpha
-         ave_r_B[li] <- bm$alpha_B$average_r
-         mean_B[li] <- bm$alpha_B$mean
-         sd_B[li] <- bm$alpha_B$sd
-         alpha_mix1[li] <- alpha_mix1 <- bm$alpha_mix1$std.alpha
-         ave_r_mix1[li] <- bm$alpha_mix1$average_r
-         mean_mix1[li] <- bm$alpha_mix1$mean
-         sd_mix1[li] <- bm$alpha_mix1$sd
-         alpha_mix2[li] <- bm$alpha_mix2$std.alpha
-         ave_r_mix2[li] <- bm$alpha_mix2$average_r
-         mean_mix2[li] <- bm$alpha_mix2$mean
-         sd_mix2[li] <- bm$alpha_mix2$sd
-         alpha_mix3[li] <- bm$alpha_mix3$std.alpha
-         ave_r_mix3[li] <- bm$alpha_mix3$average_r
-         mean_mix3[li] <- bm$alpha_mix3$mean
-         sd_mix3[li] <- bm$alpha_mix3$sd
-         slope[li] <- bm$slope
-         })
-      }
+  benchmark <- sapply(lik_imps, function(li) {
+    wu_collect_stats(LikertImpute(
+      ti_data, ti_mim
+      , li, rounding = nd_round)
+      , untreated = untreated
+      , mim = ti_mim)    
+  })
   return(benchmark)
 }
 
-# testing
+# # testing
 # ss <- sample_sizes[1]
 # wtype <- wu_types[1]
 # wu_data <- synth_wu_data(ss)
@@ -145,14 +83,20 @@ run_wu_benchmark <- function(to_impute) {
 #                             pattern = "MCAR"
 #                             , nr_cols = c(paste0(c("A"), 1:3), paste0("B", 1:3))
 #                             , prob = mprop))
-# li <- lik_imps[1]
+# li <- lik_imps[4]
 # to_impute <- this_set
 # ti_data <- to_impute$data
 # ti_mim <- to_impute$mim
+# imputed <- LikertImpute(
+#   ti_data, ti_mim
+#   , li, rounding = round)
+# any(imputed[, c(1:3, 7:9)] < 1 || imputed[, c(1:3, 7:9)] > 7)
 # bm <-
-#   wu_collect_stats(LikertImpute(
-#     ti_data, ti_mim
-#     , li, rounding = nd_round))
+#   wu_collect_stats(imputed
+#     , untreated = dt
+#     , mim = this_set$mim)
+# 
+# wu_collect_stats(dt)
 
 # # Population stats
 # wu_data_pop <- synth_wu_data(500000, seed = 100001)

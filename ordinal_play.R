@@ -294,7 +294,6 @@ betas <- c(2, 3, 1.5, 2.2, 0.3)
 # linear
 y <- -1 + newx%*%betas
 
-
 # prediction
 
 
@@ -419,5 +418,3 @@ y <- 4/9 *
   rnorm(100)
 dyx <- data.frame(y, x) 
 plot(y~x)
-
-

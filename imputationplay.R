@@ -235,22 +235,22 @@ summary(pool(modelFit2))
 
 library(arulesimp)
 # more mice
-iris.mis <- synth_missing(iris, prob = 0.25)
+iris.mis <- synth_missing(iris)
 
 #Check missing values introduced in the data
 summary(iris.mis)
 str(iris.mis)
 
 library(mice)
-md.pattern(iris.mis)
+md.pattern(iris.mis$data)
 
 library(VIM)
-mice_plot <- aggr(iris.mis, col=c('navyblue','yellow'),
+mice_plot <- aggr(iris.mis$data, col=c('navyblue','yellow'),
             numbers=TRUE, sortVars=TRUE,
             labels=names(iris.mis), cex.axis=.7,
             gap=3, ylab=c("Missing data","Pattern"))
 
-iris.mis <- iris.mis[, -5]
+iris.mis <- iris.mis$data[, -5]
 imputed_Data <- mice(iris.mis
                , m = 5
                , maxit = 50
@@ -265,8 +265,7 @@ combine <- pool(fit)
 summary(combine)
 
 library(Amelia)
-iris.mis <- synth_missing(iris, prob = 0.1)
-amelia_fit <- amelia(iris.mis
+amelia_fit <- amelia(iris.mis$data
                      , m = 5
                      , parallel = "multicore"
                      , noms = "Species")
@@ -285,7 +284,7 @@ overimpute(amelia_fit, 4)
 plot(amelia_fit)
 
 library(missForest)
-iris.imp <- missForest(iris.mis
+iris.imp <- missForest(iris.mis$data
                        )
 iris.imp$ximp
 iris.imp$OOBerror
@@ -327,8 +326,7 @@ impute_arg
 # mi
 library(mi)
 library(arulesimp)
-iris.mis <- synth_missing(iris, prob = 0.1)
-mi_data <- mi(iris.mis, seed = 335)
+mi_data <- mi(iris.mis$data, seed = 335)
 summary(mi_data)
 
 
@@ -376,10 +374,8 @@ display(analysis) # no credible intervals?
 dfs <- complete(imputations, m = 2) # not sure what this does
 
 library(mitools)
-iris.mis <- synth_missing(iris
-            , prob = 0.15)
 
-sum(is.na(iris.mis$Species))
+sum(is.na(iris.mis$data$Species))
 
 m <- 5
 nc <- ncol(iris.mis)
