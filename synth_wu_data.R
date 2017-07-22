@@ -3,6 +3,8 @@ wu_data_model <- "Factor1 =~ 0.75*A1 + 0.75*A2 + 0.75*A3 + 0.75*A4 + 0.75*A5 + 0
 Factor2 =~ 0.65*B1 + 0.65*B2 + 0.65*B3 + 0.65*B4 + 0.65*B5 + 0.65*B6
 Factor1 ~~ 0.3*Factor2"
 
+non_response_cols <- paste0(rep(c("A", "B"), each = 3), 1:3)
+
 # collect stats function
 wu_collect_stats <- function(dt, untreated, mim) {
   alpha_A <- psych::alpha(dt[, 1:6])
@@ -56,11 +58,12 @@ wu_collect_stats <- function(dt, untreated, mim) {
 
 # function to run the imputations and gather results
 # takes an object produced by synth_missing
-run_wu_benchmark <- function(to_impute, untreated) {
+run_wu_benchmark <- function(to_impute, untreated, mi_mult = "rubin") {
+  if(!(mi_mult %in% c("rubin", "white"))) stop("mi_mult should be either \"rubin\" or \"white\"")
   ti_data <- to_impute$data
   ti_mim <- to_impute$mim
 
-  # conduct imputations
+  # conduct benchmark imputations
   benchmark <- sapply(lik_imps, function(li) {
     wu_collect_stats(LikertImpute(
       ti_data, ti_mim
@@ -68,45 +71,40 @@ run_wu_benchmark <- function(to_impute, untreated) {
       , untreated = untreated
       , mim = ti_mim)    
   })
-  return(benchmark)
+  
+  # conduct mulitple imputations
+  if (mi_mult == "white") {
+    mi_runs <- round(to_impute$syn_control$prob * 100)
+  } else {
+    if (to_impute$syn_control$prob <= 0.15) mi_runs <- 3
+    if (to_impute$syn_control$prob > 0.15) mi_runs <- 5
+  }
+  
+  amelia.out <- amelia(ti_data, p2s = 0
+                  , ords = non_response_cols
+                  , m = mi_runs)
+  amelia.stats <- unlist(lapply(1:mi_runs, function(n) {
+    wu_collect_stats(amelia.out$imputations[[n]], untreated, ti_mim)
+  }))
+  headers <- unique(names(amelia.stats))
+  mean_params <- function(x) {
+    res <- sapply(headers, function(h) {
+      mean(x[names(x) == h])
+    })
+    return(res)
+  }
+  
+  amelia.results <- mean_params(amelia.stats)
+  
+  mice.out <- mice(ti_data, print = FALSE
+                   , m = mi_runs, meth = "pmm")
+  mice.stats <- unlist(lapply(1:mi_runs, function(n) {
+    wu_collect_stats(mice::complete(mice.out, n)
+                     , untreated, ti_mim)
+  }))
+  mice.results <- mean_params(mice.stats)
+  
+  return(cbind(benchmark
+        , amelia = amelia.results
+        , mice = mice.results))
 }
-
-# # testing
-# ss <- sample_sizes[1]
-# wtype <- wu_types[1]
-# wu_data <- synth_wu_data(ss)
-# dt <- wu_data[[wtype]]
-# mprop <- missing_prop[1]
-# this_label <- paste0("wu_", wtype, "_mcar_", mprop, "_", ss)
-# this_set <- synth_missing(dt
-#                           , syn_control = missing_control(
-#                             pattern = "MCAR"
-#                             , nr_cols = c(paste0(c("A"), 1:3), paste0("B", 1:3))
-#                             , prob = mprop))
-# li <- lik_imps[4]
-# to_impute <- this_set
-# ti_data <- to_impute$data
-# ti_mim <- to_impute$mim
-# imputed <- LikertImpute(
-#   ti_data, ti_mim
-#   , li, rounding = round)
-# any(imputed[, c(1:3, 7:9)] < 1 || imputed[, c(1:3, 7:9)] > 7)
-# bm <-
-#   wu_collect_stats(imputed
-#     , untreated = dt
-#     , mim = this_set$mim)
-# 
-# wu_collect_stats(dt)
-
-# # Population stats
-# wu_data_pop <- synth_wu_data(500000, seed = 100001)
-# 
-# wu_stats_pop_sym <- wu_collect_stats(wu_data_pop$sym)
-# wu_stats_pop_masym <- wu_collect_stats(wu_data_pop$masym)
-# wu_stats_pop_sasym <- wu_collect_stats(wu_data_pop$sasym)
-# 
-# 
-# save(wu_stats_pop_sym
-#      , wu_stats_pop_masym
-#      , wu_stats_pop_sasym
-#      , file = "wu_stats_pop.RData")

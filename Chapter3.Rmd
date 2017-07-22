@@ -20,7 +20,7 @@ Common design patterns have been identified from similar research found in the l
 
 \textbf{Synthetic or real-world data:} Many experimenters use synthetic data because of the possibility to set up precise initial conditions. However, there is a possibility to introduce design bias through the choice of model that generates the data. As this project is investigating a novel approach, it would be interesting to look for any niche applications of the technique, such as effectiveness in data with unusual underlying models or distributions. Therefore this project will make use of a selection of generative methods as well as real-world data.
 
-\textbf{Number of experimental replications:} One thousand replications per set of initial conditions was a consistent choice among the papers review.
+\textbf{Number of experimental replications:} One thousand replications per set of initial conditions was a consistent choice among the papers reviewed.
 
 ```{r hatwell-design-matrix, results='asis'}
 factor_name <- c("Number of ordinal categories"
@@ -35,7 +35,7 @@ factor_options <- c("5, 7"
                 , "10%, 30%"
                 , "MCAR, MAR, MNAR"
                 , "Benchmarking novel ARM-based method"
-                , "PM, CIM, TW, ICS, MICE, ABP, H-d"
+                , "PM, CIM, TW, ICS, MI (EMB), MICE, ABP"
                 , "Synthetic, semi-synthetic and real-world sub-sample")
 
 cp_design_matrix <- knitr::kable(data.frame(
@@ -55,13 +55,15 @@ The practical application of the chosen methodology is as follows:
 For one set of initial conditions:
 
 1. For synthetic data, a very large sample of 500000 was generated and the population statistics were measured from this. For real-world data, the sample statistics are taken as population statistics prior to any further data preparation (bootstrapping,  subsampling, etc)
-1. Generate (synthesis or bootstrapping) one thousand replicates of the dataset
+1. Generate (synthesis or bootstrapping) one thousand \footnote{Due to computational constraints, the final experiments were restricted to 250 runs.} replicates of the dataset
 1. Generate the missing data pattern on each replicate
-1. Run each imputation method with its own copy of the replicate
+1. Run each imputation method with its own copy of the replicate \footnote{Due to computational constraints, for the MI methods the value of \textit{m} were set to 3 or 5 for missingness proportions of 0.1 and 0.5, respectively.} replicates of the dataset
 1. Estimate the statistics of interest included comparisons relative to population.
-1. Pool results
+1. Pool and report results
 
 This method is useful as it introduces Monte Carlo error into the estimation process. All statistics of interest can be quoted as a mean with 95% confidence from the empirical distribution of each statistical test. ANOVA tests are possible to look for significant difference is performance between the design factors, if required.
+
+
 
 ## Datasets
 
@@ -145,7 +147,7 @@ By following the best practice guidance in @Wickham:2015:RP:2904414, it is hoped
 The package is named arulesimp (*a*ssociation *rules imp*utation) as a nod to the arules package which it imports and invokes to run the ARM step of the novel imputation technique. In addition to this, there are other functions for generating synthetic data, simulating missingness pattern in data and various convenience functions for pre-processing data into a format suitable for the underlying arules package, such as converting all variables to factors. Some demonstration code follows:
 
 ### Synthetic data functions
-```{r ari_dewinter_demo, echo=TRUE}
+```{r ari-dewinter-demo, echo=TRUE}
 set.seed(102130)
 # library(arulesimp) # already loaded
 
@@ -170,6 +172,20 @@ smry_dw <- as.data.frame(psych::describe(dw))
 smry_dw[, c("mean", "sd", "skew", "kurtosis")]
 head(dw, 10)
 ```
+```{r ari-dewinter-demo-plot, fig.cap='A selection of variables synthesised using synth_dewinter function in arulesimp which implements the distributions given in De Winter (2010)'}
+densityplot(~strongly_agree +
+             neutral_to_agree +
+             multimodal +
+             strongly_disagree
+            , data = dw
+            , par.settings = MyLatticeTheme
+            , scales = MyLatticeScale
+            , xlab = "Selection of De Winter distributions"
+            , auto.key = list(columns = 2)
+            , plot.points = FALSE)
+```
+
+
 
 ```{r ari_wu_demo, echo=TRUE}
 set.seed(100132)
@@ -234,20 +250,17 @@ wu_mar <- synth_missing(wu$sasym
 
 head(wu_mar$data, 10)
 
-# The returned object contains
-# a missing indicator matrix
-# and other values suggested in
-# Carpita and Manisera (2011)
-# which are useful for calculating
-# Person Item means and other statistics
-# which pertain to Likert data and imputation
+# The returned object contains a missing indicator matrix
+# and other values suggested in Carpita and Manisera (2011)
+# which are useful for calculating Person Item means
+# and other statistics which pertain to Likert data and imputation
 head(wu_mar$mim$mim, 10) # missing indicator matrix
 head(wu_mar$mim$A_comp_i, 10) # indices of missing items for each respondent
 head(wu_mar$mim$B_comp_j$A1, 10) # indices of missing respondents for each item
 head(wu_mar$mim$B_comp_j$B1, 10) # indices of missing respondents for each item
 ```
 
-```{r ari_synmiss_demo_plot}
+```{r ari-synmiss-demo-plot, fig.cap="Distribution of missingness probability for MAR pattern with the princomp method. This works well to strongly separate respondents by assiging probabilities proportional to the first principle component of the covariates. Ranking method gives a flat response, while the method given by Carpita gives a central tendency."}
 wu_mar$dplot$par.settings <- MyLatticeTheme
 wu_mar$dplot$scales <- MyLatticeScale
 wu_mar$dplot
@@ -259,15 +272,21 @@ wu_mar$dplot
 
 R's extensive library of add-on packages has been surveyed in parallel with literature review. The following is a listing of packages that contain at least one key function or dataset that will be used during the applied phase of the project:
 
-* lavaan, @R-lavaan is a library dedicated to Latent Variable Analysis. It contains a suite of functions for generating synthetic data based on any specified model of latent and interacting factors. It will be used to model data in a similar manner to the experiments carried out in @wu2015comparison following the techniques described in @chapman2015r
+### psych
+psych, @R-psych has a number of analytical functions for Likert scales, including a comprehensive Cronbach's alpha function and a Fisher's R-to-z transform.
 
-* Amelia II, @R-Amelia is a package for running a modified version of classic MI, i.e. based on EM and a MVN joint distribution and not chained equations. The computational challenges are overcome by a bootstrapping step. For ordinal data, the package authors recommend either accepting a continuously valued imputation, or applying a built-in transformation which is essentially the same as the non-deterministic rounding described in @carpita2011imputation. It is a very comprehensive implementation with advanced features such as the ability to configure cell level priors to introduce domain knowledge into the model and diagnostic features to check goodness of fit.
+### lavaan
+lavaan, @R-lavaan is a library dedicated to *la*tent *va*riable *an*alysis. It contains a suite of functions for generating synthetic data based on any specified model of latent and interacting factors. It will be used to model data in a similar manner to the experiments carried out in @wu2015comparison following the techniques described in @chapman2015r
+
+### Amelia II
+Amelia II, @R-Amelia is a package for running a modified version of classic MI, i.e. based on EM and a MVN joint distribution and not chained equations. The computational challenges are overcome by a bootstrapping step. For ordinal data, the package authors recommend either accepting a continuously valued imputation, or applying a built-in transformation which is essentially the same as the non-deterministic rounding described in @carpita2011imputation. It is a very comprehensive implementation with advanced features such as the ability to configure cell level priors to introduce domain knowledge into the model and diagnostic features to check goodness of fit.
 
 ```{r Amelia_demo, echo=TRUE}
+set.seed(1230532)
 # library(Amelia) # already loaded
 
 # include all vars, note the time series
-a.out <- amelia(wu_mar$data, m = 3)
+a.out <- amelia(wu_mar$data, m = 3, p2s = 0) # print to screen = silent
 # a quick look at the imputed data
 # imputation 1 of 3, variable A1
 head(a.out$imputations$imp1$A1, 10)
@@ -277,46 +296,109 @@ range(a.out$imputations$imp1$A1)
 # as it exceeds the natural range of the scale
 
 # Amelia can be configured for ordinal data
-a.out <- amelia(wu_mar$data, m = 3, ords = "A1")
+a.out <- amelia(wu_mar$data, m = 3, ords = "A1", p2s = 0) # print to screen = silent
 # another quick look at the imputed data
 head(a.out$imputations$imp1$A1, 10)
 range(a.out$imputations$imp1$A1)
 
-# though it still uses MVN distribution under the hood
+# This is better, though it still uses MVN distribution under the hood
 # so it can be challenged by high skewed or multimodal data
 # which can be seen in diagnostic plots
 # especially the over-impute plot which shows that
 # the imputation may be no better than random
 ```
 
-```{r Amelia_demo_plot}
+```{r Amelia-demo-plot1, fig.cap="Barchart showing the new distribution of the 7 levels of variable A1 after imputation. The light blue values were missing prior to imputation and may or may not have had the current value in the untreated data."}
 freqs <- as.data.frame(table(a.out$imputations$imp1$A1, wu_mar$mim$mim[, "A1"]))
 names(freqs) <- c("A1", "missing", "count")
 freqs$A1 <- as.integer(freqs$A1)
 
 MyTempTheme <- MyLatticeTheme
-MyTempTheme$plot.polygon$col <- NULL
+MyTempTheme$superpose.polygon$col <- c(myPalDark[3], myPal[4])
 
 lattice::barchart(A1~count, data = freqs
-                  , col = rep(c(myPalDark[3]
-                  , myPal[4]), 2)
-                  , stack = FALSE
+                  , groups = missing
+                  , stack = TRUE
                   , main = "Distribution after imputation by Amelia"
-                  , sub = "levels 4-7 were especially under-represented by the imputation"
+                  , sub = "levels 5-7 were especially under-represented by the imputation"
                   , ylab = "A1 severely asymmetric"
                   , xlab = "count"
                   , par.settings = MyTempTheme
                   , scales = MyLatticeScale
-                  , key=simpleKey(text = c("not missing"
+                  , auto.key=list(text = c("not missing"
                                , "imputed")
-                    , space="top", columns=2, points=FALSE
-                     , col = c(myPalDark[3], myPal[4])))
-
+                    , space="top", columns=2
+                    , points=FALSE, rectangles=TRUE
+                     ))
+```
+```{r Amelia-demo-plot2, fig.cap="bserved and Imputed diagnostic plot from the Amelia package. The imputed distribution has identified the skew but has also over-compensated, resulting in an under-representation of values 4 to 7."}
 compare.density(a.out, var = "A1")
+```
+```{r Amelia-demo-plot3, fig.cap="Overimpute diagnostic from the Amelia package. This process performs multiple imputations over the observed data to show how the model would have imputed them if absent. It is very useful to see if the model is accurate. In this case, the predictions do not appear to follow the unity line at all. Rather, it appears that any value might be imputed as any other value with fairly equal chance. It might be inferred that Amelia has done no better than naive random imputation on this data."}
 overimpute(a.out, var = "A1")
 ```
 
-* VIM, @R-VIM is a package that provides some imputation methods not available elsewhere including Hot-deck and nearest neighbours as well as a huge suite of diagnostic plots for visualizing missingness and imputed values.
+### Zelig
+Zelig, @R-Zelig is a framework for statistical analysis which provides a seamless interface for parameter estimation from objects returned by Amelia and mi.
+
+```{r zelig_demo, echo=TRUE}
+# library(Zelig) # already loaded
+
+# estimate the regression parameters of A1 with its related variables
+# untreated data first
+summary(lm(A1 ~ A2 + A3 + A4 + A5 + A6
+               , data = wu$sasym))$coefficients
+
+# using Zelig on the Amelia object
+z.out <- zelig(A1 ~ A2 + A3 + A4 + A5 + A6
+               , data = a.out$imputations
+               , model = "ls"
+               , cite = FALSE)
+summary(z.out)
+
+# similarly, the regression of total score B on total score A
+summary(lm(I(B1 + B2 + B3 + B4 + B5 + B6) ~
+              I(A1 + A2 + A3 + A4 + A5 + A6)
+              , data = wu$sasym))$coefficients
+
+z.out <- zelig(I(B1 + B2 + B3 + B4 + B5 + B6) ~
+              I(A1 + A2 + A3 + A4 + A5 + A6)
+              , data = a.out$imputations
+              , model = "ls"
+              , cite = FALSE)
+summary(z.out)
+# A quick look at the t-values and p-values shows that
+# multiple imputation has estimated with greater uncertainty
+```
+
+### mice
+mice, @R-mice implemented the MICE algorithm which can use PMM for non-normally distributed data.
+```{r mice_demo, echo=TRUE}
+# library(mice) # already loaded
+mice.out <- mice(wu_mar$data, m = 3, maxit = 10
+                 , meth = 'pmm', seed = 500
+                 , print = FALSE)
+
+# it's easy to estimate parameters using the with() and pool() functions
+A1_fit <- with(mice.out, lm(A1 ~ A2 + A3 + A4 + A5 + A6))
+summary(pool(A1_fit))[, c(1:3, 5)]
+
+B_regress <- with(mice.out
+                  , lm(I(B1 + B2 + B3 + B4 + B5 + B6) ~
+                        I(A1 + A2 + A3 + A4 + A5 + A6)))
+summary(pool(B_regress))[, c(1:3, 5)]
+
+# diagnostic plots are implemented in lattice graphics.
+# Of these, various dot and scatter plots are not useful with Likert
+# The density plot can help to reveal any systematic bias
+# in the imputation model, as was seen with Amelia.
+```
+```{r micee-demo-plot, fig.cap='A density plot from the mice output is useful for showing any disparity between the distribution of imputed values compared to observed values.'}
+densityplot(mice.out)
+```
+
+### VIM
+VIM, @R-VIM is a package that provides some imputation methods not available elsewhere including Hot-deck and nearest neighbours as well as a huge suite of diagnostic plots for visualizing missingness and imputed values.
 
 ```{r visualize_missingness, echo=TRUE}
 # library(VIM) # already loaded
@@ -333,81 +415,52 @@ aggr_plot <- aggr(wu_mar$data
           , ylab = c("Histogram of missing data","Pattern"))
 ```
 
-* Other packages may be used for utility functions but not all will be listed where not specifically related to the research.
+### arules and arulesCBA
+The arules package, @R-arules, features an interface to the most commonly used C implementation of *apriori*, @borgelt2017aprori. The arulesCBA package @R-arulesCBA provides a framework for classification tasks based on arules that follows the standard R formulation. However, after prototyping, it was found that the CBA function was not completely suited to the project requirements.
 
-arules (apriori and eclat), arulesViz
-arulesCBA, arulesNBminer (classification)
-mice, mi
+```{r arulesCBA demo, echo=TRUE}
+# library(arulesCBA) # already loaded
 
-polr ordered categorigal (Market Research R book to check) and also 
-https://www.analyticsvidhya.com/blog/2016/02/multinomial-ordinal-logistic-regression/
+# arules requires all variables to be factors
+# As a first step, some convenience functions from
+# arulesimp package are demonstrated for pre-processing
 
-mi package has possibility to add noise on different rounds of imputation. (dealing with determinism)
+data("iris")
+iris_Likert <- all_factor(cut_equal(iris[, -5], levs = 7))
+iris_Likert$Species <- iris$Species
+
+head(iris_Likert)
+str(iris_Likert)
+
+irisCBA <- CBA(Species ~ ., data = iris_Likert
+               , support = 0.05, confidence = 0.8)
+inspect(rules(irisCBA))
+irisCBA_preds <- predict(irisCBA, iris_Likert)
+
+caret::confusionMatrix(irisCBA_preds, iris_Likert$Species)$table
+```
+
+### Other packages
+Hmisc, @R-Hmisc and mi, @R-mi also implement MICE but the mice package is adopted in this project based on its simplicity to use. The ordPens package, @R-ordPens uses RLRT to test for significant differences between the effect of an ordinal predictor on dependent a dependent variable in different models. Essentially this is an ANOVA test for ordinal predictors and would be very useful to measure changes to statistical properties following imputation. Unfortunately it takes a long time to run each test and this turns out to be too costly for experiments running into hundreds of thousands of iterations.
+
+Other packages may be used for utility such as parallelization of experimental runs, but these will not be listed where not specifically related to the research.
 
 ## Notes still to tidy
 
+other packages
+polr ordered categorigal (Market Research R book to check) and also 
+https://www.analyticsvidhya.com/blog/2016/02/multinomial-ordinal-logistic-regression/
 
 
-use a combination of reference measures and indirect classification techniques to benchmark against state of the art imputation methods with a variety of datasets.
+make a table of datasets and characteristics
 
-
-@white2011multiple alternative descriptions of Normal, Logistic and other models of imputation used in Wu et al. uses 100 imputations on MI when comparing methods and looks at regression coefficients and st. err. Very little detail. Not clear which is correct as only values given and not relative to something. Recommends Wald tests (Likelihood ratio - ordpesns, I think). Their apporach is deliberately "not meant to be definitive." Guards against using normal assupmtions on skewed data because results will not resemble the original scale ("lack of face value validity" p.381). Describes transformation by box cox and PMM as ways to deal with non-normality
-
-
-@shrive2006dealing as example of a "self-report" ordinal scale where multiple impute worked best, even for very high rates of missingness. Also one missing response in the whole instrument - makes it a real waste to use listwise deletion.
-
-If missing data differ systematically from non-missing data, this is the MNAR case and is non-ignorable. Specifically, this means that list-wise deletion will lead to biased estimates of population parameters.
-
-
-
-10. facotr analysis method
-500. plausible values
-has some stuff on missing data simul.
-
-
-carpita also raises the validity of treating "don't know" answers as missing, presumably could add this to "rather not say"
-
-
-
-If we denote the $n \times p$ dataset as $D$ (with observed part $D^{obs}$ and unobserved part $D^{mis}$), 
-
-
-@joreskog2005structural uses a variance ratio of matching compared to missing (maybe for pre-imputation work)
-
-ordPens package uses RLRT to assess significant difference in levels of an ordinal predictor effect on dependent. Could changes to this value after imputation be an indication of a change of statistical properties? 
-
-predict ordinal after imputation?
-
-penalised regression - do parameters change?
 
 Shrive - mean and sd, compare with known. Spearmans corrlation of overall scale score, and kappa of classification accuracy.
 
-To indicate if a cell $d_{ij}$ is missing, Let $M$ be the missingness matrix where cell 
-
-$$m_{ij} =
-\begin{cases} 
-1, \text{if}\ d_{ij} \in D^{mis} \\
-0, \text{otherwise}
-\end{cases}$$
-
 "non-integer imputations carry more information about the underlying distribution than would be carried if we were to force the imputations to be integers. Thus whenever the analysis model permits, missing ordinal observations should be allowed to take on continuously valued imputations."
 
-complete case
-multiple imputation (mice package used prop. odds if vars are ordinal)
-single impute ordinal logistic regression (cumulative odds model)
 Rubin and Schenker (1986) proposed the Approximate Bayesian Bootstrap (ABB) (carpita) LaplacesDemon
 
-Go through imputation play and vignettes agains to use as demos
-
-carpita's ABPN method?
-
 There's an empirical example at the end. Worth following up. (Wu2015)
+
 Wu's results and conclusions, worth writing up? Question remains (they raise themselves) that their experimental data was generated by latent variable model and this model performed very well in there simulation.
-
-@shrive2006dealing a good methodology paper
-
-
-
-KNN imputation. VIM and elsewhere
-VIM good information in vignette about other packages
-KNN imputation is computationally expensive because of calculating dist each time. ref vim vignette

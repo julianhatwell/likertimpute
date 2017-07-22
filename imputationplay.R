@@ -326,6 +326,7 @@ impute_arg
 # mi
 library(mi)
 library(arulesimp)
+iris.mis <- synth_missing(iris)
 mi_data <- mi(iris.mis$data, seed = 335)
 summary(mi_data)
 

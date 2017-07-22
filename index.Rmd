@@ -42,9 +42,11 @@ knitr::write_bib(c(
   , 'arules', 'arulesViz'
   , 'missForest', 'mi'
   , 'Amelia', 'VIM'
+  , 'mice', 'arulesCBA'
   , 'psych', 'cocor'
-  , 'lavaan'
+  , 'lavaan', 'Zelig'
   , 'ordPens', 'ordinal'
+  , 'Hmisc'
 ), 'packages.bib')
 library(lattice)
 library(latticeExtra)
@@ -52,16 +54,25 @@ library(arulesimp)
 library(psych)
 library(VIM)
 library(Amelia)
-source("MarketingTheme.R")
+library(Zelig)
+library(mice)
+library(arulesCBA)
+source("C:\\Dev\\Study\\R\\R_Themes\\MarketingTheme.R")
 source("run_experiments_header.R")
 source("synth_wu_data.R")
 ```
 
 # List of Abbreviations {-}
 
+AR - Association Rule(s)\newline
+ARM - Association Rules Mining\newline
+CBA - Classification Based on Associations\newline
+CMAR - Classification based on Multiple Association Rules\newline
 EM - Expectation Maximization\newline
+EMB - Expectation Maximization with Bootstrapping\newline
 FIML - Full Information Maximum Likelihood\newline
 FMI - Fraction of Missing Information\newline
+IM - Item Mean\newline
 KNN - K-Nearest Neighbours\newline
 MASE - Mean Absolute Scale Error\newline
 MCMC - Monte Carlo Markov Chain\newline
@@ -70,6 +81,10 @@ MAR - Missing at Random\newline
 MNAR - Missing not at Random\newline
 MI - Multiple Imputation\newline
 MICE - Multiple Imputation with Chained Equations\newline
+PM - Person Mean\newline
+PIM - Person Item Mean\newline
+PMM - Predictive Mean Matching\newline
+RLRT - Restricted Likelihood Ratio Test\newline
 SEM - Structural Equation Model\newline
 SPRM - Similar Pattern Response Matching\newline
 SSE - Scale Score Error\newline

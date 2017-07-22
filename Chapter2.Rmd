@@ -331,7 +331,7 @@ Donald B. Rubin is widely cited for seminal works, including @rubin1987multiple,
 
 Unobserved predictors defined as:
 \begin{equation}
-  P(M \mid X) = P(M \mid Z),\ Z \cap X = \varnothing,\ Z \text{are unobserved}
+  P(M \mid X) = P(M \mid Z),\ Z \cap X = \varnothing,\ Z\  \text{are unobserved}
   (\#eq:MNARZ)
 \end{equation}
 
@@ -643,7 +643,7 @@ c(d[[1]], d[[2]], d[[3]], d[[4]])
 
 **can try to do those bayesian graphs with HDI intervals highlighted**
 
-As can be seen from Table \@ref(tab:sim-randpred-imp-corrs) and Figure \@ref(fig:sim-randpred-imp-plot), the distribution of the imputed variable has been better preserved by this imputation process. The credible interval for the coefficient of bivariate correlation is also wider which is a desirable property as it reflects that the imputed variables have added some uncertainty. However, this is only apparent because of the Monte-Carlo simulation and would not be detected after a single imputation process. This is where multiple imputation adds value and will be discussed shortly. It is clear that wholly deterministic processes have undersirable properties for imputation and it highlights a very important issue for the current research. Association rules mining is deterministic in nature when carried out under normal circumstances. Some consideration will need to be given to the impact this might have on the proposed novel technique.
+As can be seen from Table \@ref(tab:sim-randpred-imp-corrs) and Figure \@ref(fig:sim-randpred-imp-plot), the distribution of the imputed variable has been better preserved by this imputation process. The credible interval for the coefficient of bivariate correlation is also wider which is a desirable property as it reflects that the imputed variables have added some uncertainty. However, this is only apparent because of the Monte-Carlo simulation and would not be detected after a single imputation process. This is where multiple imputation adds value and will be discussed shortly. It is clear that wholly deterministic processes have undersirable properties for imputation and it highlights a very important issue for the current research. ARM is deterministic in nature when carried out under normal circumstances. Some consideration will need to be given to the impact this might have on the proposed novel technique.
 
 The random regression imputation procedure can be extended to a multivariate scenario, where data is missing in more than one variable by setting up a joint multi-variate normal model. @azur2011multiple states that this is rarely appropriate for wide datasets with possibly hundreds of predictor variables. @gelman2006data describes it as a complicated task better left to software supports its automation and instead suggests an "iterative regression imputation" @gelman2006data [p.539] but goes on to describe what other authors call the chained equations algotrithm. In the text, it is used to generate a single point estimate for each missing data point. However, this iterative process also underpins multiple imputation with chained equations (MICE), as described by most authors. In the next section MICE will be explored in more detail.
 
@@ -824,7 +824,7 @@ There are specific issues with imputation over large scale surveys. The followin
 * Multiple multi-item scales which are summed (either directly or weighted) during analysis. Controversy over whether to impute individual items or scale totals
 * Missing data in a single item of a multi-item scale leads to a missing total
 
-Likert scales are not specifically mentioned they are obviously covered by the arguments given above. @plumpton2016multiple goes on to say that MI is robust to departures from normality and argues for the method's suitablility for many non-normal situations, including on Likert scales. However, it is difficult to see how these challenges are overcome using the classic MI method based entirely on a MVN model. 
+Likert scales are not specifically mentioned they are obviously covered by the arguments given above. @plumpton2016multiple goes on to say that MI is robust to departures from normality and argues for the method's suitablility for many non-normal situations, including on Likert scales. However, it is difficult to see how these challenges are overcome using the classic MI method based entirely on a MVN model. Indeed, @shrive2006dealing describes an experiment using real-world data from a self-reported depression study that shows Person Mean imputation doing slightly better than MI in those scenarios that diverged the most from normality.
 
 @wu2015comparison describes some alternative strategies which are suitable for ordinal data: 
 
@@ -862,11 +862,13 @@ appropriate imputations.
 
 There has been much comparable research done on benchmarking imputation techniques. The following discussion covers the several articles that align well with this project in purpose or approach and will be used to inform the experimental design that will be adopted in this study.
 
-The goal of imputation is to maximize the use of collected data by reducing or eliminating the incidence of missingness in the dataset. This is achieved by finding substitute values for the missing data. The results of analysing the imputed dataset should be neutral (in the MCAR case) or enhanced (in the MAR case and ideally in MNAR cases) when compared to a complete case analysis. As has been demonstrated in earlier sections, this is not achieved by minimising prediction error as in a regression problem. Similarly, comparing imputed values to known values is not the best way to measure success, although this can still be useful to do. It is more important to demonstrate that the statistical properties of the imputed variables have been maintained, and to be able to measure the additional uncertainty around any parameter estimates given the initial missing state of the data. Also, @jonsson2004evaluation shows that Hot-decking methods, (which covers the association rules based method under investigation) do not always find a suitable donor value. A poor quality imputation (one which yields inaccurate analyses) is worse than no imputation at all. Thus, there may be a trade-off between finding a value to substitute each and every missing data point and preserving statistical parameters. This means that a final round of listwise deletion of remaining incomplete cases may still be necessary, with all the inherent assumptions and risks of such action. These factors suggest that the succuss, or otherwise, of an association rules based imputation method also needs take into account the efficacy of finding substitute values. 
+The goal of imputation is to maximize the use of collected data by reducing or eliminating the incidence of missingness in the dataset. This is achieved by finding estimated values for the missing data. The results of analyzing the imputed dataset should be neutral (in the MCAR case) or enhanced (in the MAR case and ideally in MNAR cases) when compared to a complete case analysis. As has been demonstrated in earlier sections, this is not achieved by predicting with a minimized prediction error or cost function (as in a regression problem). Consequently, comparing imputed values to known values is not the best way to measure success, although this can still be useful to do. @shrive2006dealing was one example where the correlation and Cohen's kappa were measure between observed and imputed values, but this approach was less common among the reference papers.
 
-Various statistics for evaluating and benchmarking imputation methods are suggested in the reference texts. Alternative approaches also exist; @pantanowitz2008evaluating is an example of indirectly ascertaining the quality of imputation by measuring the effect of imputation on prediction accuracy of a classification technique over the imputed dataset. Diagnostic tools are now available in a number of R packages, thanks to the work of @gelman2006data and others. Histograms and density plots, as well as scatter plots that highlight imputed data points are still a useful check but the `overimpute` method in the Amelia II Package, @R-Amelia runs a Monte-Carlo simulation using the generated imputation model over all the observed data and plots the actual vs imputed values with confidence intervals, making it very easy to see any systematic patterns.
+It is more important to demonstrate that the statistical properties of the imputed variables have been maintained, and to be able to measure the additional uncertainty around any parameter estimates given the initial missing state of the data. Various statistics for evaluating and benchmarking imputation methods are suggested in the reference texts and covered in detail in the following paragraphs. The simplest approaches compared item means and standard deviations before and after imputation. Articles that were specifically investigating Likert scales performed specialized tests, such as Cronbach's alpha and compared population and post-imputation results. Alternative approaches also exist; @pantanowitz2008evaluating is an example of indirectly ascertaining the quality of imputation by measuring the effect of imputation on prediction accuracy of a classification technique over the imputed dataset. 
 
-**run example**
+@jonsson2004evaluation shows that Hot-decking methods, (which covers the association rules based method under investigation) do not always find a suitable donor value. A poor quality imputation (one which yields inaccurate analyses) is worse than no imputation at all. Thus, there may be a trade-off between finding a value to substitute each and every missing data point and preserving statistical parameters. This means that a final round of listwise deletion of remaining incomplete cases may still be necessary, with all the inherent assumptions and risks of such action. These factors suggest that the succuss, or otherwise, of an association rules based imputation method also needs take into account the efficacy of finding substitute values. 
+
+Diagnostic tools are now available in a number of R packages, thanks to the work of @gelman2006data and others. Histograms and density plots, as well as scatter plots that highlight imputed data points are still a useful check but the `overimpute` method in the Amelia II Package, @R-Amelia runs a Monte-Carlo simulation using the generated imputation model over all the observed data and plots the actual vs imputed values with confidence intervals, making it very easy to see any systematic patterns.
 
 The question of whether to use synthetic or real-world data must also be addressed in studies of this kind. Synthetic data has the advantage that initial conditions can be tightly controlled and the effect of different conditions can be empirically assessed. However, there are often challenges to represent the data models realistically, without introducing a design bias. Most researchers use an underlying MVN model to generate synthetic data when testing the performance of MI. However, MI is based on the assumption that the data is MVN. So, in these experiments it is perhaps unsurprising the MI always performs well. MVN models also return data that is not on the natural scale of ordinal variables, such a non-integer, negative values and values greater than the maximum number of levels. The transformations required to resolve, this can also lead to poor representations such as top-coded or truncated distributions.
 
@@ -938,7 +940,7 @@ ws_design_matrix <- knitr::kable(data.frame(
   "Appropriate Data Type" = var_type
   , "Imputation Strategy" = imputation_methods
                   , check.names = FALSE)
-        , caption = "Withing Subjects Experimental Design Matrix: Imputation Strategies. Adapted from source: Wu et al. (2015)")
+        , caption = "Within Subjects Experimental Design Matrix: Imputation Strategies. Adapted from source: Wu et al. (2015)")
 
 ws_design_matrix
 ```
@@ -1057,9 +1059,9 @@ cp_design_matrix
 
 Of all the articles surveyed, the study reported in @carpita2011imputation has the best aligned motivation and methodology with this research project. The purpose of the study is to compare a novel, non-parametric method with existing methods that are well suited to Likert scale data. There are many notable items in this methodology:
 
-* Sole reliance on a large real-world dataset collected in a previous survey. This dataset was part of a peer-reviewed study and there is no reason to doubt its validity for this secondary use. No synthetic or semi-synthetic data was generated. Instead, large random draws were taken from the original dataset to make three different sized sub-samples. This process precluded the assumptions and design bias of comparable studies based on synthesised MVN data. 
+* Sole reliance on a large real-world dataset collected in a previous survey. This dataset was part of a peer-reviewed study and there is no reason to doubt its validity for this secondary use. No synthetic or semi-synthetic data was generated. Instead, large random draws were taken from the original dataset to make three different sized sub-samples. This process precluded the assumptions and design bias of comparable studies based on synthesised MVN data. Only @shrive2006dealing was similar in this respect.
 * The choice of a novel non-parametric, non MI based method and further more, the choice of benchmark methods tailored for the Likert data type. These included Person Mean (PM), Correct Item Mean (CIM), Two-Way (TW) and Item Correlation Substitution (ICS) discussed in the previous section. **hyperlink or reference here** Multiple imputation was not used at all.
-* The use of a mechanism to generate MNAR patterns in the data was not seen in any other study. This is remarkable when seen in context of the ease in which it is done, simply by generating MAR data but not including the co-variates in the imputation model.
+* The use of a parametric mechanism to generate MNAR patterns in the data was not seen in any other study. This is remarkable when seen in context of the ease in which it is done, simply by generating MAR data but not including the co-variates in the imputation model. Only @shrive2006dealing was found to implement an MNAR scheme, which was done with hard-coded thresholds.
 
 For MCAR data, a fixed proportion of randomly selected values was deleted. The MAR and MNAR methods used were not seen anywhere else but appear to be very well thought out. They are defined in the @carpita2011imputation as follows:
 
@@ -1127,19 +1129,24 @@ Their experiments were designed to facilitate the discovery of optimal parameter
 
 ## The Case for a Novel Approach
 
+Previous sections have highlighted how the use of imputation methods intended for continuous data is sometimes counter-productive when applied on ordinal data. This section considers how some of these problems might be addressed with an ARM based method.
+
 ### Association Rules
 
-Association rules mining (ARM) was first popularised by the development of a fast algorithm for large databases, *apriori*, in @agrawal1993mining. It was developed in response to the vast amount of data collected by large retail enterprises on their customer purchase data. 
+Association rules mining (ARM) was first popularised by the development of a fast algorithm for large databases, *apriori*, in @agrawal1993mining. It falls under the general banner of data mining for its ability to provide a compact and interpretable summary of large amounts of observed data. This is achieved by extracting frequently occuring patterns. It was developed in response to the vast amount of data collected by large retail enterprises on their customer purchase data.
+
 Many of the fundamental concepts of ARM were formalised in @agrawal1993mining article and its follow up, @agrawal1994fast which are considered to be the seminal works on the topic. The following definitions are adapted from @agrawal1994fast [p.2] and @tan2005chapter6 [pp.329-330]:
 
 Let $I = \{i_1,\ i_2,\ \dots,\ i_k\}$ be the set of all items. Let $T = \{t_1,\ t_2,\ \dots,\ t_N\}$ be a set of $N$ transactions where each transaction $t_j \subseteq I$. A transaction $t_j$ is said to contain an itemset $X$ (a set of some items in $I$) if $X \subseteq t_j$.
 
-The brute force method of computing all possible rules in a transaction set of N possible items is $O(3^N)$ **double check**. When it emerged, *apriori* was described as a "fast" algorithm because it outperformed everything that came before. It is still widely used today. @tan2005chapter6 explains that to achieve its objective of efficiently finding useful association rules, ARM must solve two distinct problems:
+The brute force method of computing all possible rules in a transaction set of n possible items is $O(n2^{n-1})$ for binary attributes (i.e. present/absent) and $O(m^n)$ where attributes can take on $m$ possible values (as in a Likert scale). @mutter2004classification states that it is an intractable problem to find all rules in even moderately sized databases. When it emerged, *apriori* was described as a "fast" algorithm because it outperformed everything that came before.
+
+*apriori* is still widely used today. @tan2005chapter6 explains that to achieve its objective of efficiently finding useful association rules, ARM must solve two distinct problems:
 
 1. Overcoming the computational challenge of discovering frequent itemsets in large transaction data
 1. Ignoring spurious patterns/rules that occur by chance
 
-These challenges are addressed under the *apriori* algorithm by searching the database iteratively for itemsets that occur more frequently than a given probabilistic threshold, known as *support*. Rule discovery is deferred until all frequent itemsets are found i.e those occuring with > minimum support.
+These challenges are addressed under the *apriori* algorithm by exploiting the downward closure principle which states that an itemset is frequent $iif$ all of its proper subsets are frequent. *apriori* searching the database iteratively, starting with single items that occur more frequently than a given probabilistic threshold, known as *support*. Rule discovery is deferred until all frequent itemsets are found i.e those occuring with > minimum support.
 
 **Support for itemset $X$ in Transaction Data $T = \{t_1,\ t_2,\ \dots,\ t_N\}$** 
 \begin{equation}
@@ -1159,7 +1166,7 @@ The resulting collection of itemsets is then mined for rules of the pattern $X \
 
 Note that the support of rule $X \implies Y$ depends only on the support of the superset $X \cup Y$. So by performing the frequent itemset generation step in full, the support for all possible rules from the collection is already known to exceed the minimum support. 
 
-*Support* is useful for ruling out rules that simply occur by chance but the objective of ARM is to find "strong rules" that are not only frequent but also reliable for inference. For this purpose, different measures of *interestingness* are used. A most comprehensive list is given in @hahsler2017interesting and their properties are discussed thoroughly in @tan2005chapter6. In *apriori*, *confidence* is used by default and *lift* is also common, which adjusts for the frequency of the consequent itemset:
+*Support* is useful for ruling out rules that simply occur by chance but the objective of ARM is to find "strong rules" that are not only frequent but also reliable for inference. For this purpose, different measures of *interestingness* are used. A most comprehensive list is given in @hahsler2017interesting and their properties are discussed thoroughly in @tan2005chapter6. Despite these and other attempts to catalogue them, @mutter2004classification points out that the large number of rules generated means that comparing the results of different mining algorithms and interestingness measures is non-trivial. In *apriori*, *confidence* is used by default and *lift* is also common, which adjusts for the frequency of the consequent itemset:
 
 **Confidence of rule $X \implies Y$** 
 \begin{equation}
@@ -1263,12 +1270,47 @@ Work has been done develop more compact representations of itemsets and rules, s
 
 Returning to the idea of imputation using similar pattern response matching, it is self-evident that ARM is an algorithm for finding similar patterns. Upon evaluation of a dataset by ARM, a collection of rules (patterns) is returned. However, out-of-the-box this neither offers nor assumes a specific usage for those found patterns. That is left up to the analyst. This research suggests using association rules with a consequent cardinality of one, to substitute values where the antecedent matches frequent response patterns in a survey or questionnaire.
 
-### Classification with Association Rules
+### Classification Based on Associations (CBA)
 
-\cite{freitas2000understanding} posits that ARM is a deterministic task and very different to classification though does concede that there are special cases where the resulting models can be used for predictions or, more specifically, classification. These special cases involve finding a subset of rules, which \cite{ma1998integrating} calls \textit{class association rules} (CARs). These CARs have the characteristic of having the target variable as the only element in the consequent or right-hand side of the rule. The ``partial classification" described in \cite{ali1997partial} is of particular interest because the objective here is to discover characteristics of the target variables. The authors suggest applicability to situations where some attribute will be modeled based on the other attributes. This is precisely the situation under investigation in this project.\newline
+According to various sources [@R-arulesCBA; @yin2003cpar], the performance of CBA is comparable to other classification algorithms and is described as an intuitive approach to classification. Nevertheless, it is not among the first classification techniques typically taught in data science classes or described in the literature. There is much to consider before ARM can be applied to classification tasks. 
 
-While prediction and imputation differ in scope and goal, the intention of finding a estimated (or ``plausible") value rather than an accurate value could be seen as a mere relaxation of success criteria. If prediction with excellent results is possible from association rules, then it stands to reason that imputation in some form must also be possible.
+@freitas2000understanding posits that ARM is a deterministic task and very different to classification though does concede that there are special cases where the resulting models can be used for predictions or, more specifically, classification. These special cases involve finding a subset of rules, which @ma1998integrating calls \textit{class association rules} (CARs). These CARs have the characteristic of having the target variable as the only element in the consequent or right-hand side of the rule. @srikant1997mining demonstates that it is possible to incorporate such constraints into the rule finding algorithm, rather than leave it to pruning. This approach should be much more efficient.
 
+@mutter2004classification posits that mining for CARs requires specialized rule selection approaches that weight rules according to their power to discriminate. The most compact and stable ruleset must be sought for classification purposes and the difficulty is in finding the smallest number of rules that cover the target variable completely, within the parameters of the observed data.
+
+@mutter2004classification goes on to propose alternative interestingness measure that meets this requirement, which is derived from support, confidence and lift:
+
+\begin{equation}
+  PrAcc(X \implies Y_i) = P(Y_i = Y_{true} \mid X)
+  (\#eq:predacc)
+\end{equation}
+
+where $Y_i$ is an instance of $Y$ having a class label $i$ and $Y_{true}$ is the true class of $Y$. In addition, prediction prefers more general rules are preferred, which allows for pruning of redundant rules and more compact models. A rule is more general than another rule if it predicts the same instances correctly with a shorter antecedent. Refer to @mutter2004classification for the full definition and proof.
+
+Pruning strategies are essential for the good performance of an AR based classifier. The most popular approach is database coverage, which ensures that each rule can classify at least one training instance correctly and each instance can be classified by the best rule, according to prediction accuracy, or interestingness measure. @liu2001classification describes this as a greedy algorithm. It starts with an exhaustive search of all the rules and works from the highest ranking rule to the lowest, removing instances from the training set when a covering rule is found. More specific rules are required to cover the most difficult to classify instances. Another method downweights instances as covering rules are found, rather than removing them. This echoes the boosting method.
+
+Rules are ranked according to a simple set of rules. In the method outlined in @liu2001classification [p.5], $r_i \succ r_j$ if:
+
+> "1. the confidence of $r_i$ is greater than that of $r_j$, or
+
+> 2. their confidences are the same, but the support of $r_i$ is greater than that of $r_j$, or
+
+> 3. both the confidences and supports of $r_i$ and $r_j$ are the same, but $r_i$ is generated earlier than $r_j$."
+
+This can naturally result in some instances being covered by more than one rule. So an AR-based prediction model also requires a way to resolve multiple different predictions. @mutter2004classification proposes majority vote with weighting, the weights being determined by the rank order of each rule with respect to interestingness measures. This scheme allows comparison between different algorithms in an experimental setting. An alternative is simply to take the prediction from the top ranking rule.
+
+A consequence of generating rules with a minimum support is that it is possible that not all instances are covered by a minimumally supporting rule. @liu2001classification deals with this by including a default class (usually the majority class) as the final rule, such that a CBA classifier always takes the form:
+
+\begin{equation}
+  <\ r_1 \succ r_2 \succ \dots \succ r_n \succ\ \{\} \implies \textit{default class}\ >
+  (\#eq:cbaclassifier)
+\end{equation}
+
+CBA differs from general ARM in other ways. For example, the minimum support in *apriori* is set by the user prior to beginning the algorithm and is constant. @liu2001classification shows that when training a classifier on data with a class imbalance, no rules will be found that cover class that occurs at a lower frequency than the minimum support. Simply lowering the support is not an option as this would cause too many trivial rules to be found for the majority class(es). Instead, total support can be specified and distributed according to class proportions.
+
+There are alternative algorithms for ARM-based classification. CPAR, presented in @yin2003cpar implemented an efficient rule induction algorithm but does not appear very widely in the literature. CMAR [@li2001cmar] implements an efficient FP-growth tree for rule storage. Furthermore, multiple association rules are considered predict according to a weighting scheme.
+
+While prediction and imputation differ in scope and goal, the intention of finding estimated (or "plausible") values rather than accurate values could be seen as a mere relaxation of success criteria. If prediction with excellent results is possible from association rules, then it stands to reason that imputation in some form must also be possible.
 
 ## Conceptual Model - Bringing it all together?
 
