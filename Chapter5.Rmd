@@ -1,0 +1,18 @@
+# Further Work
+
+Must use FP-growth to have good enough performance for real-world application
+
+Able to enter collections of variables that are considered together and look for rules that only use those. Should be faster and might be more accurate if reliability measures support it.
+
+Able to enter collections of variables and find rules based on aggregated measures from those variables.
+
+Use of cumulative odds models for diagnostics
+Probit link is used when assumption of a latent variable (normally distributed)
+
+What are the limitations of the method, e.g. continuous/numeric can't be used.
+
+Future work, could try a MICE approach - iterative cycle over imputation and look for a convergence.
+
+Future work could try a non-deterministic approach, using a choice from the top n donor values rather than picking the top 1.
+
+Relevance to synthetic data - synthpop and practical synthesis.

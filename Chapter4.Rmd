@@ -1,18 +1,574 @@
-# Further Work
+# Results
 
-Must use FP-growth to have good enough performance for real-world application
+This section contains the tabulated results and vizualisations for each stage of the benchmarking experiments.
 
-Able to enter collections of variables that are considered together and look for rules that only use those. Should be faster and might be more accurate if reliability measures support it.
+## Stage 1: Rules Selection Method - No Default
 
-Able to enter collections of variables and find rules based on aggregated measures from those variables.
+The purpose of stage 1 is to ascertain which rule selection method performs best and eliminate the worst performers. The following coding is used. In all cases the rules were sorted by confidence from best to worst:
 
-Use of cumulative odds models for diagnostics
-Probit link is used when assumption of a latent variable (normally distributed)
+* bestrule: The single best rule is selected and its consequent is applied. Equivalent to Top N for N = 1.
 
-What are the limitations of the method, e.g. continuous/numeric can't be used.
+* topnm3, topnm7: The top N rules are found and their consequents are pooled. The mean is taken and non-deterministically (nd) rounded, see \@ref(eq:pmimp) to \@ref(eq:twimp) for details on nd rounding.
 
-Future work, could try a MICE approach - iterative cycle over imputation and look for a convergence.
+* topnmjv3, topnmjv7: The top N rules are found and their consequents are pooled. Imputation is by majority vote. In case of a tie, a random value is taken from the tied values.
 
-Future work could try a non-deterministic approach, using a choice from the top n donor values rather than picking the top 1.
+* rhsfreq: Consequents from all matching rules are pooled and a random value is drawn from their posterior distribution.
 
-Relevance to synthetic data - synthpop and practical synthesis.
+### Wu's Symmetric Data
+
+```{r load_data}
+load("wu_sym_results.RData")
+load("wu_sasym_results.RData")
+load("wu_stats_pop.RData")
+
+# graph settings
+source("C:\\Dev\\Study\\R\\R_Themes\\MarketingTheme.R")
+MyTempTheme <- MyLatticeTheme
+MyTempTheme$superpose.symbol$col <- myPal
+MyTempTheme$add.line$col <- myPalDark[3]
+```
+
+```{r rs-wu-sym-mase-A, results='asis', eval=FALSE}
+rs_mase_A <- knitr::kable(
+  subset(wu_sym_results$qdata
+         , wu_sym_results$qdata$stats == "mase_A"
+         , c("dataset", "variant", "mean", "st_err"))
+  , digits = 5
+  , row.names = FALSE
+  , caption = "Mean Absolute Scale Error for Scale A.")
+
+rs_mase_A
+```
+
+```{r rs-wu-sym-mase-B, results='asis', eval=FALSE}
+rs_mase_B <- knitr::kable(
+  subset(wu_sym_results$qdata
+         , wu_sym_results$qdata$stats == "mase_B"
+         , c("dataset", "variant", "mean", "st_err"))
+  , digits = 5
+  , row.names = FALSE
+  , caption = "Mean Absolute Scale Error for Scale B.")
+
+rs_mase_B
+```
+
+```{r rs-wu-sym-mean-A, results='asis'}
+rs_mean_A <- knitr::kable(
+  subset(wu_sym_results$qdata
+         , wu_sym_results$qdata$stats == "mean_A"
+         , c("dataset", "variant", "mean", "st_err", "rel_bias", "mae"))
+  , digits = 5
+  , row.names = FALSE
+  , caption = paste("Mean Scale A after imputation. Population value (before) was", round(wu_stats_pop_sym$mean_A, 5)))
+
+rs_mean_A
+```
+
+```{r rs-wu-sym-ci-mean-A, results='asis'}
+ci_mean_A <- knitr::kable(wu_sym_results$ci_data[
+  , c("dataset", "variant", "mean_A_cover")]
+  , row.names = FALSE
+  , caption = "Fraction of coverage of population parameter by 95pc CI of Scale A mean after imputation."
+  )
+
+ci_mean_A
+```
+
+```{r rs-wu-sym-sd-A, results='asis'}
+rs_sd_A <- knitr::kable(
+  subset(wu_sym_results$qdata
+         , wu_sym_results$qdata$stats == "sd_A"
+         , c("dataset", "variant", "mean", "st_err", "rel_bias", "mae"))
+  , digits = 5
+  , row.names = FALSE
+  , caption = paste("St.Dev of Scale A after imputation. Population value (before) was", round(wu_stats_pop_sym$sd_A, 5)))
+
+rs_sd_A
+```
+
+```{r rs-wu-sym-alpha-A, results='asis'}
+rs_alpha_A <- knitr::kable(
+  subset(wu_sym_results$qdata
+         , wu_sym_results$qdata$stats == "alpha_A"
+         , c("dataset", "variant", "mean", "st_err", "rel_bias", "mae"))
+  , digits = 5
+  , row.names = FALSE
+  , caption = paste("Cronbach's alpha of Scale A after imputation. Population value (before) was", round(wu_stats_pop_sym$alpha_A, 5)))
+
+rs_alpha_A
+```
+
+```{r rs-wu-sym-ci-alpha-A, results='asis'}
+ci_mean_A <- knitr::kable(wu_sym_results$ci_data[
+  , c("dataset", "variant", "alpha_A_cover")]
+  , row.names = FALSE
+  , caption = "Fraction of coverage of population parameter by 95pc CI of Scale A alpha after imputation."
+  )
+
+ci_mean_A
+```
+
+```{r rs-wu-sym-mean-B, results='asis'}
+rs_mean_B <- knitr::kable(
+  subset(wu_sym_results$qdata
+         , wu_sym_results$qdata$stats == "mean_B"
+         , c("dataset", "variant", "mean", "st_err", "rel_bias", "mae"))
+  , digits = 5
+  , row.names = FALSE
+  , caption = paste("Mean Scale B after imputation. Population value (before) was", round(wu_stats_pop_sym$mean_B, 5)))
+
+rs_mean_B
+```
+
+```{r rs-wu-sym-ci-mean-B, results='asis'}
+ci_mean_A <- knitr::kable(wu_sym_results$ci_data[
+  , c("dataset", "variant", "mean_B_cover")]
+  , row.names = FALSE
+  , caption = "Fraction of coverage of population parameter by 95pc CI of Scale B mean after imputation."
+  )
+
+ci_mean_A
+```
+
+```{r rs-wu-sym-sd-B, results='asis'}
+rs_sd_B <- knitr::kable(
+  subset(wu_sym_results$qdata
+         , wu_sym_results$qdata$stats == "sd_B"
+         , c("dataset", "variant", "mean", "st_err", "rel_bias", "mae"))
+  , digits = 5
+  , row.names = FALSE
+  , caption = paste("St.Dev of Scale B after imputation. Population value (before) was", round(wu_stats_pop_sym$sd_B, 5)))
+
+rs_sd_B
+```
+
+```{r rs-wu-sym-alpha-B, results='asis'}
+rs_alpha_B <- knitr::kable(
+  subset(wu_sym_results$qdata
+         , wu_sym_results$qdata$stats == "alpha_B"
+         , c("dataset", "variant", "mean", "st_err", "rel_bias", "mae"))
+  , digits = 5
+  , row.names = FALSE
+  , caption = paste("Cronbach's alpha of Scale B after imputation. Population value (before) was", round(wu_stats_pop_sym$alpha_B, 5)))
+
+rs_alpha_B
+```
+
+```{r rs-wu-sym-ci-alpha-B, results='asis'}
+ci_mean_B <- knitr::kable(wu_sym_results$ci_data[
+  , c("dataset", "variant", "alpha_B_cover")]
+  , row.names = FALSE
+  , caption = "Fraction of coverage of population parameter by 95pc CI of Scale B alpha after imputation."
+  )
+
+ci_mean_B
+```
+
+```{r rs-wu-sym-splith, results='asis'}
+rs_alpha_B <- knitr::kable(
+  subset(wu_sym_results$qdata
+         , wu_sym_results$qdata$stats == "splith_mix"
+         , c("dataset", "variant", "mean", "st_err", "rel_bias", "mae"))
+  , digits = 5
+  , row.names = FALSE
+  , caption = paste("Split half correlation (Z transform) of items subject to imputation in both Scales. Population value (before) was", round(wu_stats_pop_sym$splith_mix, 5)))
+
+rs_alpha_B
+```
+
+```{r rs-sym-ability-attr, results='asis'}
+ability_attr <- knitr::kable(
+  subset(wu_sym_results$qdata
+         , wu_sym_results$qdata$stats == "ability_attr"
+         , c("dataset", "variant", "mean", "st_err"))
+  , digits = 5
+  , row.names = FALSE
+  , caption = "Imputation Ability of each method by attributes")
+
+ability_attr
+```
+
+```{r rs-sym-ability-case, results='asis'}
+ability_case <- knitr::kable(
+  subset(wu_sym_results$qdata
+         , wu_sym_results$qdata$stats == "ability_case"
+         , c("dataset", "variant", "mean", "st_err"))
+  , digits = 5
+  , row.names = FALSE
+  , caption = "Imputation Ability of each method by cases")
+
+ability_case
+```
+
+```{r wu-sym-plots-mase, fig.height=2, fig.cap='Mean Absolute Scale Errors after imputation.'}
+pops <- data.frame(stats = names(wu_stats_pop_sym), value = unlist(wu_stats_pop_sym))
+
+stats_names <- c("mase_A", "mase_B")
+g <- ggplot(data = subset(wu_sym_results$qdata
+                          , stats %in% stats_names)
+            , aes(x = mean
+                  , y = variant
+                  , colour = dataset
+            )
+) +
+  facet_wrap(~stats, scales = "free") +
+  geom_point(size = 2) +
+  myGgTheme +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  myGgColourScale
+g
+```
+
+
+```{r wu-sym-plots-mean, fig.height=2, fig.cap='Mean Scale Scores after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+
+stats_names <- c("mean_A", "mean_B")
+g <- ggplot(data = subset(wu_sym_results$qdata
+                          , stats %in% stats_names)
+            , aes(x = mean
+                  , xmin = ci_lower
+                  , xmax = ci_upper
+                  , y = variant
+                  , colour = dataset
+            )
+) +
+  facet_wrap(~stats, scales = "free") +
+  geom_point(size = 2) +
+  geom_errorbarh(size = 0.5, height = 0.25, alpha = 0.5) +
+  geom_vline(data = subset(pops
+            , stats %in% stats_names)
+            , aes(xintercept = value)
+            , colour = myPalDark[3]
+            , linetype = "dotted") +
+  myGgTheme +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  myGgColourScale
+g
+```
+
+```{r wu-sym-plots-sd, fig.height=2, fig.cap='Scale Score standard deviations after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+
+stats_names <- c("sd_A", "sd_B")
+g <- ggplot(data = subset(wu_sym_results$qdata
+                          , stats %in% stats_names)
+            , aes(x = mean
+                  , xmin = ci_lower
+                  , xmax = ci_upper
+                  , y = variant
+                  , colour = dataset
+            )
+) +
+  facet_wrap(~stats, scales = "free") +
+  geom_point(size = 2) +
+  geom_errorbarh(size = 0.5, height = 0.25, alpha = 0.5) +
+  geom_vline(data = subset(pops
+            , stats %in% stats_names)
+            , aes(xintercept = value)
+            , colour = myPalDark[3]
+            , linetype = "dotted") +
+  myGgTheme +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  myGgColourScale
+g
+```
+
+```{r wu-sym-plots-alpha, fig.height=2, fig.cap='Cronbach\'s alpha after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+
+stats_names <- c("alpha_A", "alpha_B", "splith_mix")
+g <- ggplot(data = subset(wu_sym_results$qdata
+                          , stats %in% stats_names)
+            , aes(x = mean
+                  , xmin = ci_lower
+                  , xmax = ci_upper
+                  , y = variant
+                  , colour = dataset
+            )
+) +
+  facet_wrap(~stats, scales = "free") +
+  geom_point(size = 2) +
+  geom_errorbarh(size = 0.5, height = 0.25, alpha = 0.5) +
+  geom_vline(data = subset(pops
+            , stats %in% stats_names)
+            , aes(xintercept = value)
+            , colour = myPalDark[3]
+            , linetype = "dotted") +
+  myGgTheme +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  myGgColourScale
+g
+```
+
+\clearpage
+
+### Wu's Severely Asymmetric Data
+
+```{r rs-wu-sasym-mase-A, results='asis', eval=FALSE}
+rs_mase_A <- knitr::kable(
+  subset(wu_sasym_results$qdata
+         , wu_sasym_results$qdata$stats == "mase_A"
+         , c("dataset", "variant", "mean", "st_err"))
+  , digits = 5
+  , row.names = FALSE
+  , caption = "Mean Absolute Scale Error for Scale A.")
+
+rs_mase_A
+```
+
+```{r rs-wu-sasym-mase-B, results='asis', eval=FALSE}
+rs_mase_B <- knitr::kable(
+  subset(wu_sasym_results$qdata
+         , wu_sasym_results$qdata$stats == "mase_B"
+         , c("dataset", "variant", "mean", "st_err"))
+  , digits = 5
+  , row.names = FALSE
+  , caption = "Mean Absolute Scale Error for Scale B.")
+
+rs_mase_B
+```
+
+```{r rs-wu-sasym-mean-A, results='asis'}
+rs_mean_A <- knitr::kable(
+  subset(wu_sasym_results$qdata
+         , wu_sasym_results$qdata$stats == "mean_A"
+         , c("dataset", "variant", "mean", "st_err", "rel_bias", "mae"))
+  , digits = 5
+  , row.names = FALSE
+  , caption = paste("Mean Scale A after imputation. Population value (before) was", round(wu_stats_pop_sasym$mean_A, 5)))
+
+rs_mean_A
+```
+
+
+```{r rs-wu-sasym-ci-mean-A, results='asis'}
+ci_mean_A <- knitr::kable(wu_sasym_results$ci_data[
+  , c("dataset", "variant", "mean_A_cover")]
+  , row.names = FALSE
+  , caption = "Fraction of coverage of population parameter by 95pc CI of Scale A mean after imputation."
+)
+
+ci_mean_A
+```
+
+```{r rs-wu-sasym-sd-A, results='asis'}
+rs_sd_A <- knitr::kable(
+  subset(wu_sasym_results$qdata
+         , wu_sasym_results$qdata$stats == "sd_A"
+         , c("dataset", "variant", "mean", "st_err", "rel_bias", "mae"))
+  , digits = 5
+  , row.names = FALSE
+  , caption = paste("St.Dev of Scale A after imputation. Population value (before) was", round(wu_stats_pop_sasym$sd_A, 5)))
+
+rs_sd_A
+```
+
+```{r rs-wu-sasym-alpha-A, results='asis'}
+rs_alpha_A <- knitr::kable(
+  subset(wu_sasym_results$qdata
+         , wu_sasym_results$qdata$stats == "alpha_A"
+         , c("dataset", "variant", "mean", "st_err", "rel_bias", "mae"))
+  , digits = 5
+  , row.names = FALSE
+  , caption = paste("Cronbach's alpha of Scale A after imputation. Population value (before) was", round(wu_stats_pop_sasym$alpha_A, 5)))
+
+rs_alpha_A
+```
+
+```{r rs-wu-sasym-ci-alpha-A, results='asis'}
+ci_mean_A <- knitr::kable(wu_sasym_results$ci_data[
+  , c("dataset", "variant", "alpha_A_cover")]
+  , row.names = FALSE
+  , caption = "Fraction of coverage of population parameter by 95pc CI of Scale A alpha after imputation."
+)
+
+ci_mean_A
+```
+
+```{r rs-wu-sasym-mean-B, results='asis'}
+rs_mean_B <- knitr::kable(
+  subset(wu_sasym_results$qdata
+         , wu_sasym_results$qdata$stats == "mean_B"
+         , c("dataset", "variant", "mean", "st_err", "rel_bias", "mae"))
+  , digits = 5
+  , row.names = FALSE
+  , caption = paste("Mean Scale B after imputation. Population value (before) was", round(wu_stats_pop_sasym$mean_B, 5)))
+
+rs_mean_B
+```
+
+```{r rs-wu-sasym-ci-mean-B, results='asis'}
+ci_mean_A <- knitr::kable(wu_sasym_results$ci_data[
+  , c("dataset", "variant", "mean_B_cover")]
+  , row.names = FALSE
+  , caption = "Fraction of coverage of population parameter by 95pc CI of Scale B mean after imputation."
+)
+
+ci_mean_A
+```
+
+```{r rs-wu-sasym-sd-B, results='asis'}
+rs_sd_B <- knitr::kable(
+  subset(wu_sasym_results$qdata
+         , wu_sasym_results$qdata$stats == "sd_B"
+         , c("dataset", "variant", "mean", "st_err", "rel_bias", "mae"))
+  , digits = 5
+  , row.names = FALSE
+  , caption = paste("St.Dev of Scale B after imputation. Population value (before) was", round(wu_stats_pop_sasym$sd_B, 5)))
+
+rs_sd_B
+```
+
+```{r rs-wu-sasym-alpha-B, results='asis'}
+rs_alpha_B <- knitr::kable(
+  subset(wu_sasym_results$qdata
+         , wu_sasym_results$qdata$stats == "alpha_B"
+         , c("dataset", "variant", "mean", "st_err", "rel_bias", "mae"))
+  , digits = 5
+  , row.names = FALSE
+  , caption = paste("Cronbach's alpha of Scale B after imputation. Population value (before) was", round(wu_stats_pop_sasym$alpha_B, 5)))
+
+rs_alpha_B
+```
+
+```{r rs-wu-sasym-ci-alpha-B, results='asis'}
+ci_mean_B <- knitr::kable(wu_sasym_results$ci_data[
+  , c("dataset", "variant", "alpha_B_cover")]
+  , row.names = FALSE
+  , caption = "Fraction of coverage of population parameter by 95pc CI of Scale B alpha after imputation."
+)
+
+ci_mean_B
+```
+
+```{r rs-wu-sasym-splith, results='asis'}
+rs_alpha_B <- knitr::kable(
+  subset(wu_sasym_results$qdata
+         , wu_sasym_results$qdata$stats == "splith_mix"
+         , c("dataset", "variant", "mean", "st_err", "rel_bias", "mae"))
+  , digits = 5
+  , row.names = FALSE
+  , caption = paste("Split half correlation (Z transform) of items subject to imputation in both Scales. Population value (before) was", round(wu_stats_pop_sasym$splith_mix, 5)))
+
+rs_alpha_B
+```
+
+```{r rs-sasym-ability-attr, results='asis'}
+ability_attr <- knitr::kable(
+  subset(wu_sasym_results$qdata
+         , wu_sasym_results$qdata$stats == "ability_attr"
+         , c("dataset", "variant", "mean", "st_err"))
+  , digits = 5
+  , row.names = FALSE
+  , caption = "Imputation Ability of each method by attributes")
+
+ability_attr
+```
+
+```{r rs-sasym-ability-case, results='asis'}
+ability_case <- knitr::kable(
+  subset(wu_sasym_results$qdata
+         , wu_sasym_results$qdata$stats == "ability_case"
+         , c("dataset", "variant", "mean", "st_err"))
+  , digits = 5
+  , row.names = FALSE
+  , caption = "Imputation Ability of each method by cases")
+
+ability_case
+```
+
+```{r wu-sasym-plots-mase, fig.height=2, fig.cap='Mean Absolute Scale Errors after imputation.'}
+pops <- data.frame(stats = names(wu_stats_pop_sasym), value = unlist(wu_stats_pop_sasym))
+
+stats_names <- c("mase_A", "mase_B")
+g <- ggplot(data = subset(wu_sasym_results$qdata
+                          , stats %in% stats_names)
+            , aes(x = mean
+                  , y = variant
+                  , colour = dataset
+            )
+) +
+  facet_wrap(~stats, scales = "free") +
+  geom_point(size = 2) +
+  myGgTheme +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  myGgColourScale
+g
+```
+
+```{r wu-sasym-plots-mean, fig.height=2, fig.cap='Mean Scale Scores after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+pops <- data.frame(stats = names(wu_stats_pop_sasym), value = unlist(wu_stats_pop_sasym))
+
+stats_names <- c("mean_A", "mean_B")
+g <- ggplot(data = subset(wu_sasym_results$qdata
+                          , stats %in% stats_names)
+            , aes(x = mean
+                  , xmin = ci_lower
+                  , xmax = ci_upper
+                  , y = variant
+                  , colour = dataset
+            )
+) +
+  facet_wrap(~stats, scales = "free") +
+  geom_point(size = 2) +
+  geom_errorbarh(size = 0.5, height = 0.25, alpha = 0.5) +
+  geom_vline(data = subset(pops
+                           , stats %in% stats_names)
+             , aes(xintercept = value)
+             , colour = myPalDark[3]
+             , linetype = "dotted") +
+  myGgTheme +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  myGgColourScale
+g
+```
+
+```{r wu-sasym-plots-sd, fig.height=2, fig.cap='Scale Score standard deviations after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+
+stats_names <- c("sd_A", "sd_B")
+g <- ggplot(data = subset(wu_sasym_results$qdata
+                          , stats %in% stats_names)
+            , aes(x = mean
+                  , xmin = ci_lower
+                  , xmax = ci_upper
+                  , y = variant
+                  , colour = dataset
+            )
+) +
+  facet_wrap(~stats, scales = "free") +
+  geom_point(size = 2) +
+  geom_errorbarh(size = 0.5, height = 0.25, alpha = 0.5) +
+  geom_vline(data = subset(pops
+                           , stats %in% stats_names)
+             , aes(xintercept = value)
+             , colour = myPalDark[3]
+             , linetype = "dotted") +
+  myGgTheme +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  myGgColourScale
+g
+```
+
+```{r wu-sasym-plots-alpha, fig.height=2, fig.cap='Cronbach\'s alpha after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+
+stats_names <- c("alpha_A", "alpha_B", "splith_mix")
+g <- ggplot(data = subset(wu_sasym_results$qdata
+                          , stats %in% stats_names)
+            , aes(x = mean
+                  , xmin = ci_lower
+                  , xmax = ci_upper
+                  , y = variant
+                  , colour = dataset
+            )
+) +
+  facet_wrap(~stats, scales = "free") +
+  geom_point(size = 2) +
+  geom_errorbarh(size = 0.5, height = 0.25, alpha = 0.5) +
+  geom_vline(data = subset(pops
+                           , stats %in% stats_names)
+             , aes(xintercept = value)
+             , colour = myPalDark[3]
+             , linetype = "dotted") +
+  myGgTheme +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  myGgColourScale
+g
+```

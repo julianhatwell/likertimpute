@@ -12,6 +12,10 @@ Common design patterns have been identified from similar research found in the l
 
 \textbf{Range of item scores:} Articles that focussed on ordinal and Likert scales varied the number of levels among 2, 3, 5, 6, and 7. In the literature on Likert scales, the values of 5 and 7 are very common and others are rarely seen. Therefore, to maintain this project's focus on Likert scales and limit the number of factors, the values will be restricted to 5 or 7.
 
+\textbf{Multi-stage experimental design:} @carpita2011imputation implemented a common sense experimental design which isolates the discovery of the best performing novel method variant from the benchmarking process in two stages. During the research phase of this project, a number of potential variants and improvements have been uncovered which may be combined in many different ways. The computational cost of trying all combinations is prohibitive, and so a multi-stage approach, building on @carpita2011imputation will be adopted.
+
+\textbf{Interestingness Measures:} The performance of ARM can be subtly manipulated by applying any one of a large selection of documented interestingness measures which can be used to sort the found rules. There are too many such measures to test them all in a reasonably designed experiment but two were discussed in the literature on CBA as being useful for predictive tasks. Predictive (Laplace's) accuracy, presented in @yin2003cpar, downweights how confidence rules that have low support in the data. Chi squared is a good measure of how unlikely a rule was to have been discovered by chance, which is equivalent to choosing a predictive model with high sensitivity and specificity. The weighted Chi square statistic, proposed in @li2001cmar goes further by finding the Chi square as a proportion of the maximum possible Chi square score, given the data. This project will include comparisons of different sort orders for the importance of found rules, based on these statistics. 
+
 \textbf{Range of technique applied in benchmarking:} The relevant articles are very varied on this point and many report the inclusion of mean imputation, regression imputation and list-wise deletion. This may be a symptom of the relative age of some of the research, or potentially flaws in the research design. It is not considered worthwhile to compare any novel technique to those techniques regarded as flawed or outdated in the modern literature. This research will focus on techniques that are considered state of the art and those that are proven to be effective on surveys and questionnaires and non-normally distributed data types. MICE, non-parametric (Hot-deck and nearest neighbours), ABP, person-item mean, two-way imputation and item correlation substitution are considered. List-wise deletion is of interest for comparison only in the MCAR case, but will be applied across all experiments to facilitate the automation.
 
 \textbf{The number of imputations in multiply imputed techniques:} Based on the findings in the literature review, a rule of thumb of 1 imputation per 1% of missing data will be applied for any techniques that perform any kind of MI.
@@ -20,7 +24,7 @@ Common design patterns have been identified from similar research found in the l
 
 \textbf{Synthetic or real-world data:} Many experimenters use synthetic data because of the possibility to set up precise initial conditions. However, there is a possibility to introduce design bias through the choice of model that generates the data. As this project is investigating a novel approach, it would be interesting to look for any niche applications of the technique, such as effectiveness in data with unusual underlying models or distributions. Therefore this project will make use of a selection of generative methods as well as real-world data.
 
-\textbf{Number of experimental replications:} One thousand replications per set of initial conditions was a consistent choice among the papers reviewed.
+\textbf{Number of experimental replications:} One thousand replications per set of initial conditions was a consistent choice among the papers reviewed. However, association rules mining and prediction are more computationally expensive than the methods applied and several variants need to be compared before the final benchmark. Therefore, 10 rounds of each experiment will be run for the first three phases, to find the best variant before running 500 rounds of the benchmarks.
 
 ```{r hatwell-design-matrix, results='asis'}
 factor_name <- c("Number of ordinal categories"
@@ -28,13 +32,21 @@ factor_name <- c("Number of ordinal categories"
                 , "Proportion of missing data"
                 , "Missing data mechanism"
                 , "Imputation Strategy"
-                , "Benchmark Methods"
+                , "Stage 1: Rule Selection"
+                , "Stage 1a: Default Class"
+                , "Stage 2: Int. Measures"
+                , "Stage 3: Procedural Variant"
+                , "Stage 4: Benchmarking"
                 , "Experimental Data")
 factor_options <- c("5, 7"
                 , "500, 1500"
                 , "10%, 30%"
                 , "MCAR, MAR, MNAR"
                 , "Benchmarking novel ARM-based method"
+                , "Best Rule, Top N Mean, Top N Maj. Vote, RHS Freq*"
+                , "No Default, Most frequent, Non-deterministic"
+                , "Confidence, Laplace, Chisq, Wt Chisq, RHS Freq*"
+                , "All at once, Iterative, Iterative w/ Propensity, Scale Means**"
                 , "PM, CIM, TW, ICS, MI (EMB), MICE, ABP"
                 , "Synthetic, semi-synthetic and real-world sub-sample")
 
@@ -47,6 +59,9 @@ cp_design_matrix <- knitr::kable(data.frame(
 cp_design_matrix
 ```
 
+RHS Freq* appears at both stage 1 and stage 2 because it considers all rule matches. There is an overlap with both rule selection and best rule ordering.
+
+Scale Means** is an echo of @plumpton2016multiple, but rather than using the scale totals instead the individual items, this research will include the (mathematically) rounded overall mean as an additionally engineered feature. The mean is chosen because more than one item in each scale may contain missing data which could drastically bias a scale sum. It also reduces the number of possible values. The new variable contains additional information on the relationship between the items of a multi-item scale, which should help the imputation.
 
 ## Methodology
 
@@ -57,22 +72,45 @@ For one set of initial conditions:
 1. For synthetic data, a very large sample of 500000 was generated and the population statistics were measured from this. For real-world data, the sample statistics are taken as population statistics prior to any further data preparation (bootstrapping,  subsampling, etc)
 1. Generate (synthesis or bootstrapping) one thousand \footnote{Due to computational constraints, the final experiments were restricted to 250 runs.} replicates of the dataset
 1. Generate the missing data pattern on each replicate
-1. Run each imputation method with its own copy of the replicate \footnote{Due to computational constraints, for the MI methods the value of \textit{m} were set to 3 or 5 for missingness proportions of 0.1 and 0.5, respectively.} replicates of the dataset
+1. Run each imputation method with its own copy of the replicate \footnote{Due to computational constraints, for the MI methods the value of \textit{m} were set to 3 or 5 for missingness proportions of 0.1 and 0.5, respectively.} of the dataset
+1. Perform a listwise deletion if any incomplete cases remain
 1. Estimate the statistics of interest included comparisons relative to population.
 1. Pool and report results
 
-This method is useful as it introduces Monte Carlo error into the estimation process. All statistics of interest can be quoted as a mean with 95% confidence from the empirical distribution of each statistical test. ANOVA tests are possible to look for significant difference is performance between the design factors, if required.
+This method is useful as it introduces Monte Carlo error into the estimation process. All statistics of interest can be quoted as a mean with 95% confidence from the empirical distribution of each statistical test. ANOVA tests are possible to look for significant difference in performance between the design factors, if required.
 
+## Success Measures
 
+A wide variety of well established statistics for measuring the effectiveness of imputation was covered in the literature review. It would be painstaking to attempt to measure and report everything, so for simplicity, the following statistics will be taken:
+
+**Likert and multiple item scales:**
+
+* Mean Absolute Scale Error (MASE, using the overall scale mean), see \@ref(eq:sse) & \@ref(eq:mase). This statistic measures the mean absolute difference between the original scale score and the scale score after imputation for each respondent. Taking the absolute difference maintains the magnitude of any error, but the direction of bias is lost.
+* Relative bias of scale mean \@ref(eq:relbias). Relative bias allows the effect on very different statistics to be compared and the direction is maintained
+* Relative bias of scale standard deviation \@ref(eq:relbias)
+* Cronbach's alpha relative error (CAE), see \@ref(eq:cae) & \@ref(eq:relbias). This is equivalent to a relative bias calculation.
+* 95% CI coverage using a t-distribution for all statistics with the exception of Cronbach's alpha which is modeled using an F-distribution, see \@ref(eq:alphaciupper) & \@ref(eq:alphacilower). A high CI coverage would indicate that the imputation process has had a neutral effect on the statistical properties under investigation.
+* Ability by individual attribute (data point) and by case can be measured for methods that do not finish with a default class imputation.
+
+**Individual items and unrelated items:**
+
+* Relative bias of item mean \@ref(eq:relbias)
+* Relative bias of item standard deviation \@ref(eq:relbias)
+* Relative bias of inter-item correlation with Fisher's r-to-Z transform, see \@ref(eq:relbias) & \@ref(eq:fisherz)
+* Relative bias of split half correlation with Fisher's r-to-Z transform, see \@ref(eq:relbias) & \@ref(eq:fisherz). The split half method combines half the individual items at random and assessing the inter-item correlation for stability across all the items. Here it is used to test whether two non-related scale items have becomre more or less correlated by deliberately combining items that were subject to the imputation.
+
+**In addition, on Phase 4, benchmarking:**
+
+Various vizualisations will also be applied to highlight the important results.
 
 ## Datasets
 
-To generate synthetic datasets containing 5-level item scales, the parameters given in @de2010five are used. These distributions are categorized by friendly names such as "Very Strongly Agree" and "Neutral to Disagree." The expected values for the meta-population statistics are given in the article and can be easily compared to the generated data to ensure it fits the intended distribution.
+To generate synthetic datasets containing 5-level item scales, the parameters given in @de2010five are used. These distributions are categorized by friendly names such as "Very Strongly Agree" and "Neutral to Disagree." The expected values for the meta-population statistics are given in the article and can be easily compared to the generated data to ensure it fits the intended distribution. See \@ref(fig:ari-dewinter-demo-plot)
 
 To generate synthetic datasets containing 7-level item scales, the steps given in @wu2015comparison are followed:
 
 1. Generate data on a continuous scale using SEM [lavaan package; @R-lavaan] with the desired inter-item relationships.
-1. Discretize the resulting data using the thresholds given in @rhemtulla2012can cited in @wu2015comparison. This provides a standard method for 7-level items with symmetric, moderately skewed and severely skewed distributions are possible.
+1. Discretize the resulting data using the thresholds given in @rhemtulla2012can cited in @wu2015comparison. This provides a standard method for 7-level items with symmetric, moderately skewed and severely skewed distributions are possible. See \@ref(fig:ari-wu-demo-plot1) and \@ref(fig:ari-wu-demo-plot2)
 
 The following real-world datasets have also been assessed:
 
@@ -122,7 +160,7 @@ names(oxis)[1] <- "qa01a"
 
 * The [Online Personality Test (not clinically administered)](http://personality-testing.info/)
 
-```{r optest}
+```{r optest, cache=TRUE}
 temp <- tempfile()
 download.file("http://personality-testing.info/_rawdata/BIG5.zip", temp, mode="wb")
 perstest <- read.table(unz(temp, "BIG5/data.csv"), header = TRUE, sep="\t")
@@ -172,7 +210,8 @@ smry_dw <- as.data.frame(psych::describe(dw))
 smry_dw[, c("mean", "sd", "skew", "kurtosis")]
 head(dw, 10)
 ```
-```{r ari-dewinter-demo-plot, fig.cap='A selection of variables synthesised using synth_dewinter function in arulesimp which implements the distributions given in De Winter (2010)'}
+
+```{r ari-dewinter-demo-plot, fig.height=3, fig.cap='A selection of variables synthesised using synth_dewinter function in arulesimp which implements the distributions given in De Winter (2010)'}
 densityplot(~strongly_agree +
              neutral_to_agree +
              multimodal +
@@ -184,8 +223,6 @@ densityplot(~strongly_agree +
             , auto.key = list(columns = 2)
             , plot.points = FALSE)
 ```
-
-
 
 ```{r ari_wu_demo, echo=TRUE}
 set.seed(100132)
@@ -205,7 +242,7 @@ Factor1 ~~ 0.3*Factor2"
 wu <- synth_wu_data(wu_data_model, sample_size = 1000)
 ```
 
-```{r ari_wu_demo_plots}
+```{r ari-wu-demo-plot1, fig.height=3, fig.cap='Symmetric distribution of one variable by Wu\' method synthesised using synth_wu_data function in the arulesimp package. See Wu (2015)'}
 # symmetric
 lattice::barchart(~table(wu$sym$A1)
                     , main = "Synthetic Data by Wu's model\n7-level Likert scale, symmetric"
@@ -213,6 +250,9 @@ lattice::barchart(~table(wu$sym$A1)
                     , xlab = "count"
                     , par.settings = MyLatticeTheme
                     , scales = MyLatticeScale)
+```
+
+```{r ari-wu-demo-plot2, fig.height=3, fig.cap='Severely asymmetric distribution of one variable by Wu\'s method synthesised using synth_wu_data function in the arulesimp package. See Wu (2015)'}
 # severely asymmetric
 lattice::barchart(~table(wu$sasym$A1)
                     , main = "Synthetic Data by Wu's model\n7-level Likert scale, severely asymmetric"
@@ -267,6 +307,10 @@ wu_mar$dplot
 ```
 
 ### Benchmark Imputation Functions
+
+### ARimpute function
+
+laplace accuracy @yin2003cpar
 
 ## Other R Packages
 
@@ -416,7 +460,7 @@ aggr_plot <- aggr(wu_mar$data
 ```
 
 ### arules and arulesCBA
-The arules package, @R-arules, features an interface to the most commonly used C implementation of *apriori*, @borgelt2017aprori. The arulesCBA package @R-arulesCBA provides a framework for classification tasks based on arules that follows the standard R formulation. However, after prototyping, it was found that the CBA function was not completely suited to the project requirements.
+The arules package, @R-arules, features an interface to the most commonly used C implementation of *apriori*, @borgelt2017aprori. The arulesimp package built for this project relies on arules for the novel ARImpute function. The arulesCBA package @R-arulesCBA provides a framework for classification tasks based on arules that follows the standard R formulation. However, after prototyping, it was found that the CBA function was not completely suited to the project requirements.
 
 ```{r arulesCBA demo, echo=TRUE}
 # library(arulesCBA) # already loaded
@@ -443,7 +487,7 @@ caret::confusionMatrix(irisCBA_preds, iris_Likert$Species)$table
 ### Other packages
 Hmisc, @R-Hmisc and mi, @R-mi also implement MICE but the mice package is adopted in this project based on its simplicity to use. The ordPens package, @R-ordPens uses RLRT to test for significant differences between the effect of an ordinal predictor on dependent a dependent variable in different models. Essentially this is an ANOVA test for ordinal predictors and would be very useful to measure changes to statistical properties following imputation. Unfortunately it takes a long time to run each test and this turns out to be too costly for experiments running into hundreds of thousands of iterations.
 
-Other packages may be used for utility such as parallelization of experimental runs, but these will not be listed where not specifically related to the research.
+Other packages are used for utility such as parallelization of experimental runs, but these will not be listed where not specifically related to the research.
 
 ## Notes still to tidy
 
