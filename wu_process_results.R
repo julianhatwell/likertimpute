@@ -7,32 +7,90 @@
 #      , wu_stats_pop_masym
 #      , wu_stats_pop_sasym
 #      , file = "wu_stats_pop.RData")
-load("wu_stats_pop.RData")
 
-wu_data <- synth_wu_data(wu_data_model, sample_sizes)
-mn <- min(wu_data$sym)
-mx <- max(wu_data$sym)
-num_classes <- mx - (mn - 1)
 
 # report_results <- format_results(results, wu_stats_pop_sym)
-# wu_sym_results <- report_results
-# wu_sym_results$qdata <- format_qdata(report_results$q_measures)
-# wu_sym_results$ci_data <- format_cidata(report_results$results, wu_stats_pop_sym)
-# save(wu_sym_results, file = "wu_sym_results.RData")
+# rs_wu_sym_results <- report_results
+# rs_wu_sym_results$qdata <- format_qdata(report_results$q_measures)
+# rs_wu_sym_results$ci_data <- format_cidata(report_results$results, wu_stats_pop_sym)
+# rs_wu_sym_results$bottom_2 <- bottom_2_count(rs_wu_sym_results)
+# save(rs_wu_sym_results, file = "rs_wu_sym_results.RData")
+# load("rs_wu_sym_results.RData") ; report_results <- rs_wu_sym_results
 
-report_results <- format_results(results, wu_stats_pop_sasym)
-wu_sasym_results <- report_results
-wu_sasym_results$qdata <- format_qdata(report_results$q_measures)
-wu_sasym_results$ci_data <- format_cidata(report_results$results, wu_stats_pop_sasym)
-save(wu_sasym_results, file = "wu_sasym_results.RData")
+# report_results <- format_results(results, wu_stats_pop_sasym)
+# rs_wu_sasym_results <- report_results
+# rs_wu_sasym_results$qdata <- format_qdata(report_results$q_measures)
+# rs_wu_sasym_results$ci_data <- format_cidata(report_results$results, wu_stats_pop_sasym)
+# rs_wu_sasym_results$bottom_2 <- bottom_2_count(rs_wu_sasym_results)
+# save(rs_wu_sasym_results, file = "rs_wu_sasym_results.RData")
+# load("rs_wu_sasym_results.RData") ; report_results <- rs_wu_sasym_results
 
+# report_results <- format_results(results, wu_stats_pop_sym)
+# dc_wu_sym_results <- report_results
+# dc_wu_sym_results$qdata <- format_qdata(report_results$q_measures)
+# dc_wu_sym_results$ci_data <- format_cidata(report_results$results, wu_stats_pop_sym)
+# dc_wu_sym_results$bottom_2 <- bottom_2_count(dc_wu_sym_results)
+# save(dc_wu_sym_results, file = "dc_wu_sym_results.RData")
+# load("dc_wu_sym_results.RData") ; report_results <- dc_wu_sym_results
+# 
+# report_results <- format_results(results, wu_stats_pop_sasym)
+# dc_wu_sasym_results <- report_results
+# dc_wu_sasym_results$qdata <- format_qdata(report_results$q_measures)
+# dc_wu_sasym_results$ci_data <- format_cidata(report_results$results, wu_stats_pop_sasym)
+# dc_wu_sasym_results$bottom_2 <- bottom_2_count(dc_wu_sasym_results)
+# save(dc_wu_sasym_results, file = "dc_wu_sasym_results.RData")
+# load("dc_wu_sasym_results.RData") ; report_results <- dc_wu_sasym_results
+
+# report_results <- format_results(results, wu_stats_pop_sym)
+# im_wu_sym_results <- report_results
+# im_wu_sym_results$qdata <- format_qdata(report_results$q_measures)
+# im_wu_sym_results$ci_data <- format_cidata(report_results$results, wu_stats_pop_sym)
+# im_wu_sym_results$bottom_2 <- bottom_2_count(im_wu_sym_results)
+# save(im_wu_sym_results, file = "im_wu_sym_results.RData")
+# load("im_wu_sym_results.RData") ; report_results <- im_wu_sym_results
+
+# report_results <- format_results(results, wu_stats_pop_sasym)
+# im_wu_sasym_results <- report_results
+# im_wu_sasym_results$qdata <- format_qdata(report_results$q_measures)
+# im_wu_sasym_results$ci_data <- format_cidata(report_results$results, wu_stats_pop_sasym)
+# im_wu_sasym_results$bottom_2 <- bottom_2_count(im_wu_sasym_results)
+# save(im_wu_sasym_results, file = "im_wu_sasym_results.RData")
+# load("im_wu_sasym_results.RData") ; report_results <- im_wu_sasym_results
+
+# report_results <- format_results(results, wu_stats_pop_sym)
+# vr_wu_sym_results <- report_results
+# vr_wu_sym_results$qdata <- format_qdata(report_results$q_measures)
+# vr_wu_sym_results$ci_data <- format_cidata(report_results$results, wu_stats_pop_sym)
+# vr_wu_sym_results$bottom_2 <- bottom_2_count(vr_wu_sym_results)
+# save(vr_wu_sym_results, file = "vr_wu_sym_results.RData")
+# load("vr_wu_sym_results.RData") ; report_results <- vr_wu_sym_results
+
+# report_results <- format_results(results, wu_stats_pop_sasym)
+# vr_wu_sasym_results <- report_results
+# vr_wu_sasym_results$qdata <- format_qdata(report_results$q_measures)
+# vr_wu_sasym_results$ci_data <- format_cidata(report_results$results, wu_stats_pop_sasym)
+# vr_wu_sasym_results$bottom_2 <- bottom_2_count(vr_wu_sasym_results)
+# save(vr_wu_sasym_results, file = "vr_wu_sasym_results.RData")
+# load("vr_wu_sasym_results.RData") ; report_results <- vr_wu_sasym_results
+
+# report_results <- format_results(results, wu_stats_pop_sym)
+# bm_wu_sym_results <- report_results
+# bm_wu_sym_results$qdata <- format_qdata(report_results$q_measures)
+# bm_wu_sym_results$ci_data <- format_cidata(report_results$results, wu_stats_pop_sym)
+# bm_wu_sym_results$bottom_2 <- bottom_2_count(bm_wu_sym_results)
+# save(bm_wu_sym_results, file = "bm_wu_sym_results.RData")
+# load("bm_wu_sym_results.RData") ; report_results <- bm_wu_sym_results
+
+# report_results <- format_results(results, wu_stats_pop_sasym)
+# bm_wu_sasym_results <- report_results
+# bm_wu_sasym_results$qdata <- format_qdata(report_results$q_measures)
+# bm_wu_sasym_results$ci_data <- format_cidata(report_results$results, wu_stats_pop_sasym)
+# bm_wu_sasym_results$bottom_2 <- bottom_2_count(bm_wu_sasym_results)
+# save(bm_wu_sasym_results, file = "bm_wu_sasym_results.RData")
+# load("bm_wu_sasym_results.RData") ; report_results <- bm_wu_sasym_results
 
 # if not want to run experiments again
 # load("wu_results.RData")
-
-
-
-
 
 
 

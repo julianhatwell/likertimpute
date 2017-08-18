@@ -48,6 +48,7 @@ knitr::write_bib(c(
   , 'ordPens', 'ordinal'
   , 'Hmisc', 'HDInterval'
 ), 'packages.bib')
+library(xtable)
 library(lattice)
 library(latticeExtra)
 library(ggplot2)
@@ -58,6 +59,7 @@ library(Amelia)
 library(Zelig)
 library(mice)
 library(arulesCBA)
+library(pander)
 source("C:\\Dev\\Study\\R\\R_Themes\\MarketingTheme.R")
 source("run_experiments_header.R")
 source("synth_wu_data.R")

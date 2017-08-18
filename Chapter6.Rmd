@@ -1,0 +1,52 @@
+# Conclusions and Further Work
+
+## Summary of Findings
+
+## Project Appraisal
+
+As the project draws to a close it is always valuable to look back and reflect on the distance travelled. There has been a significant learning journey, both academic and non-academic and it is important to acknowledge this so as to be able to draw on these experiences in the future.
+
+This section recapitulates the objectives set at the start of the project, around the time of the proposal and assesses whether they have been met effectively. See Table \@ref(tab:objectives)
+
+Objectives 1-5 were addressed comprehensively during the literature review. Sections \secref{sec:survques} covered the topic of surveys, their widespread use, commercial and strategic value, and some historical context. This was especially useful to serve as a link between the project's experimental scope and the Business Intelligence context of the degree programme.
+
+Soon after starting the study and research for Sections \secref{sec:missing} on patterns of missingness and \secref{sec:charsurv} on ordinal data and Likert scales it became clear that this project was going to be far more involved and challenging than first anticipated. There was a body of theory and research on these topics stretching back decades to the early development of statistics. This quickly led to an understanding that these were rich fields of research in their own right. A long-term benefit from this work was the curation of a list of prolific authors and important articles for future reference and research on these topics and an increased familiarity with specialized analytic tools and techniques. An important action to take-away is to look for ways to gain a clearer understanding of the depth and breadth of background detail at the project proposal stage. This is important to be able to manage the work load and keep the research question more tightly focussed.
+
+It was essential to understand the pros and cons of state of the art imputation techniques before setting about developing and implementing a new algorithm. The complicated theoretical foundations for MI, discussed in Section \secref{sec:currap} turned out to be one of the deepest learning experiences as it quickly became apparent that there was so much more to imputation than simple mean substitution. In contrast, there was more familiarity with the fundamentals of ARM at the outset, and the idea of prediction and possibly imputation had felt somewhat intuitive but with regard to making further arguments backed up with theory, there was probably even more that could have been said. In fact, the greatest challenge with the literature review was deciding what to include and not allow the scope to creep.
+
+Coding and prototyping began with the search for suitable datasets and effective techniques for synthesizing realistic Likert scale data and after all the reading from the literature review, the algorithmic design came almost intuitively. Nevertheless, the implementation was not without its challenges and many late hours were spent grappling with the idiosyncrasies of the R environment. The coding and automation for the experimental phase was also a very intensive period.
+
+Overall, the biggest challenge was simply dealing with the wealth of material discovered during the literature review and trying to control the scope of the project. The multi-stage experimental design is perhaps the clearest manifestation of the way the project content fanned out and was extremely challenging to edit. As a result, the project took many more hours and much more effort that originally planned for. The most important lesson still to be learned from this is maintain a narrower focus and not try to tackle every open research question at once.
+
+## Further Work
+
+Detecting, with statistical significance, the very small differences in performance between different variants required a much larger set of experimental replications to be run which was not practical. It will be useful to run some experiments on much more powerful hardware that can churn through thousands of repetitions. Another factor is the performance of the *apriori* algorithm which makes the ARM based method relatively slow compared to any of the benchmarks. When combined into an iterative process, the method may be too slow to be practical. Converting the method to use the FP-Growth algorithm may be necessary for real-world application.
+
+There are research questions remaining that derive from the potential for niche applications of the ARM based technique. So many additional data scenarios are yet to be explored but these early results showed promise as the method consistently performed better with severely asymmetric, or skewed data and performed consistently when data was MNAR. There was also a suprising discovery, that the benchmark methods had a tendency to drastically bias the data in a way that makes unrelated items appear to be much more correlated that the underlying population while the novel technique was immune to this effect. These nuanced results may yet prove to be applicable in niche applications.
+
+Able to enter collections of variables that are considered together and look for rules that only use those. Should be faster and might be more accurate if reliability measures support it.
+
+Able to limit rules at the discovery phase, rather than find all and prune.
+
+Testing different values of support and confidence.
+
+Use prediction accuracy of Mutter.
+
+other tuning parameters - propensity splits
+
+Flexible support (Liu)
+
+Tan et al (from the ARM section) additional techniques. @tan2005chapter7
+
+Able to enter collections of variables and find rules based on aggregated measures from those variables.
+
+Use of cumulative odds models for diagnostics
+Probit link is used when assumption of a latent variable (normally distributed)
+
+What are the limitations of the method, e.g. continuous/numeric can't be used.
+
+Future work, could try a MICE approach - iterative cycle over imputation and look for a convergence.
+
+Future work could try a non-deterministic approach, using a choice from the top n donor values rather than picking the top 1.
+
+Relevance to synthetic data - synthpop and practical synthesis.

@@ -1,8 +1,10 @@
-# rm(list=ls())
+rm(list=ls())
 library(arulesimp)
 library(arules) # does not export method for as(x, "transactions)
 library(lavaan)
 library(psych)
+library(Amelia)
+library(mice)
 library(foreach)
 library(doParallel)
 library(doRNG)
@@ -34,10 +36,11 @@ while (k < replicates * runs) {
                                    , "lavaan", "psych"
                                    , "Amelia", "mice")
     ) %dorng% {
-      return(collect_wu_benchmarks(stage = 1))
-      # return(collect_wu_benchmarks(stage = 2))
-      # return(collect_wu_benchmarks(stage = 3))
-      # return(collect_wu_benchmarks(stage = 4))
+      # return(collect_wu_benchmarks(stage = 1, seed = seed))
+      # return(collect_wu_benchmarks(stage = 2, seed = seed))
+      # return(collect_wu_benchmarks(stage = 3, seed = seed))
+      return(collect_wu_benchmarks(stage = 4, seed = seed))
+      # return(collect_wu_benchmarks(stage = 5, seed = seed))
     }
   )
   #stop cluster
@@ -56,3 +59,10 @@ ls()[grep("^results", ls())][-1]
 
 results <- list()
 results <- append(results, sapply(ls()[grep("^results", ls())][-1], get))
+
+load("wu_stats_pop.RData")
+
+wu_data <- synth_wu_data(wu_data_model, sample_sizes)
+mn <- min(wu_data$sym)
+mx <- max(wu_data$sym)
+num_classes <- mx - (mn - 1)

@@ -1,18 +1,13 @@
-# Further Work
+# Discussion
 
-Must use FP-growth to have good enough performance for real-world application
+## Stage Eliminations
 
-Able to enter collections of variables that are considered together and look for rules that only use those. Should be faster and might be more accurate if reliability measures support it.
+For most of the experimental work, the fully tabulated results revealed only very tiny differences between different design factors which were not statistically significant. However, early proof of concept work, using a thousand experimental replicates or more showed consistent patterns that were worth exploring. Unfortunately, to run experiments with sufficient power to detect the very small effect sizes would have been something in the order of three to five thousand replicates and there was not sufficient computing resource available to achieve this. For example, stage 4 which compares several different iterative processes with each other took around forty-five minutes minutes per replica, or seven and a half minutes per dataset.
 
-Able to enter collections of variables and find rules based on aggregated measures from those variables.
+It was, therefore, a challenge to find an acceptable way to identify the best performing variants of the method. A process of elimination was needed which was implemented based on counting the number of times each variant was in the bottom two on aggregate, that is, having the largest mean absolute error for each of the most important measures. A Chi square test was then used to provide evidence that these results had not occured by chance.
 
-Use of cumulative odds models for diagnostics
-Probit link is used when assumption of a latent variable (normally distributed)
+At stage 1, the majority vote methods were eliminated. On symmetric data the methods were evenly matched but severely asymmetric data, the majority vote method consistently fell below the others. They had performed well on individual scale score means but this was at the cost of maintaining the standard deviations and Cronbach's alpha. 
 
-What are the limitations of the method, e.g. continuous/numeric can't be used.
+At stage 2, the default class methods were introduced. These compensate for ARM based imputation's inability to find a valid estimate for every missing data point by applying a default class, or drawing from a posterior frequency distribution. Of the two default class methods tested, the non-deterministic frequency distribution method appeared to have better results and was selected for the next stage.
 
-Future work, could try a MICE approach - iterative cycle over imputation and look for a convergence.
-
-Future work could try a non-deterministic approach, using a choice from the top n donor values rather than picking the top 1.
-
-Relevance to synthetic data - synthpop and practical synthesis.
+At stage 3, four precedence methods were compared, namely the default *confidence*, Laplace's accuracy, Chi squared and wighted Chi squared with the latter appearing to be a clear leader.

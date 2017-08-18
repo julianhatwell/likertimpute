@@ -29,8 +29,7 @@ To design and evaluate a novel, association rules-based imputation technique for
 The following objectives are necessary to meeting the stated aim:
 
 ```{r objectives, results='asis'}
-library(xtable)
-objectives <- c("Describe the widespread use, of surveys and the types of data collected."
+objectives <- knitr::kable(data.frame(Objectives = c("Describe the widespread use, of surveys and the types of data collected."
                 , "Explain accepted models of missingness and their effect on survey data."
                 , "Identify current, state of the art techniques to recover from missing data."
                 , "Discuss association rules mining (ARM) and prediction/classification with association rules."
@@ -39,9 +38,10 @@ objectives <- c("Describe the widespread use, of surveys and the types of data c
                 , "Construct an algorithm and implement using the chosen programming environment."
                 , "Execute experiments that benchmark the technique against and appraise the results."
                 , "Draw conclusions, weighing up whether the technique performs better than state of the art."
-                , "Critique the project and the methods chosen. Suggest avenues for further research.")
-xtable(data.frame(Objective = objectives)
-       , caption = "Objectives")
+                , "Critique the project and the methods chosen. Suggest avenues for further research."))
+                , caption = "Objectives"
+                , booktabs = TRUE)
+objectives
 ```
 
 ## Research Design
