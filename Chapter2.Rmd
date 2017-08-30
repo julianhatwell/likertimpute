@@ -735,7 +735,7 @@ It should be noted that Cold-deck imputation is also mentioned in the literature
 
 Importantly, the sources show that missing values can remain after Hot-deck and matching methods and these have to be removed by a final round of list-wise deletion. This is an important consideration for the proposed, novel method.
 
-### Multiple Imputation (MI)
+### Multiple Imputation (MI) {#sec:multimp}
 
 @graham2007many states that MI and full information maximum likelihood (FIML) are the two most common techniques used with missing data, but based on this literature review, FIML is discussed very rarely in comparison to MI. @graham2007many also states that FIML is far more computationally expensive. @wu2015comparison lists a number of other disadvantages of FIML. For these reasons, only MI will be considered in this discussion of the state of the art. Different authors refer to EM, data augmentation and Gibbs sampling as the underpinnings of MI but @wu2015comparison argues that all these are special cases of MCMC, so it would be fair to say that MI is a MCMC process, whatever the specific implementation.
 
@@ -829,7 +829,7 @@ Likert scales are not specifically mentioned they are obviously covered by the a
 * Use a proportional odds model to predict an appropriate ordinal value
 * Use Multiple Imputation with Chained Equations (MICE)
 
-Most of these options have serious shortcomings. Accepting values on a continuous scale for data which is supposed to be ordinal may be entirely inappropriate if counts and tabulations are required. Three of the options are prediction methods which are valid only if the disadvantages described in Section \secref{sec:singimp} are acceptable. However, they could be used to generate multiple, non-deterministic values if applied to bootstrapped samples. 
+Most of these options have serious shortcomings. Accepting values on a continuous scale for data which is supposed to be ordinal may be entirely inappropriate if counts and tabulations are required. Three of the options are prediction methods which are valid only if the disadvantages described in \secref{sec:singimp} are acceptable. However, they could be used to generate multiple, non-deterministic values if applied to bootstrapped samples. 
 
 @white2011multiple [p.378] describes MICE as "a practical approach to generating imputations based on a set of imputation models, one for each variable with missing values" and alternatively names it as "sequential regression multivariate imputation." The procedure differs from MI in that it does not impute variables simultaneously from a joint distribution. @wu2015comparison [p.6] calls MICE "fully conditional imputation because prediction of missing data on one variable is conditional on the current values of all of the other variables at a specific iteration." Missing data are imputed one variable at a time, in order of increasing missingness according to @plumpton2016multiple. 
 
@@ -853,7 +853,7 @@ The question of whether to use synthetic or real-world data must also be address
 
 Testing the performance of imputation on entirely real-world or case study examples is intractable because the true value of population parameters and the underlying mechanisms of missingness are unknown prior to starting the study. Most such experiments with real world data have to make compromises by creating semi-simulated data. This is done by inferring a MVN model using the means and a covariance matrix from the observed data portion of the dataset and drawing simulated samples from this model. Again, this introduces design bias. Firstly, the MVN problem is the same as in the synthetic data case. Secondly, if the data is MAR or MNAR then the simulated data set will no longer be representative.
 
-For synthetic data, it becomes a question of appropriate modeling and representation. A very pragmatic and simple process for creating rather realistic five-point Likert-scale simluations is given in @de2010five. This method simply gives proportions of each of the five possible scores in a population for different levels of simulated agreement, neutrality and disagreement, which empirically deliver predictable means, standard deviations, and levels of skewness and kurtosis. It is indeed surprising that this method is not seen elsewhere in the literature. **put the table in the appendix**
+For synthetic data, it becomes a question of appropriate modeling and representation. A very pragmatic and simple process for creating rather realistic five-point Likert-scale simluations is given in @de2010five. This method simply gives proportions of each of the five possible scores in a population for different levels of simulated agreement, neutrality and disagreement, which empirically deliver predictable means, standard deviations, and levels of skewness and kurtosis. It is surprising that this method is not seen elsewhere in the literature. See \secref{sec:syndatfun} for examples.
 
 ```{r leite-design-matrix, results='asis'}
 factor_name <- c("Number of ordinal categories"
@@ -1040,13 +1040,13 @@ Of all the articles surveyed, the study reported in @carpita2011imputation has t
 
 * The choice of a novel non-parametric, non MI based method under investigation.
 * Two stage experiment, finding the best performance from two variants of the novel method before benchmarking against existing methods.
-* The choice of benchmark methods tailored for the Likert data type. These included Person Mean (PM), Correct Item Mean (CIM), Two-Way (TW) and Item Correlation Substitution (ICS) discussed in Section \secref{sec:singimp}. Multiple imputation was not used at all.
+* The choice of benchmark methods tailored for the Likert data type. These included Person Mean (PM), Correct Item Mean (CIM), Two-Way (TW) and Item Correlation Substitution (ICS) discussed in \secref{sec:singimp}. Multiple imputation was not used at all.
 * Sole reliance on a large real-world dataset collected in a previous survey. This dataset was part of a peer-reviewed study and there is no reason to doubt its validity for this secondary use. No synthetic or semi-synthetic data was generated. Instead, large random draws were taken from the original dataset to make three different sized sub-samples. This process precluded the assumptions and design bias of comparable studies based on synthesised MVN data. Only @shrive2006dealing was similar in this respect.
 * The use of a parametric mechanism to generate MNAR patterns in the data was not seen in any other study. This is remarkable when seen in context of the ease in which it is done, simply by generating MAR data but not including the co-variates in the imputation model. Only @shrive2006dealing was found to implement an MNAR scheme, which was done with hard-coded thresholds.
 
 For MCAR data, a fixed proportion of randomly selected values was deleted. The MAR and MNAR methods used were not seen anywhere else but appear to be very well thought out. They are defined in the @carpita2011imputation as follows:
 
-Recalling the data matrix $X$ and its corresponding missing indicator matrix $M$. Let $Z$ be a vector of covariates, $h \in \{1,\ 2,\ \dots,\ H\}$ be the index of the covariates and $z_{ih}$ be the value of $z_h$ for respondent $i$. 
+Recalling the data matrix $X$ and its corresponding missing indicator matrix $M$ (see \@ref(eq:carpitaX) and \@ref(eq:carpitaM)). Let $Z$ be a vector of covariates, $h \in \{1,\ 2,\ \dots,\ H\}$ be the index of the covariates and $z_{ih}$ be the value of $z_h$ for respondent $i$. 
 
 For MAR data,
 \begin{equation}
@@ -1119,7 +1119,7 @@ Their experiments were designed to facilitate the discovery of optimal parameter
 
 Previous sections have highlighted how the use of imputation methods intended for continuous data is sometimes counter-productive when applied on ordinal data. This section considers how some of these problems might be addressed with an ARM based method.
 
-### Association Rules
+### Association Rules {#sec:assrul}
 
 Association rules mining (ARM) was first popularised by the development of a fast algorithm for large databases, *apriori*, in @agrawal1993mining. It falls under the general banner of data mining for its ability to provide a compact and interpretable summary of large amounts of observed data. This is achieved by extracting frequently occuring patterns. ARM was developed in response to the vast amount of data collected by large retail enterprises and most frequently used for identifying purchase patterns in customer purchase data, @garcia2004mining.
 
@@ -1258,7 +1258,7 @@ Work has been done develop more compact representations of itemsets and rules, s
 
 Returning to the idea of imputation using similar pattern response matching, it is self-evident that ARM is an algorithm for finding similar patterns. Upon evaluation of a dataset by ARM, a collection of rules (patterns) is returned. However, out-of-the-box this neither offers nor assumes a specific usage for those found patterns. That is left up to the analyst. The idea of this research then is to use association rules with a consequent cardinality of one, to substitute missing values where the antecedent values match the observed data.
 
-### Classification Based on Associations (CBA)
+### Classification Based on Associations (CBA) {#sec:classrul}
 
 According to various sources [@R-arulesCBA; @yin2003cpar], the performance of CBA is comparable to other classification algorithms and is described as an intuitive approach to classification. Nevertheless, it is not among the first classification techniques typically taught in data science classes or described in the literature. There is much to consider before ARM can be applied to classification tasks. 
 
@@ -1315,7 +1315,7 @@ where $k$ is the number of classes, $n_{tot}$ is the number of cases satisfying 
 
 While prediction and imputation differ in scope and goal, the intention of finding estimated (or "plausible") values rather than accurate values could be seen as a mere relaxation of success criteria. If prediction with excellent results is possible from association rules, then it stands to reason that imputation in some form must also be possible. This research then will use rules found in the observed data and apply the techniques of prediction described here to create an algorithm for estimating the missing values in the data.
 
-## Conceptual Model {#sec:concmod}
+## Summary of the Literature Review {#sec:chp2sum}
 
 An imputation technique for survey data is a special case. As discussed in \secref{sec:charsurv}, there are many arguments against using standard procedures because the assumptions of normality and continuous data are violated. It is often meaningless use methods on these data types that return a non-integer value, such as the mean. MI, the state of the art for imputation, falls in to this category. It delivers values based on MVN normal variables in multiple copies, which must also be averaged before any subsequent analysis. 
 
@@ -1323,12 +1323,6 @@ Also, as @huisman1999missing states, there is a strong relationship between the 
 
 For an imputation to take place in a given row of the data set, one or more rules must be found whose antecedent is satisfied by the observed data in the row. This is not guaranteed, even with very low minimum support. In response to this, a final default rule can be used or a final round of list-wise deletion can take place. This may be acceptable if most of the cases are complete after imputation.
 
-Much can be learned from the state of the art techniques. For example, the iterative chained equations approach can be adapted by imputing new values one variable at a time and simply substituting the regression step with a rule discovery step. This can be combined with a propensity step, which splits the dataset regressing a binary representation of presence or absence of data onto the other variables creates a separate imputation model for each split. @tan2005chapter7 details a number of other techniques used to enhance classification/prediction with association rules, and these could also be incorporated.
+Much can be learned from the state of the art techniques. For example, the iterative chained equations approach can be adapted by imputing new values one variable at a time and simply substituting the regression step with a rule discovery step. This can be combined with a propensity step, which splits the dataset by performing a logistic regression on a binary representation of presence or absence of data on the other variables to produce a propensity score from the resulting model predictions. A separate imputation model is then generated for each propensity tier. @tan2005chapter7 details a number of other techniques used to enhance classification/prediction with association rules, and these could also be incorporated. For example, engineering new features out of the overall scale score, to enhance the inter-item relationships.
 
 Furthermore, @chandola2005summarization describe association rules as a compact model of a dataset and as such may be used to enhance other stages of the analysis. So an association rules-based method for survey data would have several advantages over other imputation methods, yet a search of the literature yields no information on the use of association rules in this context.
-
-```{r concept-model, fig.cap='Conceptual model for the proposed ARM based imputation workflow.'}
-knitr::include_graphics("concept_model.png", dpi = 100)
-```
-
-Figure \@ref(fig:concept-model) shows a conceptual model for the overall workflow required to implement ARM, incorporating the key learning from this literature review. This will become the foundation for the project's software artefact, the arulesimp package for R.

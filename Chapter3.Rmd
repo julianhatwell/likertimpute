@@ -1,10 +1,134 @@
 # Research Methods
 
-Section \secref{sec:succrit} identified and critiqued similar research found in the literature. The following paragraphs conduct a further evaluation of the common design patterns identified with a view to formulating a model process for the applied experimental stage of this project.
+This chapter covers all the practical aspects of the project, including the algorithm design, the experimental design and other practical considerations
 
-## Experimental Design Factors
+## Algorithm Design
 
-\textbf{Objective and guiding principles:} The objective of the experimental stage is ultimately to compare a novel technique against existing benchmark techniques. However, the literature review has unearthed a plethora of variations, tweaks and tunings for an ARM based imputation technique, any of which may improve general performance. It will be computationally and operationally very difficult to run all possible variants, let alone to compare them against the several benchmarks. Yet, there is a real motivation to find an optimally performing variant of the technique or there is a risk of failing to discover the novel technique's true potential. The literature review also discussed several data scenarios which should be explored in order to investigate any niche uses for the novel technique. However, in some cases this is secondary to the benchmarking comparison at this stage of the research and only specific scenarios will be considered.
+### Conceptual Model
+
+> "The model methodology is centered on defining an abstract model for a real system."
+
+@amaral2011computing [p.2]
+
+> "A model can be described by text and block diagrams to specify how a system is constructed from a collection of interacting components."
+
+@amaral2011computing [p.8]
+
+```{r concept-model, fig.cap='Conceptual model for the proposed ARM based imputation software package architecture.'}
+knitr::include_graphics("concept_model.png", dpi = 100)
+```
+
+Concurrently with the literature review, proof of concept and prototyping in code has been conducted. Through an iterative and incremental development process, more sophisticated concepts have been pegged onto the core modules as the code base has stabilised. During this process, a useful model emerged which was quickly adopted as the template for the software package architecture. See Figure \@ref(fig:concept-model). This model illustrates the overall workflow, incorporating the key learning from the literature review.
+
+### Algorithm
+
+For practical reasons, the novel AR-based method has the *apriori* algorithm at its core. However, this could be substituted in the future with different techniques for finding frequent patterns/itemset and rules. These techniques are well-documented in the literature, so they will not be broken down in to algorithmic steps here. Furthermore, *apriori*, as implemented in the arules package for R, @R-arules, finds all rules and must then converted into CARs by filtering only specific consequent conditions. This is an inefficient process and not intentionally part of the the AR-based imputation algorithm. It does not make sense to document the novel algorithm this way so the steps below simply begin with a set of CARs as input without defining how these are generated.
+
+Recalling the data matrix $X$ and its corresponding missing indicator matrix $M$ as given in \@ref(eq:carpitaX) and \@ref(eq:carpitaM), let $J$ be the set of variables, such that for each $j$ there is some missing data, $M_{+j} > 0,\ j \in \{1,\ 2,\ \dots , p\  \}$. Recall also that $B(j)$ is the set of row indices for respondents who have a value in $j$ ($M_{ij} = 0$) and $B'(j)$, the complement set of row indices with a missing value in $j$ ($M_{ij} = 1$). Let $M'_{ij}$ be the missing indicator matrix after AR-based imputation.
+
+Let $lhs(r)$ be the antecedent, or left-hand side of rule $r$ and $rhs(r)$ be the consequent, or right-hand side of rule $r$. When $X_{i}\ \textit{satisfies}\ lhs(r_j)$, all key-value pairs in $lhs(r_j)$ have a match in the key-value pair representation of $X_{i}$.
+
+Let $R_J$ be the set of all CARs found for the set of variables in J, $R_j$ be the set of CARs for variable $j$, such that $rhs(r_j)$ contains a single, valid value for $X_{\bullet j}$.
+
+Let $\textit{agg}()$ be the aggregate function set by user (e.g. rounded mean, majority vote). Let $\textit{def}()$ be the default class function set by user (e.g. majority class, posterior frequency distribution). Let $\textit{srt}()$ be the precedence sorting function set by user (e.g. by Confidence, Chi squared).
+
+\begin{algorithm}
+\caption{Association Rules based imputation}\label{ARI1}
+\begin{algorithmic}[1]
+\Procedure{AR-based Imputation}{$X$, $R$, $J$, $N$, $\textit{agg}()$, $\textit{def}()$, $\textit{srt}()$}
+  \ForAll{$j \in J$}
+    \State $C \gets [\ ]$
+    \For{$r_j \in \textit{srt}(R_j)$}
+      \For{$i \in B'(j)$}
+        \While{$length(C) \leq N$}
+          \If{$X_i\ \textit{satisfies}\ \textit{lhs}(r_j)$}
+            \State $C \gets append[\ C,\ \textit{rhs}(r_j)\ ]$
+          \EndIf
+        \EndWhile
+        \State $X_{ij} \gets \textit{agg}(C)$
+      \EndFor
+    \EndFor
+    \If{$M'_{+j} > 0$}
+      \State $X_{ij} \gets \textit{def}(j), \forall{i \in M'_{ij} = 1}$
+    \EndIf
+  \EndFor
+  \State $\textbf{return }{X}$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+Although algorithm 1 uses naive nested looping, the early stopping when N is reached helps to reduce the search for matching rules for each row. However, for implementation in R, such nested loops are best avoided. Algorithm 2 is an alternative which is closer to the final implementation in R code it prioritizes vectorwise operations over loops.
+
+\begin{algorithm}
+\caption{Association Rules based imputation (alternative)}\label{ARI2}
+\begin{algorithmic}[2]
+\Procedure{AR-based Imputation}{$X$, $R$, $J$, $N$, $\textit{agg}()$, $\textit{def}()$, $\textit{srt}()$}
+  \ForAll{$j \in J$}
+    \State $U \gets \textit{length}(\ B'(j)\ )$
+    \State $V \gets \textit{length}(R_j)$
+    \State $v \gets 1\ \textbf{to}\ V$
+    \State $C \gets [\ ]_{(U \times V)}$
+    \For{$u \gets 1\ \textbf{to}\ U$}
+      \State $i \gets B'(j)_u$
+      \If{$X_i\ \textit{satisfies}\ \textit{lhs}(\ \textit{srt}(R_j)_v\ )$}
+        \State $C_{uv} \gets \textit{rhs}(\ \textit{srt}(R_j)_v\ )$
+      \Else
+        \State $C_{uv} \gets \textit{null}$
+      \EndIf
+    \EndFor
+    \ForAll{u}
+      \State $C'_u \gets \textit{first}\ N\ \textit{non null values in }{C_u}$
+      \State $C''_u \gets \textit{agg}(C'_u)$
+      \State $i \gets B'(j)_u$
+      \State $X_{ij} \gets C''_u$
+    \EndFor
+    \If{$M'_{+j} > 0$}
+      \State $X_{ij} \gets \textit{def}(j), \forall{i \in M'_{ij} = 1}$
+    \EndIf
+  \EndFor
+  \State $\textbf{return }{X}$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+For the Iterative Sequential Association Rules based imputation algorithm, the short-hand *makeCARs()* is used for the rule discovery step. Two user-defined stopping parameters are included for limiting the number of iterations or stopping when a target convergence is achieved.
+
+\begin{algorithm}
+\caption{Iterative Sequential Association Rules based imputation}\label{ARI3}
+\begin{algorithmic}[3]
+\Procedure{ISAR-based Imputation}{$X$, $J$, $N$, $\textit{agg}()$, $\textit{def}()$, $\textit{srt}()$, $\textit{itermax}$, $\textit{targc}$}
+\State $X' \gets X$
+\State $\textbf{sort}\ J\ \textbf{by}\ M_{+j}\  \textbf{ascending}$
+\For{$j \in J$}
+  \State $j* \gets \textit{bootstrap } X_j$
+  \For{$i \in M_{ij} = 1$}
+    \State $X'_{ij} \gets \textit{random value drawn from}\ j*$ 
+  \EndFor
+\EndFor
+\State $\textit{iter} \gets 0$
+\State $c \gets \textit{cmax} + 1$
+\While{$\textit{iter} < \textit{itermax}\ \land \ c > \textit{targc}$}
+  \State $\textit{iter} \gets \textit{iter} + 1$
+  \For{$j \in J$}
+    \State $X'_j \gets X_j$
+    \State $R_j \gets \textit{makeCARs}(j)$
+    \State $X'' \gets \textit{run AR-based imputation }(\ X = X',\ R = R_j,\ J = j,\ \textit{agg}(),\ \textit{def}(),\ \textit{srt}()\ )$
+  \EndFor
+  \State $c \gets \frac{1}{|J|} \sum^J_{j \in J}{\sum_{i \in B'(j)} \sqrt(X''_{ij} - X'_{ij})^2}$
+  \State $X' \gets X''$
+\EndWhile
+\State $\textbf{return}\ X'$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+## Experimental Design
+
+\secref{sec:succrit} identified and critiqued similar research found in the literature. The following paragraphs conduct a further evaluation of the common design patterns identified with a view to formulating a model process for the applied experimental stage of this project.
+
+### Experimental Design Factors
+
+\textbf{Objective and guiding principles:} The objective of the experimental stage is ultimately to compare a novel technique against existing benchmark techniques. However, the literature review unearthed a plethora of variations, tweaks and tunings for an AR-based imputation technique, any of which may improve general performance. It would be computationally and operationally very difficult to run all possible variants, let alone to compare them against the several benchmarks. Yet, there is a real motivation to find an optimally performing variant otherwise there is a risk of failing to discover the novel technique's true potential. The literature review also discussed several data scenarios which should be explored in order to investigate any niche uses for the novel technique. 
 
 \textbf{Multi-stage experimental design:} @carpita2011imputation implemented a common sense, two-stage experimental design which isolates the discovery of the best performing novel method variant from the benchmarking process. There are potentially hundreds of unique variants in this expermient and they cannot each be assessed. Therefore, a multi-stage tournement approach, building on @carpita2011imputation will be adopted. The results from each stage will be used to narrow the options for subsequent stages.
 
@@ -65,7 +189,7 @@ Propensity* as discussed in @carpita2011imputation is a logistic regression mode
 
 Scale Means** combines the ideas of @plumpton2016multiple and @tan2005chapter7, to include the (mathematically) rounded overall mean as an additionally engineered feature. The mean will be used for this because more than one item in each scale may contain missing data and that could drastically bias a scale sum. It also means the new features are on the same scale as the original variables. The new variables add value because they contain additional information on the relationship between the items of a multi-item scale.
 
-## Methodology
+### Experimental Methodology
 
 The practical application of the chosen methodology is as follows:
 
@@ -79,7 +203,7 @@ For one set of initial conditions:
 1. Estimate the statistics of interest including comparisons relative to population parameters.
 1. Pool and report results
 
-## Success Measures
+### Success Measures
 
 A wide variety of well established statistics for measuring the effectiveness of imputation was covered in the literature review. It would be painstaking to attempt to measure and report everything, so for simplicity, the following statistics will be taken:
 
@@ -93,9 +217,11 @@ A wide variety of well established statistics for measuring the effectiveness of
 
 Various vizualisations will also be applied to highlight the important results.
 
-## Datasets
+## Practical Considerations
 
-### Real-world Data
+### Datasets
+
+#### Real-world Data
 
 The following real-world datasets were assessed for suitability for inclusion in the experiments:
 
@@ -152,7 +278,7 @@ perstest <- read.table(unz(temp, "BIG5/data.csv"), header = TRUE, sep="\t")
 unlink(temp); rm(temp)
 ```
 
-### Synthetic Data Methods
+#### Synthetic Data Methods
 
 To generate synthetic datasets containing 5-level item scales, the parameters given in @de2010five can be used. These distributions are categorized by friendly names such as "Very Strongly Agree" and "Neutral to Disagree." The expected values for the meta-population statistics are given in the article and can be easily compared to the generated data to ensure it fits the intended distribution. See \@ref(fig:ari-dewinter-demo-plot)
 
@@ -161,26 +287,38 @@ To generate synthetic datasets containing 7-level item scales, the steps given i
 1. Generate data on a continuous scale using SEM [lavaan package; @R-lavaan] with the desired inter-item relationships.
 1. Discretize the resulting data using the thresholds given in @rhemtulla2012can cited in @wu2015comparison. This provides a standard method for 7-level items with symmetric, moderately skewed and severely skewed distributions are possible. See \@ref(fig:ari-wu-demo-plot1) and \@ref(fig:ari-wu-demo-plot2)
 
-### Final Pick
+#### Final Pick
 
 As discussed already, Wu's method was favoured for the experimental stage of this work. However, De Winter's method has been implemented in the arulesimp package. After appropriate legal and licensing checks, real-world datasets that are already available in the public domain may also be shipped with the package for demonstration purposes. These include YPS, Turkiye Student Evaluation, wiki4HE and Online Personality Test.
 
-## Programming Environment
+### Hardware
 
-The R programming environment, @R-base has been selected for the implementation of this project. Only R and Python offer pre-existing sets of relevant, open source libraries and functions plus unlimited extensibility through a functional and object oriented programming paradigm but R is selected based on the Skills Audit conducted for the project research proposal. Other tools considered and ruled out were:
+All the experiments were run on the following machine:
+
+Microsoft Surface with 8 GB RAM, 1 TB SSD HD, x64 processor, Windows 10 64 Bit.
+
+### Programming Environment
+
+The R programming environment, @R-base has been selected for the implementation of this project. Only R and Python offer pre-existing sets of relevant, open source libraries and functions plus unlimited extensibility through a functional and object oriented programming paradigm but R is selected based on the Skills Audit conducted for the project research proposal. The R version used was 3.4.0 (2017-04-21).
+
+Other tools considered and ruled out were:
 
 * SAS Software. All analytical procs are compiled programmes and can't be extended. Macro language is a limited set of data and file manipulation functions.
 * Oracle Data mining. A point and click canvas, lacking the programmability required.
 * RapidMiner. A point and click canvas, lacking the programmability required.
 * Python. This could be a viable alternative but would require additional time for the researcher to reach an adequate level of competence. Python offers a native library based on the FP-growth algorithm, which is significantly faster than *apriori* which is an advantage over R. An FP-growth reference implementation is available to R but only via C integration. However, the efficiency of the ARM algorithm should only be of concern for huge datasets and not under the experimental conditions foreseen for this project.
 
-## Package Authoring: The arulesimp Package
+### Package Authoring: The arulesimp Package
 
-To facilitate the automation of experiments, the novel technique will be developed as an R package. The package will encapsulate all the programmatic code and help to minimize scripting errors. By following the best practice guidance in @Wickham:2015:RP:2904414, it is hoped that the package will be produced of a quality suitable for publication on the Comprehensive R Archive Network (https://cran.r-project.org/)[CRAN], which is the primary repository for published R packages. It is curated by the community to ensure that packages meet a strict set of guidelines, which helps to ensure consistency and reliability for other users.
+> "No matter how simple the system is, do not allow it to evolve from small pieces without a plan. Think before you build. Most importantly, consider a modular approach."
 
-The package is named arulesimp (*a*ssociation *rules imp*utation) as a nod to the arules package which it imports and invokes to run the ARM step of the novel imputation technique. In addition to this, there are other utility and convenience functions based on the conceptual model devised in Section \secref{sec:concmod}. These can be used to generate synthetic data for demonstration research purposes, simulating different missingness patterns in data and functions for pre-processing data into a format suitable for the underlying arules package which requires discretized factor variables. Some demonstration code follows:
+@amaral2011computing [p.4]
 
-### Synthetic data functions
+To facilitate the automation of experiments, the novel technique will be developed as an R package. The package will encapsulate all the programmatic code and help to minimize scripting errors. By following the best practice guidance in @Wickham:2015:RP:2904414, it is hoped that the package will be produced of a quality suitable for publication on the Comprehensive R Archive Network [https://cran.r-project.org/](CRAN), which is the primary repository for published R packages. It is curated by the community to ensure that packages meet a strict set of guidelines, which helps to ensure consistency and reliability for other users.
+
+The package is named arulesimp (*a*ssociation *rules imp*utation) as a nod to the arules package which it imports and invokes to run the ARM step of the novel imputation technique. In addition to this, there are other utility and convenience functions based on the conceptual model devised in \secref{sec:chp2sum}. These can be used to generate synthetic data for demonstration research purposes, simulating different missingness patterns in data and functions for pre-processing data into a format suitable for the underlying arules package which requires discretized factor variables. Some demonstration code follows:
+
+#### Synthetic data functions {#sec:syndatfun}
 ```{r ari-dewinter-demo, echo=TRUE}
 set.seed(102130)
 # library(arulesimp) # already loaded
@@ -258,7 +396,7 @@ lattice::barchart(~table(wu$sasym$A1)
                     , scales = MyLatticeScale)
 ```
 
-### Synthetic missingness functions
+#### Synthetic missingness functions
 ```{r ari_synmiss_demo, echo=TRUE}
 set.seed(120131)
 # generate missing data patterns to order
@@ -296,13 +434,13 @@ head(wu_mar$mim$B_comp_j$A1, 10) # indices of missing respondents for each item
 head(wu_mar$mim$B_comp_j$B1, 10) # indices of missing respondents for each item
 ```
 
-```{r ari-synmiss-demo-plot, fig.cap="Distribution of missingness probability for MAR pattern with the princomp method. This works well to strongly separate respondents by assiging probabilities proportional to the first principle component of the covariates. Ranking method gives a flat response, while the method given by Carpita gives a central tendency."}
+```{r ari-synmiss-demo-plot, fig.height=3, fig.cap="Distribution of missingness probability for MAR pattern with the princomp method. This works well to strongly separate respondents by assiging probabilities proportional to the first principle component of the covariates. Ranking method gives a flat response, while the method given by Carpita gives a central tendency."}
 wu_mar$dplot$par.settings <- MyLatticeTheme
 wu_mar$dplot$scales <- MyLatticeScale
 wu_mar$dplot
 ```
 
-### Benchmark Imputation Functions
+#### Benchmark Imputation Functions
 
 ```{r ari_lik_demo}
 # The benchmark imputation functions discussed in Carpita and Manisera (2011) have also been implemented along with the non-deterministic rounding function. Other rounding functions may be passed to LikertImpute, such as round(), ceiling() and floor(). Available methods are PM (Person Mean), CIM (Corrected Item Mean), TW (Two-Way), ICS (Item Correlation Substituation).
@@ -317,21 +455,15 @@ head(pm)
 
 ```
 
-### ARimpute function
+#### ARimpute function
 
 The focal point of this research is the novel imputation algorithm, implemented as ARImpute.
 
-## Other R Packages
+### Other R Packages
 
-R's extensive library of add-on packages has been surveyed in parallel with literature review. The following is a listing of packages that contain at least one key function or dataset that will be used during the applied phase of the project:
+R's extensive library of add-on packages has been surveyed in parallel with literature review. The following is a listing of packages that are useful when working with missing data.
 
-### psych
-psych, @R-psych has a number of analytical functions for Likert scales, including a comprehensive Cronbach's alpha function and a Fisher's R-to-z transform.
-
-### lavaan
-lavaan, @R-lavaan is a library dedicated to *la*tent *va*riable *an*alysis. It contains a suite of functions for generating synthetic data based on any specified model of latent and interacting factors. It will be used to model data in a similar manner to the experiments carried out in @wu2015comparison following the techniques described in @chapman2015r
-
-### Amelia II
+#### Amelia II
 Amelia II, @R-Amelia is a package for running a modified version of classic MI, i.e. based on EM and a MVN joint distribution and not chained equations. The computational challenges are overcome by a bootstrapping step. For ordinal data, the package authors recommend either accepting a continuously valued imputation, or applying a built-in transformation which is essentially the same as the non-deterministic rounding described in @carpita2011imputation. It is a very comprehensive implementation with advanced features such as the ability to configure cell level priors to introduce domain knowledge into the model and diagnostic features to check goodness of fit.
 
 ```{r Amelia_demo, echo=TRUE}
@@ -354,15 +486,11 @@ a.out <- amelia(wu_mar$data, m = 3, ords = "A1", p2s = 0) # print to screen = si
 # another quick look at the imputed data
 head(a.out$imputations$imp1$A1, 10)
 range(a.out$imputations$imp1$A1)
-
-# This is better, though it still uses MVN distribution under the hood
-# so it can be challenged by high skewed or multimodal data
-# which can be seen in diagnostic plots
-# especially the over-impute plot which shows that
-# the imputation may be no better than random
 ```
 
-```{r Amelia-demo-plot1, fig.cap="Barchart showing the new distribution of the 7 levels of variable A1 after imputation. The light blue values were missing prior to imputation and may or may not have had the current value in the untreated data. The imputed distribution has identified the skew but has also over-compensated, resulting in an under-representation of values 4 to 7."}
+This is better, though it still uses MVN distribution under the hood so it can be challenged by high skewed or multimodal data. Diagnostic plots such as the over-impute plot shows that the imputation may be no better than random guessing.
+
+```{r Amelia-demo-plot1, fig.height=3, fig.cap="Barchart showing the new distribution of the 7 levels of variable A1 after imputation. The light blue values were missing prior to imputation and may or may not have had the current value in the untreated data. The imputed distribution has identified the skew but has also over-compensated, resulting in an under-representation of values 4 to 7."}
 freqs <- as.data.frame(table(a.out$imputations$imp1$A1, wu_mar$mim$mim[, "A1"]))
 names(freqs) <- c("A1", "missing", "count")
 freqs$A1 <- as.integer(freqs$A1)
@@ -386,17 +514,17 @@ lattice::barchart(A1~count, data = freqs
                      ))
 ```
 
-```{r Amelia-demo-plot2}
+```{r Amelia-demo-plot2, fig.height=3}
 compare.density(a.out, var = "A1")
 ```
 
-```{r Amelia-demo-plot3}
+```{r Amelia-demo-plot3, fig.height=3}
 overimpute(a.out, var = "A1")
 ```
 
 Overimpute diagnostic from the Amelia package performs multiple imputations over the observed data to show how the model would have imputed them if absent. It is very useful to see if the model is accurate. In this case, the predictions do not appear to follow the unity line at all. Rather, it appears that any value might be imputed as any other value with fairly equal chance. It might be inferred that Amelia has done no better than naive random imputation on this data.
 
-### Zelig
+#### Zelig
 Zelig, @R-Zelig is a framework for statistical analysis which provides a seamless interface for parameter estimation from objects returned by Amelia and mi.
 
 ```{r zelig_demo, echo=TRUE}
@@ -429,7 +557,7 @@ summary(z.out)
 # multiple imputation has estimated with greater uncertainty
 ```
 
-### mice
+#### mice
 mice, @R-mice implemented the MICE algorithm which can use PMM for non-normally distributed data.
 ```{r mice_demo, echo=TRUE}
 # library(mice) # already loaded
@@ -455,10 +583,10 @@ summary(pool(B_regress))[, c(1:3, 5)]
 densityplot(mice.out)
 ```
 
-### VIM
+#### VIM
 VIM, @R-VIM is a package that provides some imputation methods not available elsewhere including Hot-deck and nearest neighbours as well as a huge suite of diagnostic plots for visualizing missingness and imputed values.
 
-```{r visualize_missingness, echo=TRUE}
+```{r visualize_missingness, fig.height=3, echo=TRUE}
 # library(VIM) # already loaded
 
 # The VIM package has some excellent vizualizations
@@ -473,7 +601,7 @@ aggr_plot <- aggr(wu_mar$data
           , ylab = c("Histogram of missing data","Pattern"))
 ```
 
-### arules and arulesCBA
+#### arules and arulesCBA
 The arules package, @R-arules, features an interface to the most commonly used C implementation of *apriori*, @borgelt2017aprori. The arulesimp package built for this project relies on arules for the novel ARImpute function. The arulesCBA package @R-arulesCBA provides a framework for classification tasks based on arules that follows the standard R formulation. However, after prototyping, it was found that the CBA function was not completely suited to the project requirements.
 
 ```{r arulesCBA demo, echo=TRUE}
@@ -498,7 +626,7 @@ irisCBA_preds <- predict(irisCBA, iris_Likert)
 caret::confusionMatrix(irisCBA_preds, iris_Likert$Species)$table
 ```
 
-### Other packages
+#### Other packages
 Hmisc, @R-Hmisc and mi, @R-mi also implement MICE but the mice package is adopted in this project based on its simplicity to use. The ordPens package, @R-ordPens uses RLRT to test for significant differences between the effect of an ordinal predictor on dependent a dependent variable in different models. Essentially this is an ANOVA test for ordinal predictors and would be very useful to measure changes to statistical properties following imputation. Unfortunately it takes a long time to run each test and this turns out to be too costly for experiments running into hundreds of thousands of iterations.
 
-Other packages are used for utility such as parallelization of experimental runs, but these will not be listed where not specifically related to the research.
+Other packages are used for utility functions such as generating synthetic data, and parallelization of experimental runs.

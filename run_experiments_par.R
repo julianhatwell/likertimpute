@@ -39,8 +39,9 @@ while (k < replicates * runs) {
       # return(collect_wu_benchmarks(stage = 1, seed = seed))
       # return(collect_wu_benchmarks(stage = 2, seed = seed))
       # return(collect_wu_benchmarks(stage = 3, seed = seed))
-      return(collect_wu_benchmarks(stage = 4, seed = seed))
+      # return(collect_wu_benchmarks(stage = 4, seed = seed))
       # return(collect_wu_benchmarks(stage = 5, seed = seed))
+      return(collect_wu_benchmarks(stage = 6, seed = seed))
     }
   )
   #stop cluster
