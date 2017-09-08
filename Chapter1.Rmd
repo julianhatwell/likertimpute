@@ -1,32 +1,32 @@
 # Introduction
 
-In this section, the motivation and rationale are established along with a primer for the topics that will later be covered in more depth in the literature review. The essential aim and objectives are set, together with the basic principles of the overall research design.
+In this section, the motivation and rationale are established along with a primer for the topics that will later be covered in more depth in the literature review. The aim and objectives of the project are set, together with the basic principles of the overall research design.
 
 ## Problem Statement
 
-Surveys are an ubiquitous research tool, used in the widest variety of disciplines. Due to the practicalities of running surveys, they are highly prone to non-response and therefore, missing data. If handled incorrectly, this can cause loss of statistical power and biased parameter estimates, the consequences of which are an increase in the likelihood of drawing incorrect inferences and erroneous conclusions from the research. These are non-trivial problems which at best can tarnish reputations, breach ethical codes and incur expense of repeated studies, @button2013power. At worst, flawed statistical results can affect social and economic policy making, business strategies and clinical results, @barrett2015data. 
+Surveys are an ubiquitous research tool, used in the widest variety of disciplines. Due to the practicalities of running surveys, they are highly prone to non-response and therefore, missing data. If handled incorrectly, this can cause loss of statistical power and biased parameter estimates, the consequences of which are an increase in the likelihood of drawing incorrect inferences and erroneous conclusions from the research. These are non-trivial problems which, at best, can tarnish reputations, breach ethical codes and incur expense of repeated studies, @button2013power. At worst, flawed statistical results can affect social and economic policy making, business strategies and clinical results, @barrett2015data. 
 
-A problem of such magnitude would not have gone ignored to date, and there is much academic research on the best way to tackle the missing data problem, including seminal works by Rubin, Little and Schafer dating back the last four decades. As a result, there exist techniques to recover statistical analysis from the situation of missing data that perform well in missing data proportions even as high as thirty per cent. Most important of these techniques is multiple imputation (MI), which substitutes missing values with estimated or "plausible" values. In MI, a non-deterministic process delivers multiple versions of the imputed data, allowing inferences to be made with a realistic and measurable drop in precision. However, these techniques rely on assumptions about the data, such as multi-variate normality, which simply do not hold for surveys that are mostly made up of categorical data types (binary, nominal, ordinal and Likert), [@johnson2009working; @christensen2010ordinal]. Sources indicate that there is a gap in the literature around techniques more suitable for these caterogical data types [@finch2010imputation; @leite2010performance].
+A problem of such magnitude would not have gone ignored to date, and there is much academic research on the best way to tackle the missing data problem, including seminal works by Rubin, Little and Schafer dating back decades. As a result, there exist techniques to recover statistical analysis from the situation of missing data that perform well in missing data proportions even as high as thirty per cent. Most important of these techniques is multiple imputation (MI), which substitutes missing values with estimated or "plausible" values. In MI, a stochastic process delivers multiple versions of the imputed data, allowing inferences to be made with a realistic and measurable drop in precision. However, these techniques rely on assumptions about the data, such as multi-variate normality, which simply do not hold for surveys that are mostly made up of categorical data types (binary, nominal, ordinal and Likert), [@johnson2009working; @christensen2010ordinal]. Sources indicate that there is a gap in the literature around techniques more suitable for these caterogical data types [@finch2010imputation; @leite2010performance].
 
-Since association rules mining (ARM) was proposed, the concept has been the subject of intense research. ARM is best suited to applications on categorical data. While the technique is inherently a descriptive, knowledge discovery tool, it has been successfully adapted for classification. However, a detailed review of the literature finds very scarce previous examples of an association rules based method for imputation, and none that specifically address the challenge of ordinal data. This research will look for compelling evidence that such a method could give useful results and to bridge the gap in these areas of research.
+Since association rules mining (ARM) was proposed, the concept has been the subject of intense research. ARM is best suited to applications on categorical data. While the technique is inherently a descriptive, knowledge discovery tool, it has been successfully adapted for classification. However, a detailed review of the literature finds very scarce previous examples of an association rules based method for imputation, and none that specifically address the challenge of ordinal data. This research develop, test and benchmark a new algorithm that applies ARM to the problem of imputation.
 
 A quantitative research methodology is adopted, based on well-established experimental designs for assessing the performance of data imputation techniques and benchmarking against the state of the art. Theoretical performance is evaluated using synthetic datasets. Useful reference papers include @wu2015comparison, @plumpton2016multiple, @carpita2011imputation, @leite2010performance, @jonsson2006benchmarking and @jonsson2004evaluation.
 
-Before embarking this endeavor, it was necessary to speculate as to why this there is apparently no discussion of this approach in the literature. The very few times such an approach is attempted, the results appear to be promising. It is unlikely, but possible, that these reports have gone unnoticed. According to @jonsson2004evaluation, the use of K-Nearest Neighbours for imputation of Likert scale data was not investigated until 2004, which is surprising in light of the ubiquitousnous of both at the time. In addition, proof of concept work suggested that there may be two barriers to overcome to make the method successful. Firstly, the time complexity of such an algorithm is likely to be greater than ARM itself. This is not a trivial matter to estimate as each stage of ARM (frequent item-set greneration, candidate generation, support counting, rule generation) has its own big O term. A novel method would likely add at least one further step. This may increase the complexity geometrically or even more severely. A second barrier might be that that a rule may not be found to impute each and every missing data point. ARM is a deterministic process and depends entirely on discovered itemsets in the observed data. There is no guarantee to find a matching rule with adequate support and confidence will be found for each case. However, this second issue is easily solved in the prediction setting by falling back to the default, majority class. A similar approach can be adopted for imputation.
+Before embarking on this endeavor, it is necessary to speculate as to why this there is apparently no discussion of this approach in the literature. The very few times such an approach is attempted, the results appear to be promising. It is unlikely, but possible, that these reports have gone unnoticed. According to @jonsson2004evaluation, the use of K-Nearest Neighbours for imputation of Likert scale data was not investigated until 2004, which is surprising in light of the ubiquitousnous of both at the time. In addition, proof of concept work for this project suggested that there may be two barriers to overcome to make the method successful. Firstly, the time complexity of such an algorithm is likely to be greater than ARM itself. This is not a trivial matter to estimate as each stage of ARM (frequent item-set generation, candidate generation, support counting, rule generation) has its own big O term. A novel method would likely add at least one further step. This may increase the complexity geometrically or even more severely. A second barrier might be that because ARM is a deterministic process and depends entirely on discovered itemsets in the observed data, there is no guarantee to find a matching rule with adequate support and confidence for each case. This means that might be that not every missing data point will be estimated. However, this second issue is easily solved in the prediction setting by falling back to the default, majority class. A similar approach can be adopted for imputation.
 
 ## Contribution of This Work
 
-This work will contribute to the literature by connecting current research in classification association rules to existing theories of missing data and imputation in a detailed and sestematic manner. It is hoped that this research will deliver, in the form of an R software package, a novel and viable imputation method based on association rules which is best suited for datasets consisting primarily of categorical data types, such as would be found in surveys and questionnaires. 
+This work will contribute to the literature by connecting current research in AR-based classification to existing theories of missing data and imputation in a detailed and systematic manner. This research will also deliver, in the form of an R software package, a prototype for a novel and viable imputation method based on AR, which is best suited for datasets consisting primarily of categorical data types, such as would be found in surveys and questionnaires. 
 
 ## Aims and Objectives
 
 ### Aim
 
-To design and evaluate a novel, association rules-based imputation technique for missing ordinal and Likert scale data, benchmarked against state of the art.
+To design and evaluate a novel, AR-based imputation technique for missing ordinal and Likert scale data, benchmarked against state of the art.
 
 ### Objectives
 
-Table \@ref(tab:objectives) lists the objectives necessary to meeting the stated aim:
+Table \@ref(tab:objectives) lists the objectives necessary to meeting the stated aim.
 
 ```{r objectives, results='asis'}
 objectives <- knitr::kable(data.frame(Objectives = c("Describe the widespread use, of surveys and the types of data collected."
@@ -36,7 +36,7 @@ objectives <- knitr::kable(data.frame(Objectives = c("Describe the widespread us
                 , "Argue that ARM could be applied as an imputation technique."
                 , "Select appropriate datasets and success measures to evaluate a novel technique."
                 , "Construct an algorithm and implement using the chosen programming environment."
-                , "Execute experiments that benchmark the technique against and appraise the results."
+                , "Execute experiments that benchmark the technique and appraise the results."
                 , "Draw conclusions, weighing up whether the technique performs better than state of the art."
                 , "Critique the project and the methods chosen. Suggest avenues for further research."))
                 , row.names = TRUE
@@ -47,9 +47,9 @@ objectives
 
 ## Research Design
 
-Table \@ref(tab:objectives) lists the research method that will be used to meet each objective:
+Table \@ref(tab:resdes) lists the research method that will be used to meet each objective. Research methods specifically suited for computer science projects include Model, Build and Experimental, proposed in @amaral2011computing. The algorithm will be developed as a software package for R, following the methodology and best practices (version control, automated tests, namespaces and documentation) proposed in @Wickham:2015:RP:2904414.
 
-```{r research_design, results='asis'}
+```{r resdes, results='asis'}
 objsummary <- c("Research the topics for objectives 1-5"
                 , "Design of experiments (6)"
                 , "Finding appropriate data (6)"
@@ -60,24 +60,22 @@ objsummary <- c("Research the topics for objectives 1-5"
 resmethods <- c("Literature review"
                 , "Literature review"
                 , "Literature review & consultation"
-                , "Model* & Build* **"
-                , "Simulation & Experimental*"
+                , "Model & build"
+                , "Experimental (simulation)"
                 , "Quantitative analysis"
                 , "Qualitative evaluation")
 
-resmethodstable <- xtable(data.frame(Objective = objsummary
-                  , "Research Method" = resmethods
-                  , row.names = 1
-                  , check.names = FALSE)
-        , caption = "Research Methods")
-align(resmethodstable) <- "ll"
+resmethodstable <- knitr::kable(
+  data.frame(
+    Objective = objsummary
+    , "Research Method" = resmethods
+    , check.names = FALSE)
+  , row.names = FALSE
+  , caption = "Research Methods"
+  , booktabs = TRUE)
 resmethodstable
 ```
 
-*Definitions of research methods specifically suited for computer science projects proposed in @amaral2011computing.
-
-**The algorithm will be developed as an R software package, following the methodology and best practices (version control, automated tests, namespaces and documentation) proposed in @Wickham:2015:RP:2904414.
-
 ## Report Structure
 
-The remaining chapters of this report are organized as follows: Chapter 2 provides a comprehensive literature review covering objectives 1-5 and laying the foundation for the applied project. Chapter 3 describes the choice of experimental methodology and applied research in detail. Chapter 4 contains the tabulated results along with various graphs and figures of the most interesting results. Chapter 5 follows with a detailed discussion of the results and their interpretation. Chapter 6 brings the report to a conclusion, reviewing the most important finding, suggesting further work and finally a self-reflection on the project process, methods and objectives.
+The remaining chapters of this report are organized as follows: Chapter 2 provides a comprehensive literature review covering objectives 1-5 and laying the foundation for the applied project. Chapter 3 describes the choice of experimental methodology and applied research in detail. Chapter 4 is a listing of results along with various graphs and figures. Chapter 5 follows with a detailed discussion of the results and their interpretation. Chapter 6 brings the report to a conclusion, reviewing the most important finding, suggesting further work and finally a self-reflection on the project process, methods and objectives.
