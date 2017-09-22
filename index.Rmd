@@ -66,6 +66,26 @@ source("run_experiments_header.R")
 source("synth_wu_data.R")
 ```
 
+# Acknowledgements {-}
+
+With special thanks to my supervisor, Professor Mohamed Medhat Gaber for guidance during this project.\newline
+
+To my mother, without whom none of this would be possible.\newline
+
+To Daniel, "you are a positive, motivating force within my life."\newline
+
+OxIS 2013 databases provided by the Oxford Internet Institute on 21/04/2017.\newline
+
+Job Satisfaction and Procedural Fairness data provided by Prof. Maurizio Carpita.\newline
+
+This dissertation was created in bookdown, @R-bookdown.
+
+# Abstract {-}
+
+Surveys are an ubiquitous research tool, used in the widest variety of disciplines. The data collected mainly includes categorical types (binary, nominal, ordinal and Likert). Due to the practicalities of running surveys, they are highly prone to non-response and therefore, missing data. The magnitude, pattern and distribution of missingness depends on the underlying cause and has consequences for the analysis of results. These problems include serious loss of statistical power and biased parameter estimates. There are many techniques to recover the analysis with varying degrees of success. Most important of these is imputation, which is to substitute  missing values with appropriately estimated values. Successful imputation depends on the mechanism of missingness as well as features of the data. Imputation techniques are very well developed for continuous, numerical data but much less so for caterogical types where there are still gaps in the literature.
+
+Since association rules mining (ARM) was proposed, the concept has been the subject of intense research. ARM is best suited to applications on categorical data. While the technique is inherently a descriptive, knowledge discovery tool, it has been successfully adapted for classification but never used for imputation. This project proposes a novel technique based on ARM for the imputation of categorical data, especially ordinal and Likert scales. A simulation experiment is used to benchmark the novel technique against popular and state of the art methods. Although the novel technique does not outperform the state of the art in any key metric, there are nuanced results and further avenues of research that suggest it may be useful in some niche applications.
+
 # List of Abbreviations {-}
 
 AR - Association Rule(s)\newline
@@ -86,6 +106,7 @@ MAR - Missing at Random\newline
 MNAR - Missing not at Random\newline
 MI - Multiple Imputation\newline
 MICE - Multiple Imputation with Chained Equations\newline
+MIRV - Multiple-item Response Variable\newline
 PM - Person Mean\newline
 PIM - Person Item Mean\newline
 PMM - Predictive Mean Matching\newline
@@ -93,23 +114,3 @@ RLRT - Restricted Likelihood Ratio Test\newline
 SEM - Structural Equation Model\newline
 SPRM - Similar Pattern Response Matching\newline
 SSE - Scale Score Error\newline
-
-# Acknowledgements {-}
-
-With special thanks to my supervisor, Professor Mohamed Medhat Gaber for guidance during this project.\newline
-
-To my mother, without whom none of this would be possible.\newline
-
-To Daniel, "you are a positive, motivating force within my life."\newline
-
-OxIS 2013 databases provided by the Oxford Internet Institute on 21/04/2017.\newline
-
-Job Satisfaction and Procedural Fairness data provided by Prof. Maurizio Carpita.
-
-This dissertation was created in bookdown, @R-bookdown.
-
-# Abstract {-}
-
-Surveys are an ubiquitous research tool, used in the widest variety of disciplines. The data collected mainly includes categorical types (binary, nominal, ordinal and Likert). Due to the practicalities of running surveys, they are highly prone to non-response and therefore, missing data. The magnitude, pattern and distribution of missingness depends on the underlying cause and has consequences for the analysis of results. These problems include serious loss of statistical power and biased parameter estimates. There are many techniques to recover the analysis with varying degrees of success. Most important of these is imputation, which is to substitute  missing values with appropriately estimated values. Successful imputation depends on the mechanism of missingness as well as features of the data. Imputation techniques are very well developed for continuous, numerical data but much less so for caterogical types where there are still gaps in the literature.
-
-Since association rules mining (ARM) was proposed, the concept has been the subject of intense research. ARM is best suited to applications on categorical data. While the technique is inherently a descriptive, knowledge discovery tool, it has been successfully adapted for classification but never used for imputation. This project proposes a novel technique based on ARM for the imputation of categorical data, especially ordinal and Likert scales. A simulation experiment is used to benchmark the novel technique against popular and state of the art methods. Although the novel technique does not outperform the state of the art in any key metric, there are nuanced results and further avenues of research that suggest it may be useful in some niche applications.

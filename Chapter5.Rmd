@@ -7,10 +7,10 @@
 The list of statistics used to assess each imputation was as follows:
 
 1. Mean Scale Score Error (MASE) for the summed scores of Scales A and B
-1. Scale means for Scales A and B
-1. Score standard deviations for Scales A and B
+1. Means for Scales A and B
+1. Standard deviations for Scales A and B
 1. Cronbach's alpha of Scales A and B
-1. Split half correlation between mean(A1, A2, A3) and mean(B1, B2, B3). These were the three variables in each scale that were subject to missingness and imputation.
+1. Split-half correlation between mean(A1, A2, A3) and mean(B1, B2, B3). These were the three variables in each scale that were subject to missingness and imputation.
 
 Additionally, for the first round where there was no default class imputation so the ability of each method was measured by attribute (individual data points) and by subject (data row).
 
@@ -39,37 +39,133 @@ The AR-based imputation process was set up to run as a multiple imputation metho
 
 On symmetric data, the benchmark MI methods, MI (EMB) and MICE, had the largest MASE on both scales while preserving the Scale standard deviations. For the single imputation benchmark methods, the reverse was true. They had a more deflated Scale standard deviations but maintained the overall Scale scores a little more faithfully. There is little detectable difference in Scale means between any of the methods. The AR-based method was not completely consistent. It returned a smaller bias for MASE on both scales than either of the benchmark MI methods and a better standard deviation score than the single imputation methods on Scale A. It did worst of all on individual item standard deviations for Scale B. For these measures, the AR-based method also performed worst of all on MAR data. This data differs in that there is the inclusion of an additional two co-variates and it is possible that these result in some spurious or useless rules being generated.
 
-On the Cronbach's alpha statistic, the AR-based method does better than all the benchmark's apart from MICE and with the exception of the MAR data again. It also compares very well to both MI and MICE for maintaining the split half correlation between the unrelated items. The single imputation methods perform disasterously for this statistic and would be sure to increase the risk of fallacious conclusions in any subsequent analysis.
+On the Cronbach's alpha statistic, the AR-based method did better than all the benchmark's apart from MICE and with the exception of the MAR data again. It also compared very well to both MI and MICE for maintaining the split-half correlation between the unrelated items. The single imputation methods performed disasterously for this statistic and would be sure to increase the risk of fallacious conclusions in any subsequent analysis.
 
-On severly asymmetric data, it is a rather different story, with the AR-based method performing less well than the benchmarks on MASE, Scale means and standard deviations, and Cronbach's alpha. It is reasonable to suggest that these symptoms stem from the ruleset being overwhelmed by rules that favour the default class. This would reduce the variance in the estimates, and pull the mean towards the default class which is skewed to the lower end of the scale. The effect is not drastic, but it is detectable against the benchmarks. The only result that is consistent with the symmetric data set is the very well preserved split-half correlation.
+On severly asymmetric data, it was rather a different story, with the AR-based method performing less well than the benchmarks on MASE, Scale means and standard deviations, and Cronbach's alpha. It is reasonable to suggest that these symptoms stem from the ruleset being overwhelmed by rules that favour the default class. This would reduce the variance in the estimates, and pull the mean towards the default class which is skewed to the lower end of the scale. The effect is not drastic, but it is detectable against the benchmarks. The only result that was consistent with the symmetric data set was the very well preserved split-half correlation.
 
-Given these results, the most honest conclusion is that the new AR-based method is not yet ready for real-world applications. While it compares well to the MI and MICE benchmarks on symmetric data, it currently runs much to slowly. MICE appears to do better and more consistently on every measure and should be the recommended imputation method used under all the circumstances tested in this research.
+Given these results, the most honest conclusion is that the new AR-based method is not yet ready for real-world applications. While it compares well to the MI and MICE benchmarks on symmetric data, it currently runs much too slowly. MICE appears to do better and more consistently on every measure and should be the recommended imputation method used under all the circumstances tested in this research.
 
 ## Further Work
 
 Detecting, with statistical significance, the patterns and small differences seen during some of the experimental stages required a much larger set of experimental replications which was not practical to run with the available resources. A factor in this is the performance of the *apriori* algorithm which makes the AR-based method relatively slow compared to any of the benchmarks. When combined into an iterative process, the method may be too slow to run for larger datasets. Converting the method to use the faster FP-Growth algorithm may be necessary for real-world applications. The ability to limit rule discovery by only relevant variables might also be faster, rather than finding all rules then pruning. Unfortunately this approach is not available in the arules package for R. In any case, it will be useful to run some experiments on much more powerful hardware that can churn through thousands of repetitions more speedily to confirm the apparent patterns by means of greater statistical power.
 
-Expanding the dataset to include additional aggregate scores did have a positive effect on performance, but this came with a commensurate inflation in computation time. The additional information about the multi-item scale is appears to be beneficial and further investigation is worthwhile if the time-complexity of the algorithm can be reduced. Other avenues to explore include using a weighting, so that rules implicating related items are more important than rules between unrelated items. This could be based on an initial reliability analysis. Another approach would be to split the dataset vertically such that only related items are considered together. However, this last approach would miss out small but potentially significant relationships through the rest of the dataset.
+Expanding the dataset to include additional aggregate scores did have a positive effect on performance, but this came with a commensurate inflation in computation time. The additional information about the multi-item scale appeared to be beneficial and further investigation is worthwhile if the time-complexity of the algorithm can be reduced. Other avenues to explore include using a weighting, so that rules implicating related items are more important than rules between unrelated items. This could be based on an initial reliability analysis. Another approach would be to split the dataset vertically such that only related items are considered together. However, this last approach would miss out small but potentially significant relationships through the rest of the dataset.
 
-Although this project has not (yet) delivered a new world-class imputation method, the results were very encouraging. The method falls short in a couple of specific areas but there are open research questions that could specifically target them.
+Although this project has not delivered a new world-class imputation method, the nuanced results suggest the method has potential. For example, examining the diagnostic plot in Figures \@ref(fig:dens-diag1) and \@ref(fig:dens-diag1), it is possible to see that the AR-based method yields a distribution of estimated values that is strongly influenced by the skew in the severely asymmetric data while the pattern produced by MICE has a strong central tendency, which is a manifestation of the underlying normality assumption. Although the results of this project don't empirically demonstrate the benefits of the AR-based model's behaviour, it is still expected to give useful results in practice. Much of the over-production of value 1 by the AR-based method, at least in Figure \@ref(fig:dens-diag1),  arises from the $\approx$ 25% of default class imputations and resolving some of the remaining research questions would directly address this problem:
 
-1. Comparatively poor performance on severely asymmetric or skewed data requires a rule discovery and pruning approach that allows better representation of minority classes. @liu2001classification proposes using multiple minimum class *Support* to ensure that the imputed values were not overwhelmed by the majority class.
+1. Comparatively poor performance on severely asymmetric or skewed data requires a rule discovery and pruning approach that allows better representation of minority classes. @liu2001classification proposes using multiple-class minimum *Support* to ensure that the imputed values were not overwhelmed by the majority class.
 
 2. Comparatively larger downward bias of individual item standard deviations could be addressed by further investigation of the stochastic variants which were put aside after the early stages of the experiments. These include the rhs frequency rule selection and the frequency distribution based default class method. As stated in the results section, there was no detectable difference between any of the methods in stage 1 and it would be reasonable to re-run some of the experiments again with different alternatives.
 
+```{r dens-diag1, fig.height=3, fig.cap="Imputation diagnostic plot comparing distribution of untreated data with distribution of estimated values."}
+load("sample_results2.RData")
+
+res <- sample_results$wu_sasym_MNAR_0.3_1000
+m <- 5
+varnames <-  paste0(rep(c("A", "B"), each = 3), 1:3)
+allvarnames <- paste0(rep(c("A", "B"), each = 6), 1:6)
+methods <- c("amelia", "mice", "ari")
+completed_results <- list()
+for (meth in methods) {
+  completed_results[[meth]] <- list()
+  for (v in varnames) {
+    pooled <- matrix(NA, nrow = 1000, ncol = m)
+    for (n in 1:m) {
+      pooled[, n] <- res[[meth]][[n]][[v]]
+    }
+    completed_results[[meth]][[v]] <- round(rowMeans(pooled))
+  }
+  completed_results[[meth]] <- cbind(completed_results[[meth]]
+                                     , sample_results$wu_sasym_MNAR_0.3_1000$untreated[, c(4:6, 10:12)])
+  completed_results[[meth]] <- completed_results[[meth]][, allvarnames]
+}
+
+all_results <- append(completed_results
+                            , list(PM = sample_results$wu_sasym_MNAR_0.3_1000$PM
+                            , CIM = sample_results$wu_sasym_MNAR_0.3_1000$CIM
+                            , TW = sample_results$wu_sasym_MNAR_0.3_1000$TW
+                            , ICS = sample_results$wu_sasym_MNAR_0.3_1000$ICS
+                            , untreated = sample_results$wu_sasym_MNAR_0.3_1000$untreated))
+
+results_byvar <- list()
+for (v in varnames) {
+  for (dt in names(res)) {
+    results_byvar[[v]][[dt]] <- all_results[[dt]][[v]]
+  }
+  results_byvar[[v]] <- as.data.frame(results_byvar[[v]])
+}
+
+
+myFills <- c(ari = myPal[6], mice = myPal[8])
+myCols <- c(untreated = myPal[7])
+
+v <- "A1"
+g <- ggplot(data = results_byvar[[v]][res$to_impute$mim$B_j[[v]], ]
+            , aes(x = untreated
+                  , colour = "untreated"))
+g <- g + geom_density(data = results_byvar[[v]][res$to_impute$mim$B_comp_j[[v]], ]
+                      , aes(x = ari
+                            , fill = "ari")
+                      , alpha = 0.5
+                      , colour = "transparent")
+g <- g + geom_density(data = results_byvar[[v]][res$to_impute$mim$B_comp_j[[v]], ]
+                      , aes(x = mice
+                            , fill = "mice")
+                      , alpha = 0.5
+                      , colour = "transparent")
+g <- g + geom_density() # data = sample_results$wu_sasym_MNAR_0.3_1000$untreated
+g + myGgTheme + theme_bw() + xlim(0, 8) +
+  scale_fill_manual(name = "imputation \nmethod"
+                    , values = myFills
+                    , guide = "legend") +
+  scale_colour_manual(name = ""
+                    , values = myCols
+                    , guide = "legend") +
+  labs(title = paste("Density of untreated data and estimated values \nby ARImpute and MICE for variable", v, "on MNAR data")
+       , x = "Data Value")
+```
+
+```{r dens-diag2, fig.height=3, fig.cap="Imputation diagnostic plot comparing distribution of untreated data with distribution of estimated values."}
+v <- "A3"
+g <- ggplot(data = results_byvar[[v]][res$to_impute$mim$B_j[[v]], ]
+            , aes(x = untreated
+                  , colour = "untreated"))
+g <- g + geom_density(data = results_byvar[[v]][res$to_impute$mim$B_comp_j[[v]], ]
+                      , aes(x = ari
+                            , fill = "ari")
+                      , alpha = 0.5
+                      , colour = "transparent")
+g <- g + geom_density(data = results_byvar[[v]][res$to_impute$mim$B_comp_j[[v]], ]
+                      , aes(x = mice
+                            , fill = "mice")
+                      , alpha = 0.5
+                      , colour = "transparent")
+g <- g + geom_density() # data = sample_results$wu_sasym_MNAR_0.3_1000$untreated
+g + myGgTheme + theme_bw() + xlim(0, 8) +
+  scale_fill_manual(name = "imputation \nmethod"
+                    , values = myFills
+                    , guide = "legend") +
+  scale_colour_manual(name = ""
+                    , values = myCols
+                    , guide = "legend") +
+  labs(title = paste("Density of untreated data and estimated values \nby ARImpute and MICE for variable", v, "on MNAR data")
+       , x = "Data Value")
+```
+
 The AR-based technique has many tuning parameters that were not explored during the experimental stages and any of these could also lead to further refinements:
 
-* During the rule discovery stages of the experiment, *Support* and *Confidence* were fixed. The values used had been found to provide the best balance of speed and finding enough rules during proto-typing but would be different for different datasets. There may be benefit to carrying out research that formalizes the best setting for these parameters or provides a useful rule of thumb.
+* During the experiment, *Support* and *Confidence* were fixed for rule discovery. The chosen values were found to provide the best balance of speed and finding enough rules but would be different for different datasets. There may be benefit to further research that formalizes the best tuning for these parameters or provides a useful rule of thumb.
 
-* The number of splits for the propensity based algorithm was fixed at two. As propensity added significant advantage when it was introduced, there may be value in understanding the effect of a more granular propensity model.
+* Splits for the propensity based algorithm was fixed at two. As propensity added significant advantage when it was introduced, there may be value in understanding the effect of increasing this number.
 
-* Incorporating cumulative odds models and/or penalized regression, both of which are recommended for use in ordinal data analysis. For example, either of these could have been applied at the default class step of the algorithm or to weight or set rule precedence.
+* Incorporating cumulative odds models and/or penalized regression. Both are recommended for use in ordinal data analysis and either could have been applied at the default class step of the algorithm or to weight or set rule precedence.
 
-* Allowing iterative-sequential methods to run for more iterations, as the stopping parameters were set in interests of reasonable completion time for the experiments. There was plenty of scope for the routines to be allowed to run for longer.
+* Allowing iterative-sequential methods to run for more iterations, as the stopping parameters were set in interests of reasonable completion time for the experiments. There was scope for the routines to be allowed to run for longer.
 
-Throughout the experimental phase, the AR-based method appeared to have a specific advantage of performing very consistently with MNAR data, even though this was expected to be the most challenge based on the findings in the literature review. However, when the benchmark methods were brought in for Stage 5, it was obvious that there was no special effect as each method had the same pattern in performance over the different patterns of missingness. The whole notion that MNAR data is such a challenge for imputation has been called into question during this research. This is potentially a very significant area of research in its own right. In any case, the entire experiment was conducted with just one master model for synthetic data which leaves many scenarios unexplored. The literature review unearthed a number of useful real-world datasets and different methods of simulating MNAR data have been built into the arulesimp package for R.
+Throughout the experimental phase, the AR-based method appeared to have a specific advantage of performing very consistently with MNAR data, even though this was expected to be the most challenge based on the findings in the literature review. However, when the benchmark methods were brought in for Stage 5, it was obvious that there was no special effect as each method had the same pattern in performance over the different patterns of missingness. The whole notion that MNAR data is such a challenge for imputation has been called into question during this project. This is potentially a very significant area of research in its own right. In any case, the entire experiment was conducted with just one master model for synthetic data which leaves many scenarios unexplored. The literature review unearthed a number of useful real-world datasets and different methods of simulating MNAR data have been built into the arulesimp package for R. Other data scenarios, such as bigger or smaller sample sizes and different proportions of missing data are yet to be explored.
 
-There was also a suprising discovery, that some of the benchmark methods had a tendency to drastically bias the data in a way that makes unrelated items appear to be much more correlated than they are in the underlying population. They may only be useful for imputing within one Likert scale at a time, which is potentially important information for the community of researchers. The novel technique, along with MI and MICE, were immune to this effect. These nuanced results may prove to be useful in niche applications with real-world data. There is much scope for introducing other synthetic data models or any of the real-world datasets found during the literature review in future research.
+There was also a suprising discovery, that some of the benchmark methods had a tendency to drastically bias the data in a way that makes unrelated items appear to be much more correlated than they are in the underlying population. As such, these single imputation techniques may only be useful for imputing within one Likert scale at a time, which is potentially important information for the community. The novel technique, along with MI and MICE, were immune to this effect. 
+The nuanced results from this project may prove to be useful in niche applications with real-world data. There is much scope for introducing other synthetic data models or any of the real-world datasets found during the literature review in future research.
 
 ## Project Appraisal
 

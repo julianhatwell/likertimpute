@@ -1,0 +1,523 @@
+<<prologue, include=FALSE>>=
+knitr::opts_chunk$set(warning = FALSE
+                      , message = FALSE
+                      , echo = FALSE
+                      )
+knitr::opts_template$set(
+  fig.tile = list(fig.height = 3
+                  , fig.width = 3
+                  , fig.align='center')
+  )
+knitr::opts_knit$set(self.contained=FALSE)
+source("C:\\Dev\\Study\\R\\R_Themes\\MarketingTheme.R")
+MyTempTheme <- MyLatticeTheme
+MyTempTheme$superpose.symbol$col <- myPal
+MyTempTheme$add.line$col <- myPalDark[3]
+
+load("wu_stats_pop.RData")
+@
+
+\documentclass[format=sigconf, natbib=false]{acmart}
+
+\usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\usepackage[backend=bibtex, maxcitenames=2, style=authoryear]{biblatex}
+\addbibresource{likertimputebiblio.bib}
+\addbibresource{packages.bib}
+
+\begin{document}
+
+\title{An Association Rules Based Method for Imputing Missing Ordinal and Likert Scale Data}
+
+\begin{abstract}
+Surveys are an ubiquitous tool. The data collected are mainly categorical types (binary, nominal, ordinal and Likert). Surveys are highly prone to non-response and missing data, which impacts the analysis of results. Problems include loss of statistical power and biased estimates. Imputation techniques can recover data for analysis by substituting missing values with estimated values. These techniques are well developed for continuous, numerical data but much less so for caterogical data.\par
+Since association rules mining (ARM) first appeared, it has been the subject of intense research. Best suited to applications on categorical data, the technique is inherently a descriptive, knowledge discovery tool. There have been successful adaptations for classification but it is rarely used for imputation. This work proposes a novel technique based on ARM for the imputation of ordinal data and Likert scales. Benchmark experiments were run against the state of the art using simulated data. The novel technique did not outperform in any key metric but there were nuanced results and open questions that suggest it may be useful in niche applications.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+
+Even in the era of unstructured, "Big Data" mining and the demise of paper and telephone based questionnaires \cite{groves2011three}, structured surveys remain an essential tool in commercial enterprise and other areas. \cite{evans2005value} shows that online surveys were already a rapidly growing, multi-million dollar industry by the early 2000's and \cite{schultz2015psychology} states that most companies now use web-based surveys. The practicalities of running surveys means non-response and missing data is the rule, not the exception (\cite{plumpton2016multiple}; \cite{bono2007missing}; \cite{kamakura2000factor}). If handled incorrectly, missing data can cause loss of statistical power and biased parameter estimates, which increases the likelihood of drawing incorrect inferences and erroneous conclusions. These are non-trivial problems, which at best tarnish reputations, breach ethical codes and incur expense of repeated studies, \cite{button2013power}. At worst, flawed results can affect social and economic policy making, business strategies and clinical results, \cite{barrett2015data}.\par
+Imputation is a collection of methods for recovering from missing data that substitute missing values with estimated values. Multiple imputation (MI) is currently most important of these. In MI, a stochastic process delivers multiple versions of the imputed data by drawing "plausible" values from a multi-variate normal (MVN) model of the observed data. This overcomes the problem of treating an imputed value is if it were a real value because results are pooled for further analysis. However, this technique relies on an MVN assumptionof the underlying distribution and also that the mechanism of missingness depends on the observed data. These often do not hold for surveys that are mostly made up of categorical data types (binary, nominal, ordinal and Likert), (\cite{johnson2009working}; \cite{christensen2010ordinal}) and there are long-running debates and arguments against treating ordinal data as if it were continuous (\cite{gertheiss2011testing}; \cite{johnson2009working}; \cite{joreskog2005structural}; \cite{jamieson2004likert}). A review of the literature around imputation techniques more suitable for these caterogical data types, especially ordinal and Likert scales finds scarce examples. Implementations of MI require special configuration and work-arounds to return valid results for ordinal data types (\cite{R-Amelia}; \cite{R-mi}), while various authors indicate that imputation methods specifically targetting these data types remains an open research question (\cite{finch2010imputation}; \cite{leite2010performance}).\par
+ARM, which is best suited to applications on categorical data is inherently a descriptive, knowledge discovery tool. It has been successfully adapted for classification. However, a detailed review of the literature finds very scarce examples of ARM in imputation, and none specifically address the challenge of ordinal data. This research proposes a new algorithm to bridge this gap by applying ARM to the problem of imputation of these data types. This research has also delivered, in the form of an R software package, a prototype for a novel and viable imputation method based on AR, which is best suited for datasets consisting primarily of Likert scales.
+
+\section{Related Work}
+\cite{jonsson2004evaluation} and \cite{jonsson2006benchmarking} use of K-Nearest Neighbours for imputation of Likert scale and benchmark the technique against other methods, as an example of non-parametric, Hot-decking methods that use similarity between responds to infer estimated values. \cite{carpita2011imputation} extends the another well-known, non-parametric, stochastic technique, the Approximate Bayesian Bootstrap (ABB) with a propensity and a nearest neighbour selection. The experimental design in this paper is of particular importance because it avoids design bias by including benchmark techniques that are specifically useful for Likert scales whereas many other authors benchmark against techniques that are previously known to be less effective. \cite{wu2007novel} and \cite{wu2008missing} demonstrated that AR-based imputation methods have potential, describing a novel method using AR with a weighted voting method to impute missing nominal data. Rules are grouped and weighted according to antecedent length (specificity) as well as \textit{Confidence} and \textit{Support}. Many other authors also describe novel ranking methods as well as the use of alternative interestingness measures to improve classification accuracy of AR-based prediction methods, for example \cite{liu2001classification}, \cite{yin2003cpar} and \cite{li2001cmar} suggest Laplace's Accuracy and an adjusted Chi square measure. They also recommending aggregate predictions from a set of rules to address the problem of simply using the rule with the highest \textit{Confidence} while ignoring other rules that may have only slightly lower scores. Similarly, \cite{mutter2004classification} proposes majority vote with weighting. Each of these showed significant improvements to older methods. \cite{liu2001classification} recognizes that a consequence of generating rules with a minimum *Support* means it is possible that there will not be a rule to cover all instance so includes a default class (usually the majority class) as the final rule. However, \cite{li2006predicting} states that the default assigned value may not be related to the instance data introducing noise. Other authors persevere with adaptations of MVN based MI for ordinal data scenarios. \cite{plumpton2016multiple} investigated a pre-processing method for MI of Likert scales; Scale totals were pre-calculated and included in the imputation model instead of the individual scale items to reduce the computational overhead by including fewer variables. For the current research this idea is co-opted as a feature engineering technique to be used alongside the individual scale items. The new variables provides additional information about inter-item correlations, essential to Likert scale reliability.
+
+\section{Definitions}
+\subsection{Ordinal Data and Likert Scales}
+This research is primarily concerned with assessed ordered categorial variables (AOCV), whereby a judgement is given on the grade, level or rank some of information which itself is not an observed variable. These differ from grouped continuous variables (GCV) where an underlying, continuous variable such age, height or weight is discretized into buckets or categories. AOCV generally take the form $k \in \{0,\ \dots,\ K\}$ or $k \in \{1,\ \dots,\ K\}$ or sometimes a symmetric form $k \in \{-K,\ \dots,\ 0,\ \dots,\ K\}$ and all are interpreted as a monotonic, ranking representation $Least \succ Less \succ More \succ Most$. They can be used individually but related items are often combined into multiple-item response variables (MIRVs). Likert scales are a specific case of MIRV, whereby a an integer series is anchored to phrases of sentiment or attitude (e.g. 1 = strongly disagree, 5 = strongly agree). The collection of responses measure the facets of some latent (unobserved) concept or factor. The respondents' positions on the latent factor can then be estimated by summing or averaging the individual items \cite{carpita2011imputation}. Likert scales are ubiquitous in behavioural science, marketing, usability, customer feedback, psychological and clinical research because they effectively convert qualitative data into quantitative data and simplify the survey method (\cite{christensen2010ordinal}; \cite{schultz2015psychology}). Although the term Likert scale is sometimes used in the literature to refer to single items following the classic agree/disagree scoring, the correct definition refers to a combined scale as described here. A thorough treatment of Likert scales is given in \cite{gliem2003calculating}.
+
+\subsection{Missing Data}
+A tabular dataset can have the presence or absence of each data point represented as a missing indicator matrix of equal dimension. The following definitions are adapted from \cite{carpita2011imputation} to describe a such a dataset made up of Likert scales; Let $X$ be a data matrix and $M$ be the corresponding missing indicator matrix. Both $X$ and $M$ are $n \times p$ matrices. Let $K$ be the number of ordinal categories in each item and $x_{ij}$ be respondent $i$'s answer to item $j$. Then the value of $x_{ij}$ is: 
+
+\begin{equation}
+  x_{ij} =
+  \begin{cases} 
+  k \in \{1,\ 2, \ \dots, \ K\ \},\ \text{if}\ m_{ij} = 0 \\
+  \text{missing}, \text{otherwise}
+  \end{cases}, \ m_{ij} \in \{0,\ 1\}
+\end{equation}
+
+The respondent $i$ has no missing data when $m_{i+} = \sum^p_{j=1} m_{ij} = 0$ and data is missing when $m_{i+} > 0$. The items for respondent $i$ where data are not missing are counted as $p_{i+} = p - m_{i+}$ and their indices are collected in the set $A(i)$. The indices of all the missing items for respondent $i$ is $A'(i)$. Similarly, the item $j$ has no missing data when $m_{+j} = \sum^n_{i=1} m_{ij} = 0$ and data is missing when $m_{+j} > 0$. There are $n_{+j} = n - m_{+j}$ respondents with observed data and the indices of these are collected for item $j$ in set $B(j)$. The indices of all the missing respondents for item $j$ is $B'(j)$. Let $J$ be the set of variables, such that for each $j$ there is some missing data, $m_{+j} > 0,\ j \in \{1,\ 2,\ \dots,\ p\  \}$.\newline
+
+Donald B. Rubin is widely cited for seminal works, including \cite{rubin1987multiple}, on modeling, recovering (imputing) and inference using missing data. This body of work formalizes the relationship between the missing values, the incomplete variable and the other variables. The data matrix $X$ is comprised of $X^{obs}$, the observed portion, and $X^{mis}$, the missing portion of the data. 
+
+\begin{equation}
+  \forall x_{ij} \in X^{obs},\ m_{ij} = 0
+\end{equation}
+
+\begin{equation}
+  \forall x_{ij} \in X^{mis},\ m_{ij} = 1
+\end{equation}
+
+Patterns arising from these relationships are categorized as:
+
+\begin{itemize}
+\item Missing completely at random (MCAR) if the distribution of missing data is unrelated to the value of any variable in the dataset. It is suggested in \cite{gelman2006data} that the probability of non-response is the same for all points of the missing indicator matrix. The missing/non-missing state of individual data points cannot be predicted from any information whatever, whether observed or unobserved:
+
+\begin{equation}
+  P(M \mid X) = P(M)
+\end{equation}
+
+\item Missing at random (MAR) is more likely that MCAR according to \cite{raaijmakers1999effectiveness} cited in \cite{jonsson2006benchmarking}. It applies if the distribution of missing data is correlated to $X^{obs}$ but not the variable itself according to \cite{gelman2006data}. The missing indicator matrix can be modelled as a logistic regression. The resulting probabilities give the propensity score for the point $x_{ij}$ to be missing:
+
+\begin{equation}
+  P(M \mid X) = P(M \mid X^{obs})
+\end{equation}
+
+\item Missing not at random (MNAR) if the distribution of missing data is related to data that is unobserved and, according to \cite{gelman2006data}, can be further subdivided as:
+  \begin{itemize}
+  \item Missingness depending unobserved predictors. For example, people in a particular education bracket respond less frequently to questions about income and there were no questions identifying educational attainment.
+  \begin{equation}
+  P(M \mid X) = P(M \mid Z),\ Z \cap X = \varnothing,\ Z\  \text{are unobserved}
+  \end{equation}
+
+  \item Missing data is related to the value of the partially missing variable, such that answers given by complete respondents differ from answers that would have been given by non-respondents. For example, respondents from a lower income bracket are reluctant to respond to questions about earnings:
+  \begin{equation}
+P(M \mid X) = P(M \mid X^{mis})
+  \end{equation}
+  \end{itemize}
+\end{itemize}
+
+MNAR is the most challenging situation to recover and of most concern to researchers. \cite{leite2010performance}, \cite{tsikriktsis2005review} and \cite{jonsson2004evaluation} all claim that it is very difficult or impossible to recover a dataset that is MNAR. \cite{gelman2006data} suggests that the problem can only be mitigated by adding more predictors to make the MAR assumption tenable.
+
+\subsection{ARM in Brief}
+The motivation for ARM's popularity is its commercial application in the large retail enterprise sector. It is most frequently used for identifying purchasing patterns in customer data, \cite{garcia2004mining}. Many of the fundamental concepts of ARM were formalised in \cite{agrawal1993mining} and its follow up, \cite{agrawal1994fast}, which are considered to be the seminal works on the topic and generated a boom in popularity of the method. The following definitions are adapted from these and \cite{tan2005chapter6} (pp.329-330):
+
+Let $I = \{i_1,\ i_2,\ \dots,\ i_k\}$ be the set of all available items. Let $T = \{t_1,\ t_2,\ \dots,\ t_N\}$ be a set of $N$ transactions where each transaction $t_j \subseteq I$. A transaction $t_j$ is said to contain an itemset $X$ (a set of some items in $I$) if $X \subseteq t_j$. Association rules (AR) can be inferred from the frequently occurring itemsets. AR take the pattern $X \implies Y$ (read as $X\ \text{implies}\ Y$) where $X \subseteq t_j$ is the \textit{antecedent} of a rule and $Y \subseteq t_j$ is the \textit{consequent} and $X \cap Y = \varnothing$. Although not strictly part of the definition of AR given in \cite{agrawal1994fast}, this research applies a restriction that the cardinality $|Y| = 1$ because AR are to be used to estimate a value for one target variable at a time in a manner similar to classification.\par
+There has been a good deal of research into prediction/classification techniques based on ARM. Classification Based on Associations (CBA) is perhaps the oldest of these methods, described in various sources (e.g. \cite{R-arulesCBA};  \cite{yin2003cpar}; \cite{freitas2000understanding}). It is an intuitive approach with performance comparable to other classification algorithms. Nevertheless, it is not among the techniques typically taught in data science classes or described in the literature. CBA involves finding a subset of rules, which have the characteristic of having the target variable as the only element in the consequent, or right-hand side, of the rule. \cite{ma1998integrating} calls these types of AR ``class association rules" (CARs). To predict on new data, the rules satisfied in the antecedent by the predictor variables are retrieved and the one with the highest \textit{Confidence} predicts the class label from its consequent. \cite{li2001cmar} discusses the major disadvantage of AR for classification, which is the trade off between maintaining a high enough support to create a tenable model, while searching for rules that cover even the rarest cases. This is of concern to this research because of the requirement to find rules that cover any foreseeble set of predictor values. Without a matching rule, the model has to fall back on the default class, which can be inapproprate for a rare set of predictor values. \cite{liu2001classification} suggests flexibly assigning a lower minimum \textit{Support} threshold to minority classes to overcome this problem.
+
+\section{Algorithm}
+
+The novel algorithm has been implemented as an R package with a number of user configurable options. The rule ranking function can be set to \textit{Confidence}, Laplace's Accuracy, Chi square or weighted Chi square as discussed in previous sections. The top $n$ rules is also a user parameter along with the choice of rule aggregation method, such as mean with various rounding functions, majority vote or frequency distribution of the consequent values. A setting of $n = 1$ is simply the best rule selection, while if $n$ is ommitted then all matching or satisfied rules are included. Of course, the minimum \textit{Support} and \textit{Confidence} for the frequent pattern discovery stage can be controlled. The choice to complete any unimputed values with a default class is also left to the user, and the methods available are to use the majority class or a stochastic method using a posterior distribution of the values' frequencies. The CARs generation step is run separately from the imputation step so the user has the option to extend the dataset with engineered features such as scale totals or scale means, as suggested by \cite{plumpton2016multiple} and \cite{tan2005chapter7}. There is an iterative-sequential variant based on the MICE algorithm, which inserts a rule generation step before each individual variable is imputed. This variant also has stopping parameters for maximum iterations and target convergence. A propensity step can be configured with the user controlling the number of propensity tiers as well as parameters for balancing out propensity classes. For practical reasons, the novel AR-based method has the \textit{apriori} algorithm at its core. However, this would ideally be substituted in the future with the faster FP-growth algorithm. Finding all rules and then pruningback to CARs is an inefficient process and not intentionally part of the novel algorithm. Future work will address the computational efficiency issues raised here.\par
+
+Let $\textit{lhs}(r)$ be the antecedent, or left-hand side of rule $r$ and $\textit{rhs}(r)$ be the consequent, or right-hand side. Let $R_J$ be the set of all CARs found for the set of variables J, $R_j$ be the set of CARs for variable $j$. For any single CAR $r_j$, the cardinality $|\textit{rhs}(r_j)| = 1$ and the value $k \in \{\ 1, 2,\ \dots\ ,\ K\ \}$ where $K$ is the number of levels. $X_{i}\ \textit{satisfies}\ r_j$ when all key-value pairs in $\textit{lhs}(r_j)$ have a match in the key-value pair representation of $X_{i}$. Let $\textit{agg}()$ be the aggregate voting function set by user (e.g. rounded mean, majority vote) with $N$ as the early stopping parameter. Let $\textit{srt}()$ be the precedence sorting function set by user (e.g. by \textit{Confidence}, Chi squared, etc). Assuming AR-based imputation does not always estimate a value for every missing data point, let $M'$ be the missing indicator matrix after AR-based imputation. Let $\textit{def}()$ be the default class function set by user (e.g. majority class, posterior frequency distribution). The short-hand \textit{makeCARs()} is used for the rule discovery step in Algorithm 2.
+
+\begin{algorithm}
+\caption{Association Rules based imputation}\label{ARI1}
+\begin{algorithmic}[1]
+\Procedure{AR-based Imputation}{$X$, $R$, $J$, $N$, $\textit{agg}()$, $\textit{def}()$, $\textit{srt}()$}
+  \ForAll{$j \in J$}
+    \State $C \gets [\ ]$
+    \For{$r_j \in \textit{srt}(R_j)$}
+      \For{$i \in B'(j)$}
+        \While{$length(C) \leq N$}
+          \If{$X_i\ \textit{satisfies}\ \textit{lhs}(r_j)$}
+            \State $C \gets append[\ C,\ \textit{rhs}(r_j)\ ]$
+          \EndIf
+        \EndWhile
+        \State $X_{ij} \gets \textit{agg}(C)$
+      \EndFor
+    \EndFor
+    \If{$m'_{+j} > 0,\ m'_{ij} \in M'$}
+      \State $x_{ij} \gets \textit{def}(j), \forall{i \in m'_{ij} = 1}$
+    \EndIf
+  \EndFor
+  \State $\textbf{return }{X}$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+\caption{Iterative Sequential Association Rules based imputation}\label{ARI3}
+\begin{algorithmic}[3]
+\Procedure{ISAR-based Imputation}{$X$, $J$, $N$, $S$, $\textit{agg}()$, $\textit{def}()$, $\textit{srt}()$, $\textit{itermax}$, $\textit{targc}$}
+\State $X' \gets X$
+\State $\textbf{sort}\ J\ \textbf{by}\ M_{+j}\  \textbf{ascending}$
+\For{$j \in J$}
+  \State $j* \gets \textit{bootstrap } X_j$
+  \For{$i \in M_{ij} = 1$}
+    \State $X'_{ij} \gets \textit{random value drawn from}\ j*$ 
+  \EndFor
+\EndFor
+\State $\textit{iter} \gets 0$
+\State $c \gets \textit{targc} + 1$
+\While{$\textit{iter} < \textit{itermax}\ \land \ c > \textit{targc}$}
+  \State $\textit{iter} \gets \textit{iter} + 1$
+  \For{$j \in J$}
+    \State $ \textit{glm.fit} \gets \textit{logistic regression model of } M_j \textit{ on } X'_k,\ k \in \{ 1,\ 2,\ \dots,\ p\ \} \land j \notin k$
+    \State $P \gets \textit{probability prediction of glm.fit}$
+    \State $\textit{Order } X'_j \textit{ by } P$
+    \State $\textit{Horizontally split } X'_j \textit{ into } S \textit{ equal sized subsets } {X'_j}_s$
+    \For{$s \gets 1\ \textbf{to}\ S$}
+      \State ${X'_j}_s \gets {X_j}_s$
+      \State ${R_j}_s \gets \textit{makeCARs}({X'_j}_s)$
+      \State $X''_s \gets \textit{run AR-based imputation }(\ X = {X'_j}_s,\ R = {R_j}_s,\ J = j,\ \textit{agg}(),\ \textit{def}(),\ \textit{srt}()\ )$
+    \EndFor
+    \State $\textit{Rowbind each subset } X''_s \textit{ into a single dataset } X''$
+  \EndFor
+  \State $c \gets \frac{1}{|J|} \sum_{j \in J}{\sum_{i \in B'(j)} \sqrt(X''_{ij} - X'_{ij})^2}$
+  \State $X' \gets X''$
+\EndWhile
+\State $\textbf{return}\ X'$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\section{Materials and Methods}
+
+A simulation experiment was conducted drawing heavily on the work described in \cite{wu2015comparison} and \cite{carpita2011imputation}. In particular, the benchmark techniques and data synthesis methods followed these articles very closely. Other useful reference papers include \cite{plumpton2016multiple}, \cite{leite2010performance}, \cite{jonsson2006benchmarking} and \cite{jonsson2004evaluation} which influenced the choice of experimental design factors. The data synthesis method chosen used SEM to create synthetic datasets of twelve items configured as two MIRVs of six items each. Inter-item correlations were set to $\approx 0.7$ within each scale while the two scales had a correlation of $\approx 0.3$. Two copies of the resulting datasets from this model were discretized into seven ordinal levels with pre-defined cut-points that resulted in a symmetric and a severely asymmetric distribution for comparison. The settings only need be approximate when first generated because the discretization process affects correlations and they cannot be determined analytically afterwards this operation.\par
+To measure the success of an imputation method, some authors simply compared prediction accuracy against known values in a training set but this approach does not recognize the true purpose of imputation, which is to recover a dataset for further analysis while avoiding to introduce bias. A high prediction accuracy may still return a flawed imputation if prediction errors are systematically biased. It is much more important to preserve the underlying distribution than to score well on a cost function. Therefore, following the methods suggested in the reference papers, this research measured the Mean Absolute Scale Errors (MASE) and the Scale means, Scale standard deviations and Cronbach's alpha scores for the two MIRVs as well as the inter-item correlations of sets of unrelated individual items. This latter measure was to test for any "cross-talk" between imputed values of unrelated MIRVs. Each statistic was compared to the equivalent population parameter by calculating the relative bias:
+
+\begin{equation}
+  B(\hat{Z_r}) = \frac{\hat{Z_r} - \zeta_p}{\zeta_p}
+\end{equation}
+
+where $\zeta_p$ is the population parameter, based up the initial conditions. A value of < 0.05 was deemed to be acceptable for an imputation method according to \cite{leite2010performance} and implies that any bias introduced by imputation is non-significant.\par
+
+The methodology conducted was as follows:
+
+\begin{enumerate}
+\item A very large sample of 500000 instances was generated and the population parameters were estimated from this.
+\item A dataset of 1000 samples was then generated from the same model.
+\item The three missing data patterns applied to three separate copies of the datasets: MCAR, MAR and MNAR with unobserved covariates.
+\item A copy of each dataset was created for the imputation techniques so each wwould be run on its own copy.
+\item Listwise deletion was performed on any remaining incomplete cases for methods that did not resolved to a default class.
+\item Steps 2-5 were repeated for 100 replications.
+\item Statistics of interest were estimated from each imputed dataset, including relative bias to the population parameters.
+\end{enumerate}
+
+The sample size of 1000 served as a mid-point of the range used in similar experiments found in the literature (200-2000). The missing data proportion was fixed at 0.3. In similar experiments, missing data proportions ranged from 0.1 to 0.55 but a proportion of 0.5 or greater was only suitable for finding the limits of a technique rather than benchmarking, because all techniques are severely challenged at this highest level. The reference articles were very varied on the selection of benchmark techniques and many reported the inclusion of mean imputation, regression imputation and list-wise deletion. This may be a symptom of the relative age of some of the research, or potentially flaws in the research design. For this current research, it was not considered worthwhile to compare any novel technique to techniques regarded as flawed or outdated in the modern literature. Focus instead was on techniques considered to be state of the art (MI via the Amelia II package and MICE via the mice package for R) or proven to be effective on Likert scales. The Person Mean (PM), the Corrected Item Mean (CIM), Two-Way imputation (TW) and Item Correlation Substitution (ICS) methods were all recommended in \cite{carpita2011imputation}. The experiment was run in multiple stages testing many variants of the novel algorithm in an attempt to identify a high performing combination of user controlled options before running the method against the benchmarks. This idea adapted from \cite{carpita2011imputation} seemed to be the best use of the available time and resources. The experimental design factors are summarized in Table 1.
+
+<<hatwell-design-matrix, results='asis'>>=
+factor_name <- c("Number of ordinal categories"
+                , "Sample size"
+                , "Data distributions"
+                , "Proportion of missing data"
+                , "Missing data mechanisms"
+                , "Imputation Strategy"
+                , "Benchmark methods"
+                , "Data source")
+factor_options <- c("7"
+                , 1000
+                , "Symmetric and Severely Asym."
+                , 0.3
+                , "MCAR, MAR, MNAR"
+                , "Novel AR-based method"
+                , "PM, CIM, TW, ICS, MI, MICE"
+                , "Synthetic data")
+
+cp_design_matrix <- knitr::kable(data.frame(
+  "Design Factor" = factor_name
+  , Options = factor_options
+  , check.names = FALSE)
+        , caption = "Experimental Design Matrix.")
+
+cp_design_matrix
+@
+
+\section{results}
+
+Throughout the analysis, the statistics measured were frequently found not to be normally distributed, even within groups. For consistency, the significance tests used were Kruskal-Wallis and Mann-Whitney-Wilcoxon depending on the number of alternatives under investigation. The summary that follows discusses the comparison of one successful variant against the benchmark techniques on symmetric data. This iterative-sequential method, \textit{ibestdc1chip}, used two propensity tiers, the best single rule by chi Square ranking and the majority default class in the case of no matching rule. The method was run as an MI process, i.e. it was run to convergence m = 5 times, the same for the other MI techniques in this section and the results pooled. These are set side by side with the chosen single impuation methods.\par
+
+In this section, the following convention is used to interpret the p-values of statistical tests:
+
+\begin{itemize}
+\item P > 0.10, No evidence against the null hypothesis.
+\item 0.05 < P < 0.10, Weak evidence against the null hypothesis in favor of the alternative.
+\item 0.01 < P < 0.05, Evidence against the null hypothesis.
+\item 0.001 < P < 0.01, Strong evidence against the null hypothesis.
+\item P < 0.001, Very strong evidence against the null hypothesis.
+\end{itemize}
+
+<<bm_wu_sym_load_data>>=
+load("bm1_wu_sym_results.RData")
+
+res <- bm_wu_sym_results
+
+dtsts <- unique(res$results$dataset)
+
+pop <- wu_stats_pop_sym
+pop.frame <- data.frame(stats = names(pop), value = unlist(pop))
+@
+
+\subsection{Mean Absolute Scale Errors}
+
+<<bm-wu-sym-plots-mase, fig.height=2.25, fig.cap='Mean Absolute Scale Errors after imputation.'>>=
+stats_names <- c("mase_A", "mase_B")
+g <- ggplot(data = subset(res$ci_data
+                          , stats %in% stats_names)
+            , aes(y = factor(variant)
+                  , x = mean
+                  , xmin = ci_lwr
+                  , xmax = ci_upr
+                  , colour = dataset
+            )
+) +
+  labs(y = "variant") +
+  facet_wrap(~stats, scales = "free") +
+  geom_point(size = 2) +
+  geom_errorbarh(size = 0.5, height = 0.25, alpha = 0.5) +
+  myGgTheme +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  myGgColourScale
+g
+@
+
+The Kruskal-Wallis test gave very strong evidence of a difference in MASE for both Scales A and B between all the variants. A visual assessment of the dot plot indicates that \textit{ibestdc1chip} has outperformed the benchmark MI and MICE techniques and this was confirmed with a Tukey's HSD test. However, the single imputation techniques perform somewhat better on this measure, with no clear leader.
+
+\subsection{Scale Means}
+
+<<bm-wu-sym-plots-mean, fig.height=2.25, fig.cap='Scale means after imputation with 95pc confidence interval on 99 df. Dotted line shows population parameter.'>>=
+stats_names <- c("mean_A", "mean_B")
+g <- ggplot(data = subset(res$ci_data
+                          , stats %in% stats_names)
+            , aes(y = factor(variant)
+                  , x = mean
+                  , xmin = ci_lwr
+                  , xmax = ci_upr
+                  , colour = dataset
+            )
+) +
+  labs(y = "variant") +
+  facet_wrap(~stats, scales = "free") +
+  geom_point(size = 2) +
+  geom_errorbarh(size = 0.5, height = 0.25, alpha = 0.5) +
+  geom_vline(data = subset(pop.frame
+                           , stats %in% stats_names)
+             , aes(xintercept = value)
+             , colour = myPalDark[3]
+             , linetype = "dotted") +
+  myGgTheme +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  myGgColourScale
+g
+@
+
+The Kruskal-Wallis test found strong evidence of a difference in Scale means for both Scales A and B but only for the MAR case. The Tukey's HSD test found that the difference was only detectable between PM and the other single imputation techniques and does not impact on this research.
+
+\subsection{Scale Standard Deviations}
+
+<<bm-wu-sym-plots-sd, fig.height=2.25, fig.cap='Scale standard deviations after imputation with 95pc confidence interval on 99 df. Dotted line shows population parameter.'>>=
+stats_names <- c("sd_A", "sd_B")
+g <- ggplot(data = subset(res$ci_data
+                          , stats %in% stats_names)
+            , aes(x = mean
+                  , xmin = ci_lwr
+                  , xmax = ci_upr
+                  , y = variant
+                  , colour = dataset
+            )
+) +
+  facet_wrap(~stats, scales = "free") +
+  geom_point(size = 2) +
+  geom_errorbarh(size = 0.5, height = 0.25, alpha = 0.5) +
+  geom_vline(data = subset(pop.frame
+            , stats %in% stats_names)
+            , aes(xintercept = value)
+            , colour = myPalDark[3]
+            , linetype = "dotted") +
+  myGgTheme +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  myGgColourScale
+g
+@
+
+There was very strong evidence of a difference in Scale standard deviations for both Scales A and B between the variants. Tukey's HSD test confirm the visual assessment that \textit{ibestdc1chip} underperformed in all three datasets for Scale B but the results for Scale A were more nuanced. Nevertheless, good performance in the MNAR case is perhaps offset by the lack of consistency and it would be fair to say that the novel method is the worst performer against this measure. The relative bias is borderline or exceeds the threshold of < 0.05 for this to be considered a well-performing imputation method.
+
+<<bm-wu-sym-sd-A-relb>>=
+tab <- subset(res$qdata
+              , res$qdata$stats == "sd_A"
+              , c("dataset", "variant", "mean", "rel_bias"))
+tab <- head(tab, 14)
+relb_sdA <- knitr::kable(
+  tab[order(tab$dataset, -abs(tab$rel_bias), method = "radix", decreasing = c(FALSE, TRUE)), ]
+  , digits = 5
+  , row.names = FALSE
+  , caption = "Relative bias of Scale A standard deviation for each imputation method (excerpt).")
+
+relb_sdA
+@
+
+
+\subsection{Cronbach's alpha}
+
+<<bm-wu-sym-plots-alpha, fig.height=2.25, fig.cap='Cronbach\'s alpha after imputation with 95pc confidence interval on 99 df. Dotted line shows population parameter.'>>=
+stats_names <- c("alpha_A", "alpha_B")
+g <- ggplot(data = subset(res$ci_data
+                          , stats %in% stats_names)
+            , aes(x = mean
+                  , xmin = ci_lwr
+                  , xmax = ci_upr
+                  , y = variant
+                  , colour = dataset
+            )
+) +
+  facet_wrap(~stats, scales = "free") +
+  geom_point(size = 2) +
+  geom_errorbarh(size = 0.5, height = 0.25, alpha = 0.5) +
+  geom_vline(data = subset(pop.frame
+                           , stats %in% stats_names)
+             , aes(xintercept = value)
+             , colour = myPalDark[3]
+             , linetype = "dotted") +
+  myGgTheme +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  myGgColourScale
+g
+@
+
+The Kruskal-Wallis test found very strong evidence of a difference in Cronbach's alpha for both Scales A and B between the variants which are confirmed by Tukey's HSD test. The results are very nuanced and worth considering further. All the single imputation methods tended to bias the alpha statistic upwards by around two percentage points, while \textit{ibestdc1chip} and amelia tended towards a downward bias of a smaller magnitude. \textit{ibestdc1chip} beat amelia in the MCAR and MNAR cases. Overall mice was the best performer for this measure, returning an estimate with no detectable difference from the population parameter.
+
+<<bm-wu-sym-alpha-A-relb>>=
+tab <- subset(res$qdata
+              , res$qdata$stats == "alpha_A"
+              , c("dataset", "variant", "mean", "rel_bias"))
+tab <- head(tab, 14)
+relb_alphaA <- knitr::kable(
+  tab[order(tab$dataset, -abs(tab$rel_bias), method = "radix", decreasing = c(FALSE, TRUE)), ]
+  , digits = 5
+  , row.names = FALSE
+  , caption = "Relative bias of Cronbach's alpha of Scale A for each imputation method (excerpt).")
+
+relb_alphaA
+@
+
+\subsection{Split-half Correlation}
+
+<<bm-wu-sym-plots-splith, fig.height=2.25, fig.cap='Split-half correlation after imputation with 95pc confidence interval on 99 df. Dotted line shows population parameter.'>>=
+stats_names <- c("splith_mix")
+g <- ggplot(data = subset(res$ci_data
+                          , stats %in% stats_names)
+            , aes(x = mean
+                  , xmin = ci_lwr
+                  , xmax = ci_upr
+                  , y = variant
+                  , colour = dataset
+            )
+) +
+  facet_wrap(~stats, scales = "free") +
+  geom_point(size = 2) +
+  geom_errorbarh(size = 0.5, height = 0.25, alpha = 0.5) +
+  geom_vline(data = subset(pop.frame
+                           , stats %in% stats_names)
+             , aes(xintercept = value)
+             , colour = myPalDark[3]
+             , linetype = "dotted") +
+  myGgTheme +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  myGgColourScale
+g
+@
+
+The Kruskal-Wallis test found very strong evidence of a difference in the split-half correlation between the variants which are confirmed by Tukey's HSD test. The upwards bias in the estimates from the single imputation techniques on this statistic is startling. It appears to be so great that the two Scales would be considered to be associated in any test of reliability. This has very serious consequences for subsequent data analysis. \textit{ibestdc1chip} compares very favourably with mice and amelia. All three MI techniques very closely preserve the population parameter and avoid "cross-talk" between the scales caused by the imputation.
+
+<<bm-wu-sym-splith-relb>>=
+tab <- subset(res$qdata
+              , res$qdata$stats == "splith_mix"
+              , c("dataset", "variant", "mean", "rel_bias"))
+tab <- head(tab, 14)
+relb_splith <- knitr::kable(
+  tab[order(tab$dataset, -abs(tab$rel_bias), method = "radix", decreasing = c(FALSE, TRUE)), ]
+  , digits = 5
+  , row.names = FALSE
+  , caption = "Relative bias of split-half correlation for each imputation method (excerpt).")
+
+relb_splith
+@
+
+Table 3 serves to illustrate the very poor performance of the single imputation techniques with Split-half correlation relative bias exceeding a value of 1.0, compared to the acceptable value of 0.05. Both mice and \textit{ibestdc1chip} slightly exceeded the acceptable limit in one or more datasets and it turns out the amelia is the best performing method for this specific statistic. This was not immediately obvious from the visual assessment, due to the overwhelming scale of the single imputation methods.
+
+\section{Discussion and Conclusions}
+
+On symmetric data, the novel method had a lower MASE on both scales than benchmark MI methods but none did as well as the single imputation methods on this statistic. Many analyses of Likert scales would prioritize a non-biased overall scale sum above most other properties, so this is a key factor in deciding which imputation method to use. Nevertheless, there was no detectable difference in scale means between any method and it could be an open research question as to whether scale means or sums should be preferred in a dataset that has undergone imputation.\par
+MI and MICE were much better at preserving the standard deviations than any other technique and the novel method faired worst. This is very likely caused by the majority class default for values remaining unimputed. Further work might look at whether this feature could be improved by a stochastic default class method.\par
+On the Cronbach's alpha statistic, the AR-based method did best apart from MICE and with the exception of MAR data. It also compared very well to both MI and MICE for maintaining split-half correlation between unrelated items. The single imputation methods performed disasterously here and would be sure to increase the risk of fallacious conclusions in any subsequent analysis. This surprising results suggests more work should be done regarding the use of these methods for anything other than imputation within a single MIRV.\par
+On severly asymmetric data (not shown in this paper) the AR-based method performed less well than the benchmarks on MASE, scale means, standard deviations, and Cronbach's alpha. It is reasonable to suggest that these symptoms stemmed from the model being overwhelmed by rules that favour the default class reducing the variance in the estimates, and pulling the mean towards the skew. The effect was not drastic, but detectable against the benchmarks. Further work to implement the multi-class based \textit{Support} levels, suggested by \cite{liu2001classification}, may help improve this.\par
+Given these results, the most honest conclusion is that the new AR-based method is not yet ready for real-world applications. While it compares well to the MI and MICE benchmarks on symmetric data, it currently runs too slowly because the iterative-sequential mode requires multiple activations of the \textit{apriori} algorithm. Also, MICE appears to do better and more consistently on every measure and should be the recommended imputation method used under all the circumstances tested in this research. Nevertheless, reviewing diagnostic plots under severely asymmetric conditions (see Fig. 6) shows that the distribution of values imputed by the AR-based method more closely resembles the underlying distribution, while the values imputed by MICE appear to be constrained by the MVN assumptions associated with that method. Given these nuanced results, it is reasonable to argue that further research could result in a new top performing method.\par
+A suprising discovery of this research, unrelated to the main topic, was that MNAR data provided to be no special challenge to any imputation method used. This runs counter to all the discussions found in the literature and is potentially a significant new area of research in its own right.
+
+<<dens-diag1, fig.height=2.5, fig.cap="Imputation diagnostic plot comparing distribution of untreated data with distribution of estimated values. In this case, four propensity levels were used along with a stochastic default class.">>=
+load("sample_results3.RData")
+
+res <- sample_results$wu_sasym_MCAR_0.3_1000
+m <- 5
+varnames <-  paste0(rep(c("A", "B"), each = 3), 1:3)
+allvarnames <- paste0(rep(c("A", "B"), each = 6), 1:6)
+methods <- c("amelia", "mice", "ari")
+completed_results <- list()
+for (meth in methods) {
+  completed_results[[meth]] <- list()
+  for (v in varnames) {
+    pooled <- matrix(NA, nrow = 1000, ncol = m)
+    for (n in 1:m) {
+      pooled[, n] <- res[[meth]][[n]][[v]]
+    }
+    completed_results[[meth]][[v]] <- round(rowMeans(pooled))
+  }
+  completed_results[[meth]] <- cbind(completed_results[[meth]]
+                                     , sample_results$wu_sasym_MCAR_0.3_1000$untreated[, c(4:6, 10:12)])
+  completed_results[[meth]] <- completed_results[[meth]][, allvarnames]
+}
+
+all_results <- append(completed_results
+                      , list(PM = sample_results$wu_sasym_MCAR_0.3_1000$PM
+                             , CIM = sample_results$wu_sasym_MCAR_0.3_1000$CIM
+                             , TW = sample_results$wu_sasym_MCAR_0.3_1000$TW
+                             , ICS = sample_results$wu_sasym_MCAR_0.3_1000$ICS
+                             , untreated = sample_results$wu_sasym_MCAR_0.3_1000$untreated))
+
+results_byvar <- list()
+for (v in varnames) {
+  for (dt in names(res)) {
+    results_byvar[[v]][[dt]] <- all_results[[dt]][[v]]
+  }
+  results_byvar[[v]] <- as.data.frame(results_byvar[[v]])
+}
+
+
+myFills <- c(ari = myPal[6], mice = myPal[8])
+myCols <- c(untreated = myPal[7])
+
+v <- "A1"
+g <- ggplot(data = results_byvar[[v]][res$to_impute$mim$B_j[[v]], ]
+            , aes(x = untreated
+                  , colour = "untreated"))
+g <- g + geom_density(data = results_byvar[[v]][res$to_impute$mim$B_comp_j[[v]], ]
+                      , aes(x = ari
+                            , fill = "ari")
+                      , alpha = 0.5
+                      , colour = "transparent")
+g <- g + geom_density(data = results_byvar[[v]][res$to_impute$mim$B_comp_j[[v]], ]
+                      , aes(x = mice
+                            , fill = "mice")
+                      , alpha = 0.5
+                      , colour = "transparent")
+g <- g + geom_density() # data = sample_results$wu_sasym_MCAR_0.3_1000$untreated
+g + myGgTheme + theme_bw() + xlim(0, 8) +
+  scale_fill_manual(name = "imputation \nmethod"
+                    , values = myFills
+                    , guide = "legend") +
+  scale_colour_manual(name = ""
+                      , values = myCols
+                      , guide = "legend") +
+  labs(x = "Data Value")
+@
+
+\printbibliography
+
+\end{document}

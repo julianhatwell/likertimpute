@@ -2,13 +2,13 @@
 
 In this section, the following convention will be used to interpret the p-values of statistical tests:
 
-* P > 0.10, No evidence against the null hypothesis. The data appear to be consistent with the null hypothesis.
+* P > 0.10, No evidence against the null hypothesis.
 * 0.05 < P < 0.10, Weak evidence against the null hypothesis in favor of the alternative.
 * 0.01 < P < 0.05, Evidence against the null hypothesis.
 * 0.001 < P < 0.01, Strong evidence against the null hypothesis.
 * P < 0.001, Very strong evidence against the null hypothesis.
 
-Throughout the analysis, the resulting measures were frequently found not to be normally distributed. For consistency, the Kruskall-Wallis test was used rather than ANOVA throughout the write-up to test for significant differences between the means of each group except in stage two, where just two alternatives were being tested the Mann-Whitney-Wilcoxon test was applied. In the interests of brevity, only selected results highlighting the key findings will be included in this report.
+Throughout the analysis, the statistics measured were frequently found not to be normally distributed, even within groups. For consistency, the Kruskal-Wallis test was used throughout the write-up, rather than ANOVA, to test for significant differences between the means of each group except in stage two, where just two alternatives were being tested the Mann-Whitney-Wilcoxon test was applied. In the interests of brevity, only selected results highlighting the key findings will be included in this report.
 
 ```{r popstats}
 load("wu_stats_pop.RData")
@@ -24,7 +24,7 @@ MyTempTheme$add.line$col <- myPalDark[3]
 
 ## Stage 1: Rules Selection Method - No Default
 
-The purpose of stage 1 is to ascertain which rule selection method performs best and eliminate the worst performers. In all cases the rules were sorted by confidence from best to worst. These methods have no default class setting and their output must undergo a list-wise deletion prior to further analysis.
+The purpose of stage 1 was to ascertain which rule selection methods perform best. In all cases the rules were sorted by confidence from best to worst. These methods have no default class setting and their output must undergo a list-wise deletion prior to further analysis.
 
 The following coding is used:
 
@@ -79,7 +79,7 @@ aov_data <- with(res$results,
      res$results[stats == sts, ])
 ```
 
-```{r rs-wu-sym-mase-A-aov-dtsts-plots, fig.cap=paste("Density Plots of the", sts, "statistic by dataset. The density curves for the variants at each level of dataset (not shown) also show non-normality. Shapiro-Wilk tests (not shown) confirmed the visual assessment."), fig.height=2}
+```{r rs-wu-sym-mase-A-aov-dtsts-plots, fig.cap=paste("Density Plots of the", sts, "statistic by dataset. The density curves for the variants at each level of dataset (not shown) also show non-normality. Shapiro-Wilk tests (not shown) confirmed the visual assessment. These findings were consistent throughout the various stages of the experiment, leading to the choice of non-parametric tests of significance."), fig.height=2}
 MyResTheme <- MyLatticeTheme
 MyResTheme$plot.line$col <- myPal[7]
 MyResTheme$plot.symbol$col <- myPal[7]
@@ -97,12 +97,9 @@ for (ds in dtsts) {
 do.call(grid.arrange, args = list(grobs = dplot, nrow = 1))
 ```
 
-There is very strong evidence of non-normality for the dataset and variant effects, so the Kruskall-Wallis test is chosen to test for significant differences between groups. See Figure \@ref(fig:rs-wu-sym-mase-A-aov-dtsts-plots).
-
 ```{r rs-wu-sym-mase-A-aov}
 kw_res <- kruskal.test(value~factor(dataset)
                        , data = aov_data)
-kw_res$method <- paste(kw_res$method, "for", ds)
 kw_res$data.name <- paste(sts, "by dataset")
 op <- capture.output(kw_res)
 op[2] <- sub("\t", "", op[2])
@@ -130,7 +127,7 @@ for (ds in dtsts) {
 }
 ```
 
-The Kruskall-Wallis test finds very strong evidence of a difference in MASE for Scale A between datasets. Figure \@ref(fig:rs-wu-sym-plots-mase) appears to show that the bias in each dataset from smallest to largest was MCAR, MNAR then MAR. This was confirmed with a Tukey's HSD test (not shown). There was no evidence of a difference between the individual method variants for this statistic. 
+The Kruskal-Wallis test finds very strong evidence of a difference in MASE for Scale A between datasets. Figure \@ref(fig:rs-wu-sym-plots-mase) appears to show that the bias in each dataset from smallest to largest was MCAR, MNAR then MAR. This was confirmed with a Tukey's HSD test (not shown). There was no evidence of a difference between the individual method variants for this statistic. 
 
 ```{r rs-wu-sym-mase-B-aov-dtsts}
 sts <- "mase_B"
@@ -157,12 +154,9 @@ for (ds in dtsts) {
 do.call(grid.arrange, args = list(grobs = dplot, nrow = 1))
 ```
 
-There is very strong evidence of non-normality for the dataset and variant effects, so the Kruskall-Wallis test is chosen to test for significant differences between groups. See Figure \@ref(fig:rs-wu-sym-mase-B-aov-dtsts-plots).
-
 ```{r rs-wu-sym-mase-B-aov}
 kw_res <- kruskal.test(value~factor(dataset)
                        , data = aov_data)
-kw_res$method <- paste(kw_res$method, "for", ds)
 kw_res$data.name <- paste(sts, "by dataset")
 op <- capture.output(kw_res)
 op[2] <- sub("\t", "", op[2])
@@ -190,11 +184,11 @@ for (ds in dtsts) {
 }
 ```
 
-The Kruskall-Wallis test finds very strong evidence of a difference in MASE for Scale A between datasets. A Tukey's HSD test (not shown) confirmed the visual assessment of Figure \@ref(fig:rs-wu-sym-plots-mase) that the bias is least for MCAR data, with no significant difference between the other two datasets. Again, there is no evidence of a difference between the method variants for the MASE Scale B statistic.
+The Kruskal-Wallis test finds very strong evidence of a difference in MASE for Scale B between datasets. A Tukey's HSD test (not shown) confirmed the visual assessment of Figure \@ref(fig:rs-wu-sym-plots-mase) that the bias is least for MCAR data, with no significant difference between the other two datasets. Again, there is no evidence of a difference between the method variants for the MASE Scale B statistic.
 
 #### Scale means
 
-```{r rs-wu-sym-plots-mean, fig.height=3, fig.cap='Scale means after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r rs-wu-sym-plots-mean, fig.height=3, fig.cap='Scale means after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value.'}
 stats_names <- c("mean_A", "mean_B")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -257,13 +251,13 @@ for (ds in dtsts) {
 }
 ```
 
-The Kruskal-Wallis test finds weak evidence to suggest a significant difference in mean individual item scores for Scale A between datasets but the Tukey's HSD test, which has a more conservative evidence requirement does not confirm the visual assessment that estimates for MAR data in Scale A were lower than for the other two datasets. Figure \@ref(fig:rs-wu-sym-plots-mean) shows a similar pattern in Scale B with MCAR estimates appearing slightly lower. However, a Kruskall-Wallis test (not shown) does not provide sufficient evidence against the null hypothesis.
+The Kruskal-Wallis test found weak evidence to suggest a significant difference in mean Scale scores for Scale A between datasets but the Tukey's HSD test, which has a more conservative evidence requirement, did not confirm the visual assessment that estimates for MAR data in Scale A were lower than for the other two datasets. Figure \@ref(fig:rs-wu-sym-plots-mean) shows a similar pattern in Scale B with MCAR estimates appearing slightly lower. However, a Kruskal-Wallis test (not shown) did not provide sufficient evidence against the null hypothesis.
 
-The Kruskall-Wallis tests also found no evidence of any difference between the method variants. Nevertheless, there does appear to be a well defined pattern, in both plots of Figure \@ref(fig:rs-wu-sym-plots-mean), indicating that the estimated values for the majority vote methods were slightly lower. This is not statistically significant with an experimental sample size of just 100.
+The Kruskal-Wallis tests also found no evidence of any difference between the method variants. Nevertheless, there does appear to be a well defined pattern, in both plots of Figure \@ref(fig:rs-wu-sym-plots-mean), indicating that the estimated values for the majority vote methods were slightly lower. This is not statistically significant with an experimental sample size of just 100.
 
 #### Scale Standard Deviations
 
-```{r rs-wu-sym-plots-sd, fig.height=3, fig.cap='Scale standard deviations after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r rs-wu-sym-plots-sd, fig.height=3, fig.cap='Scale standard deviations after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("sd_A", "sd_B")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -313,7 +307,7 @@ There is very strong evidence of a difference in Scale standard deviations score
 
 #### Cronbach's alpha
 
-```{r rs-wu-sym-plots-alpha, fig.height=3, fig.cap='Cronbach\'s alpha after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r rs-wu-sym-plots-alpha, fig.height=3, fig.cap='Cronbach\'s alpha after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("alpha_A", "alpha_B")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -366,11 +360,11 @@ print("Tukey's HSD test of difference in means. Adjusted p-values:")
 THSD$dataset[, "p adj"]
 ```
 
-There is very strong evidence to suggest a difference in Cronbach's for Scale A between datasets and no evidence of any difference between the method variants. The same is true for Scale B (results not shown). A Tukey's HSD test supports the visual assessment that estimates of Cronbach's alpha were significantly different between the three datasets, with the highest estimates given in MNAR data, followed by MCAR and MAR.
+There is very strong evidence to suggest a difference in Cronbach's alpha for Scale A between datasets and no evidence of any difference between the method variants. The same is true for Scale B (results not shown). A Tukey's HSD test supports the visual assessment that estimates of Cronbach's alpha were significantly different between the three datasets, with the highest estimates given in MNAR data, followed by MCAR and MAR.
 
 #### Split-half Correlation
 
-```{r rs-wu-sym-plots-splith, fig.height=3, fig.width=4.5, fig.cap='Split half correlation after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r rs-wu-sym-plots-splith, fig.height=3, fig.width=4.5, fig.cap='Split-half correlation after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("splith_mix")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -402,26 +396,6 @@ aov_data <- with(res$results,
      res$results[stats == sts, ])
 ```
 
-```{r rs-wu-sym-splith-aov-dtsts-plots, fig.cap=paste("Density Plots of the", sts, "statistic by dataset. The density curves for the variants at each level of dataset (not shown) also show non-normality. Shapiro-Wilk tests (not shown) confirmed the visual assessment."), fig.height=2}
-MyResTheme <- MyLatticeTheme
-MyResTheme$plot.line$col <- myPal[7]
-MyResTheme$plot.symbol$col <- myPal[7]
-MyResTheme$plot.symbol$pch <- 1
-dplot <- list()
-for (ds in dtsts) {
-  dplot[[ds]] <- with(aov_data, 
-    densityplot(~aov_data$value[dataset == ds]
-                , xlab = ds
-                , par.settings = MyResTheme
-                , scales = MyLatticeScale)
-    )
-}
-
-do.call(grid.arrange, args = list(grobs = dplot, nrow = 1))
-```
-
-There is very strong evidence of non-normality for the dataset and variant effects, so the Kruskall-Wallis test is chosen to test for significant differences between groups. See Figure \@ref(fig:rs-wu-sym-splith-aov-dtsts-plots).
-
 ```{r rs-wu-sym-split-h-aov}
 kw_res <- kruskal.test(value~factor(dataset)
                        , data = aov_data)
@@ -443,7 +417,7 @@ print("Tukey's HSD test of difference in means. Adjusted p-values:")
 THSD$dataset[, "p adj"]
 ```
 
-The Kruskall-Wallis test finds very strong evidence of a difference in the split half correlation between datasets. Figure \@ref(fig:rs-wu-sym-plots-splith) appears to show that the bias in each dataset from smallest to largest was MNAR, MAR then MCAR. This was confirmed with a Tukey's HSD test. There was no evidence of a difference between the individual method variants for this statistic. 
+The Kruskal-Wallis test finds very strong evidence of a difference in the split-half correlation between datasets. Figure \@ref(fig:rs-wu-sym-plots-splith) appears to show that the bias in each dataset from smallest to largest was MNAR, MAR then MCAR. This was confirmed with a Tukey's HSD test. There was no evidence of a difference between the individual method variants for this statistic. 
 
 #### Ability
 
@@ -542,9 +516,7 @@ aggr_plot <- aggr(sample_results1$wu_sasym_MCAR_0.3_1000$rhsfreq[, c(1:3, 7:9)]
                   , ylab = c("Histogram of missing data","Pattern"))
 ```
 
-The ability results are also confirmed with a diagnostic plot from the VIM package. This reveals that the remaining pattern of missingness is the same for all the variants. It is not surprising because they all use the same ruleset, which is discovered deterministically by the *apriori* algorithm. See Figures \@ref(fig:rs-ability-vim-plot2) and \@ref(fig:rs-ability-vim-plot2).
-
-\clearpage
+The ability results are also confirmed with a diagnostic plot from the VIM package. This reveals that the remaining pattern of missingness is the same for all the variants. It is not surprising because they all use the same ruleset, which is discovered deterministically by the *apriori* algorithm. See Figures \@ref(fig:rs-ability-vim-plot1) and \@ref(fig:rs-ability-vim-plot2).
 
 ### Severely Asymmetric Data
 
@@ -626,11 +598,11 @@ print("Tukey's HSD test of difference in means. Adjusted p-values:")
 THSD$dataset[, "p adj"]
 ```
 
-These results show very strong evidence of a difference in MASE for Scale A between datasets. Figure \@ref(fig:rs-wu-sasym-plots-mase) appears to show that the bias in each dataset from smallest to largest was MCAR, MNAR then MAR. This was confirmed with a Tukey's HSD test (not shown). There was no evidence of a difference between the individual method variants for this statistic. Scale B results followed the same pattern (not shown).
+These results show very strong evidence of a difference in MASE for Scale A between datasets. Figure \@ref(fig:rs-wu-sasym-plots-mase) appears to show that the bias in each dataset from smallest to largest was MCAR, MNAR then MAR. This was confirmed with a Tukey's HSD test. There was no evidence of a difference between the individual method variants for this statistic. Scale B results followed the same pattern (not shown).
 
 #### Scale means
 
-```{r rs-wu-sasym-plots-mean, fig.height=3, fig.cap='Scale means after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r rs-wu-sasym-plots-mean, fig.height=3, fig.cap='Scale means after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("mean_A", "mean_B")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -677,11 +649,11 @@ op <- op[c(2, 4)]
 print(op)
 ```
 
-There is very strong evidence of a significant difference in mean individual item scores for Scale A between datasets. A Tukey's HSD test (not shown) confirmed the visual assessment that estimates for MAR data in Scale A were higher than for the other two datasets. There was no evidence of any difference between the mean estimates for individual items of Scale B (not shown). The Kruskall-Wallis tests also found no evidence of any difference between the method variants.
+There is very strong evidence of a significant difference in mean Scale scores for Scale A between datasets. A Tukey's HSD test (not shown) confirmed the visual assessment that estimates for MAR data in Scale A were higher than for the other two datasets. There was no evidence of any difference between the mean estimates for Scale B (not shown) and no evidence of any difference between the method variants.
 
 #### Scale Standard Deviations
 
-```{r rs-wu-sasym-plots-sd, fig.height=3, fig.cap='Scale standard deviations after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r rs-wu-sasym-plots-sd, fig.height=3, fig.cap='Scale standard deviations after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("sd_A", "sd_B")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -731,7 +703,7 @@ There is very strong evidence of a difference in Scale standard deviations score
 
 #### Cronbach's alpha
 
-```{r rs-wu-sasym-plots-alpha, fig.height=3, fig.cap='Cronbach\'s alpha after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r rs-wu-sasym-plots-alpha, fig.height=3, fig.cap='Cronbach\'s alpha after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("alpha_A", "alpha_B")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -781,7 +753,7 @@ There is very strong evidence to suggest a difference in Cronbach's for Scale A 
 
 #### Split-half Correlation
 
-```{r rs-wu-sasym-plots-splith, fig.height=3, fig.width=4.5, fig.cap='Split half correlation after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r rs-wu-sasym-plots-splith, fig.height=3, fig.width=4.5, fig.cap='Split-half correlation after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("splith_mix")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -827,7 +799,7 @@ op <- op[c(2, 4)]
 print(op)
 ```
 
-These results show very strong evidence of a difference in the split half correlation between datasets. Figure \@ref(fig:rs-wu-sasym-plots-splith) appears to show that the bias in each dataset from smallest to largest was MNAR, MAR then MCAR. This was confirmed with a Tukey's HSD test (not shown). There was no evidence of a difference between the individual method variants for this statistic. 
+These results show very strong evidence of a difference in the split-half correlation between datasets. Figure \@ref(fig:rs-wu-sasym-plots-splith) appears to show that the bias in each dataset from smallest to largest was MNAR, MAR then MCAR. This was confirmed with a Tukey's HSD test (not shown). There was no evidence of a difference between the individual method variants for this statistic. 
 
 #### Ability
 
@@ -1008,7 +980,7 @@ mase_B
 
 #### Scale mean
 
-```{r dc-wu-sym-plots-mean, fig.height=1.5, fig.cap='Scale means after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r dc-wu-sym-plots-mean, fig.height=1.5, fig.cap='Scale means after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("mean_A", "mean_B")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -1082,7 +1054,7 @@ There is no evidence of any difference between the two variants for Scale mean o
 
 #### Scale Standard Deviations
 
-```{r dc-wu-sym-plots-sd, fig.height=1.5, fig.cap='Scale standard deviations after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r dc-wu-sym-plots-sd, fig.height=1.5, fig.cap='Scale standard deviations after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("sd_A", "sd_B")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -1180,7 +1152,7 @@ sd_B
 
 #### Cronbach's alpha
 
-```{r dc-wu-sym-plots-alpha, fig.height=1.5, fig.cap='Cronbach\'s alpha after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r dc-wu-sym-plots-alpha, fig.height=1.5, fig.cap='Cronbach\'s alpha after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("alpha_A", "alpha_B")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -1277,7 +1249,7 @@ alpha_B
 
 #### Split-half Correlation
 
-```{r dc-wu-sym-plots-splith, fig.height=1.5, fig.width=4.5, fig.cap='Split half correlation after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r dc-wu-sym-plots-splith, fig.height=1.5, fig.width=4.5, fig.cap='Split-half correlation after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("splith_mix")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -1324,9 +1296,7 @@ for (ds in dtsts) {
 }
 ```
 
-There is no evidence of a difference in the split half correlation between the two variants.
-
-\clearpage
+There is no evidence of a difference in the split-half correlation between the two variants.
 
 ### Severely Asymmetric Data
 
@@ -1424,7 +1394,7 @@ mase_B
 
 #### Scale means
 
-```{r dc-wu-sasym-plots-mean, fig.height=1.5, fig.cap='Scale means after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r dc-wu-sasym-plots-mean, fig.height=1.5, fig.cap='Scale means after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("mean_A", "mean_B")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -1454,7 +1424,7 @@ A Mann-Whitney-Wilcoxon test (not shown) found no evidence of any difference bet
 
 #### Scale Standard Deviations
 
-```{r dc-wu-sasym-plots-sd, fig.height=1.5, fig.cap='Scale standard deviations after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r dc-wu-sasym-plots-sd, fig.height=1.5, fig.cap='Scale standard deviations after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("sd_A", "sd_B")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -1483,7 +1453,7 @@ A Mann-Whitney-Wilcoxon test (not shown) found no evidence of any difference bet
 
 #### Cronbach's alpha
 
-```{r dc-wu-sasym-plots-alpha, fig.height=1.5, fig.cap='Cronbach\'s alpha after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r dc-wu-sasym-plots-alpha, fig.height=1.5, fig.cap='Cronbach\'s alpha after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("alpha_A", "alpha_B")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -1512,7 +1482,7 @@ A Mann-Whitney-Wilcoxon test (not shown) found no evidence of any difference bet
 
 #### Split-half Correlation
 
-```{r dc-wu-sasym-plots-splith, fig.height=1.5, fig.width=4.5, fig.cap='Split half correlation after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r dc-wu-sasym-plots-splith, fig.height=1.5, fig.width=4.5, fig.cap='Split-half correlation after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("splith_mix")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -1537,9 +1507,7 @@ g <- ggplot(data = subset(res$ci_data
 g
 ```
 
-There is no evidence of a difference in the split half correlation between the two variants.
-
-\clearpage
+There is no evidence of a difference in the split-half correlation between the two variants.
 
 ## Stage 3: Interestingness Measures
 
@@ -1581,11 +1549,11 @@ g <- ggplot(data = subset(res$ci_data
 g
 ```
 
-The Kruskall-Wallis test (not shown) did not find any evidence of significant differences between the variants.
+The Kruskal-Wallis test (not shown) did not find any evidence of significant differences between the variants.
 
 #### Scale means
 
-```{r im-wu-sym-plots-mean, fig.height=2, fig.cap='Scale means after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r im-wu-sym-plots-mean, fig.height=2, fig.cap='Scale means after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("mean_A", "mean_B")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -1611,11 +1579,11 @@ g <- ggplot(data = subset(res$ci_data
 g
 ```
 
-A Kruskall-Wallis test (not shown) found no evidence of any difference between the variants for Scale mean of either Scale A or B.
+A Kruskal-Wallis test (not shown) found no evidence of any difference between the variants for Scale mean of either Scale A or B.
 
 #### Scale Standard Deviations
 
-```{r im-wu-sym-plots-sd, fig.height=2, fig.cap='Scale standard deviations after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r im-wu-sym-plots-sd, fig.height=2, fig.cap='Scale standard deviations after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("sd_A", "sd_B")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -1678,11 +1646,11 @@ for (ds in dtsts[2:3]) {
 }
 ```
 
-A Kruskall-Wallis test (not shown) found no evidence of a difference in means of the Scale standard deviations for Scale A. However, for Scale B, there is weak evidence of a difference in Scale standard deviations for dataset MAR and evidence for dataset MNAR. A visual assessment of Figure \@ref(fig:im-wu-sym-plots-sd) suggests that Chi squared and weighted Chi squared are slightly ahead of the other two but a Tukey's HSD test is not conclusive.
+A Kruskal-Wallis test (not shown) found no evidence of a difference in means of the Scale standard deviations for Scale A. However, for Scale B, there is weak evidence of a difference in Scale standard deviations for dataset MAR and evidence for dataset MNAR. A visual assessment of Figure \@ref(fig:im-wu-sym-plots-sd) suggests that Chi squared and weighted Chi squared are slightly ahead of the other two but a Tukey's HSD test is not conclusive.
 
 #### Cronbach's alpha
 
-```{r im-wu-sym-plots-alpha, fig.height=2, fig.cap='Cronbach\'s alpha after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r im-wu-sym-plots-alpha, fig.height=2, fig.cap='Cronbach\'s alpha after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("alpha_A", "alpha_B")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -1714,11 +1682,11 @@ aov_data <- with(res$results,
                  res$results[stats == sts, ])
 ```
 
-The Kruskall-Wallis (not shown) test finds no evidence of difference in Cronbach's alpha for eaither Scales A and B between the variants.
+The Kruskal-Wallis (not shown) test finds no evidence of difference in Cronbach's alpha for eaither Scales A and B between the variants.
 
 #### Split-half Correlation
 
-```{r im-wu-sym-plots-splith, fig.height=2, fig.width=4.5, fig.cap='Split half correlation after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r im-wu-sym-plots-splith, fig.height=2, fig.width=4.5, fig.cap='Split-half correlation after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("splith_mix")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -1743,7 +1711,7 @@ g <- ggplot(data = subset(res$ci_data
 g
 ```
 
-The Kruskall-Wallis (not shown) test finds no evidence of difference in Cronbach's alpha for eaither Scales A and B between the variants.
+The Kruskal-Wallis (not shown) test finds no evidence of difference in Cronbach's alpha for eaither Scales A and B between the variants.
 
 \clearpage
 
@@ -1864,7 +1832,7 @@ There was very strong evidence of a difference in MASE for Scale A between the v
 
 #### Scale means
 
-```{r im-wu-sasym-plots-mean, fig.height=2, fig.cap='Scale means after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r im-wu-sasym-plots-mean, fig.height=2, fig.cap='Scale means after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("mean_A", "mean_B")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -1890,11 +1858,11 @@ g <- ggplot(data = subset(res$ci_data
 g
 ```
 
-A Kruskall-Wallis test (not shown) found no evidence of any difference among the variants between the Scale mean of either Scale A or B.
+A Kruskal-Wallis test (not shown) found no evidence of any difference among the variants between the Scale mean of either Scale A or B.
 
 #### Scale Standard Deviations
 
-```{r im-wu-sasym-plots-sd, fig.height=2, fig.cap='Scale standard deviations after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r im-wu-sasym-plots-sd, fig.height=2, fig.cap='Scale standard deviations after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("sd_A", "sd_B")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -1990,11 +1958,11 @@ for (ds in dtsts[2]) {
 }
 ```
 
-There was very strong evidence of a difference in Scale standard deviations for Scale A between the variants. Also, for Scale B, there was weak evidence in the MAR case. Figure \@ref(fig:im-wu-sasym-plots-sd) appears to show Chi squared and weighted Chi squared variants ahead of the other two. The Tukey's HSD test confirms this.
+There was very strong evidence of a difference in Scale standard deviations for Scale A between the variants. Also, for Scale B, there was very strong evidence in the MAR case. Figure \@ref(fig:im-wu-sasym-plots-sd) appears to show Chi squared and weighted Chi squared variants ahead of the other two. The Tukey's HSD test confirms this.
 
 #### Cronbach's alpha
 
-```{r im-wu-sasym-plots-alpha, fig.height=2, fig.cap='Cronbach\'s alpha after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r im-wu-sasym-plots-alpha, fig.height=2, fig.cap='Cronbach\'s alpha after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("alpha_A", "alpha_B")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -2083,11 +2051,11 @@ for (ds in dtsts) {
 }
 ```
 
-There was very strong evidence of a difference in Scale standard deviations for Scale A between the variants. Also, for Scale B, there was weak evidence in the MAR case. Figure \@ref(fig:im-wu-sasym-plots-sd) appears to show Chi squared and weighted Chi squared variants ahead of the other two. The Tukey's HSD test confirms this for Scale A.
+There was very strong evidence of a difference in Cronbach's alpha for Scale A between the variants. Also, for Scale B, there was weak evidence in the MAR case. Figure \@ref(fig:im-wu-sasym-plots-sd) appears to show Chi squared and weighted Chi squared variants ahead of the other two. The Tukey's HSD test confirms this for Scale A.
 
 #### Split-half Correlation
 
-```{r im-wu-sasym-plots-splith, fig.height=2, fig.width=4.5, fig.cap='Split half correlation after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r im-wu-sasym-plots-splith, fig.height=2, fig.width=4.5, fig.cap='Split-half correlation after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("splith_mix")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -2137,21 +2105,7 @@ for (ds in dtsts) {
 }
 ```
 
-```{r im-wu-sasym-split-h-tuk}
-print("Tukey's HSD test of difference in means")
-for (ds in dtsts[2]) {
-  aov_res <- aov(value~variant
-                 , data = subset(aov_data
-                                 , dataset == ds))
-  THSD <- TukeyHSD(aov_res)
-  
-  
-  print(paste("Adjusted p-values for dataset", ds))
-  print(THSD$variant[, "p adj"])
-}
-```
-
-There was very strong evidence of a difference in Scale standard deviations for Scale A between the variants. Also, for Scale B, there was weak evidence in the MAR case. Figure \@ref(fig:im-wu-sasym-plots-sd) appears to show Chi squared and weighted Chi squared variants ahead of the other two. The Tukey's HSD test confirms this for Scale A and gives a borderline result for Scale B MAR.
+There was evidence of a difference in split-half correlation between the variants in the MAR case and weak evidence in the MNAR case. Figure \@ref(fig:im-wu-sasym-plots-sd) appears to show Chi squared and weighted Chi squared variants ahead of the other two. The Tukey's HSD test (not shown), with it's more conservative evidence requirements, fails to confirm the visual assessment.
 
 \clearpage
 
@@ -2159,11 +2113,11 @@ There was very strong evidence of a difference in Scale standard deviations for 
 
 This stage compares the basic single, all at once imputation with variants based on the sequential-iterative process (modeled on MICE), propensity scoring and feature engineering with precalculated scale means.  The following coding is used:
   
-1. bestdc1chi: All other variants are extended from this base which uses best rule by Chi square precedence.
-1. bestdc1chico: The dataset is extended by the addition of a co-variates for each item of the multi-item scale which is calculated as the mathematically rounded mean of the scale excluding that individual item. Minimum support is adjusted upwards to account for the larger number of variables but this still adds considerable time and complexity to the process.
-1. ibestdc1chi: As above but the imputation is performed sequentially and iteratively one variable at a time. A new set of CARs is generated for every step.
+1. bestdc1chi: All other variants are extended from this base which uses best rule by Chi square precedence and defaults to majority class is if no matching rule is found. This combination was chosen based on the optimum results of the previous stages.
+1. bestdc1chico: The dataset is extended by the addition of a co-variate for each item of the multi-item scale which is calculated as the mathematically rounded mean of the scale excluding that individual item. Minimum support is adjusted upwards to account for the larger number of variables but this still adds considerable time and complexity to the process.
+1. ibestdc1chi: As above but the imputation is performed sequentially and iteratively one variable at a time on the basic dataset. A new set of CARs is generated for every step.
 1. ibestdc1chico: As above, the sequential-iterative variant for the extended dataset.
-1. ibestdc1chip: Between each sequential step, a logistic regression of the next variable in the sequence onto all the other variables is calculated and the predicted probability, or propensity for missingness is used to rank and split the dataset into two evenly sized subsets. The imputation steps are carried out separately on each split.
+1. ibestdc1chip: Between each sequential step, a logistic regression is performed of the next variable in the sequence onto all the other variables and the predicted probability, or propensity for missingness is used to rank and split the dataset into two evenly sized subsets. The imputation steps are carried out separately on each split.
 1. ibestdc1chipco: As above, for the extended dataset.
 
 ### Symmetric Data
@@ -2283,7 +2237,7 @@ There was very strong evidence of a difference in MASE for both Scales A and B b
 
 #### Scale means
 
-```{r vr-wu-sym-plots-mean, fig.height=2, fig.cap='Scale means after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r vr-wu-sym-plots-mean, fig.height=2, fig.cap='Scale means after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("mean_A", "mean_B")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -2373,11 +2327,11 @@ for (ds in dtsts) {
 }
 ```
 
-The Kruskall-Wallis test found evidence of a difference in Scale means but only for the MCAR and MAR cases in scale A but the Tukey's HSD test does not confirm this because of the more conservative evidence requirements. There is no evidence of any difference for Scale B Scale means. See Figure \@ref(fig:vr-wu-sym-plots-mean).
+The Kruskal-Wallis test found evidence of a difference in Scale means but only for the MCAR and MAR cases in scale A. The Tukey's HSD test does not confirm this because of the more conservative evidence requirements. There is no evidence of any difference for Scale B Scale means. See Figure \@ref(fig:vr-wu-sym-plots-mean).
 
 #### Scale Standard Deviations
 
-```{r vr-wu-sym-plots-sd, fig.height=2, fig.cap='Scale standard deviations after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r vr-wu-sym-plots-sd, fig.height=2, fig.cap='Scale standard deviations after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("sd_A", "sd_B")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -2484,7 +2438,7 @@ There was very strong evidence of a difference in Scale standard deviations for 
 
 #### Cronbach's alpha
 
-```{r vr-wu-sym-plots-alpha, fig.height=2, fig.cap='Cronbach\'s alpha after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r vr-wu-sym-plots-alpha, fig.height=2, fig.cap='Cronbach\'s alpha after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("alpha_A", "alpha_B")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -2587,11 +2541,11 @@ for (ds in dtsts) {
 }
 ```
 
-The Kruskall-Wallis test found very strong evidence of a difference in Cronbach's alpha for both Scales A and B between the variants which are confirmed by Tukey's HSD test. Figure \@ref(fig:vr-wu-sym-plots-mean) shows a nuanced result where ibestdc1chip, ibestchipco and ibestchico take the lead for different combinations of Scale and dataset.
+The Kruskal-Wallis test found very strong evidence of a difference in Cronbach's alpha for both Scales A and B between the variants which are confirmed by Tukey's HSD test. Figure \@ref(fig:vr-wu-sym-plots-mean) shows a nuanced result where ibestdc1chip, ibestchipco and ibestchico take the lead for different combinations of Scale and dataset.
 
 #### Split-half Correlation
 
-```{r vr-wu-sym-plots-splith, fig.height=2, fig.width=4.5, fig.cap='Split half correlation after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r vr-wu-sym-plots-splith, fig.height=2, fig.width=4.5, fig.cap='Split-half correlation after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("splith_mix")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -2655,7 +2609,7 @@ for (ds in dtsts[2]) {
 }
 ```
 
-The Kruskall-Wallis test found strong (MCAR) to very strong evidence (MAR, MNAR) of a difference in split half correlation between the variants which is confirmed by Tukey's HSD test. Figure \@ref(fig:vr-wu-sym-plots-mean) shows a nuanced result, and for the first time one of the variants ibestdc1chip actually over-estimates the population parameter. To this point, the parameters have always been biased downwards.
+The Kruskal-Wallis test found strong (MCAR) to very strong evidence (MAR, MNAR) of a difference in split-half correlation between the variants which is confirmed by Tukey's HSD test. Figure \@ref(fig:vr-wu-sym-plots-mean) shows a nuanced result, and for the first time one of the variants ibestdc1chip actually over-estimates the population parameter. To this point, the parameters have always been biased downwards.
 
 ### Severely Asymmetric Data
 
@@ -2774,7 +2728,7 @@ There was very strong evidence of a difference in MASE for both Scales A and B b
 
 #### Scale means
 
-```{r vr-wu-sasym-plots-mean, fig.height=2, fig.cap='Scale means after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r vr-wu-sasym-plots-mean, fig.height=2, fig.cap='Scale means after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("mean_A", "mean_B")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -2854,7 +2808,7 @@ There was very strong evidence of a difference in Scale means for both Scales A 
 
 #### Scale Standard Deviations
 
-```{r vr-wu-sasym-plots-sd, fig.height=2, fig.cap='Scale standard deviations after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r vr-wu-sasym-plots-sd, fig.height=2, fig.cap='Scale standard deviations after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("sd_A", "sd_B")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -2961,7 +2915,7 @@ There was very strong evidence of a difference in Scale standard deviations for 
 
 #### Cronbach's alpha
 
-```{r vr-wu-sasym-plots-alpha, fig.height=2, fig.cap='Cronbach\'s alpha after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r vr-wu-sasym-plots-alpha, fig.height=2, fig.cap='Cronbach\'s alpha after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("alpha_A", "alpha_B")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -3054,7 +3008,7 @@ There was very strong evidence of a difference in Cronbach's alpha for both Scal
 
 #### Split-half Correlation
 
-```{r vr-wu-sasym-plots-splith, fig.height=2, fig.width=4.5, fig.cap='Split half correlation after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r vr-wu-sasym-plots-splith, fig.height=2, fig.width=4.5, fig.cap='Split-half correlation after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("splith_mix")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -3118,9 +3072,7 @@ for (ds in dtsts[2]) {
 }
 ```
 
-There was very strong evidence of a difference in split half correlation between the variants which is confirmed by Tukey's HSD test. Figure \@ref(fig:vr-wu-sasym-plots-mean) shows ibestdc1chip ahead of the others for all datasets.
-
-\clearpage
+There was very strong evidence of a difference in split-half correlation between the variants which is confirmed by Tukey's HSD test. Figure \@ref(fig:vr-wu-sasym-plots-mean) shows ibestdc1chip ahead of the others for all datasets.
 
 ## Stage 5: Benchmarks
 
@@ -3133,7 +3085,7 @@ The best performing variant of the novel AR-based imputation (ibestdc1chip) meth
 1. amelia: Multiple Imputation by expectation maximization with bootstrapping, as implemented in the Amelia II package, @R-Amelia. See \secref{sec:singimp} for further details.
 1. mice: Multiple Imputation with Chained Equations, as implemented in the mice package, @R-mice. See \secref{sec:singimp} for further details.
 
-The relative bias of each statistic is calculated as an additional performance measure. This serves to shed more light on any non-significant Kruskall-Wallis test results. See \@ref(eq:relbias).
+The relative bias of each statistic is calculated as an additional performance measure. This serves to shed more light on any non-significant Kruskal-Wallis test results. See \@ref(eq:relbias).
 
 ### Symmetric Data
 
@@ -3252,7 +3204,7 @@ There was very strong evidence of a difference in MASE for both Scales A and B b
 
 #### Scale means
 
-```{r bm-wu-sym-plots-mean, fig.height=2.25, fig.cap='Scale means after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r bm-wu-sym-plots-mean, fig.height=2.25, fig.cap='Scale means after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("mean_A", "mean_B")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -3356,9 +3308,9 @@ for (ds in dtsts[2]) {
 }
 ```
 
-The Kruskall-Wallis test found strong evidence of a difference in Scale means for both Scales A and B but only for the MAR case. The Tukey's HSD test found that the difference was only detectable between PM and the other single imputation techniques and does not impact on this research. See Figure \@ref(fig:bm-wu-sym-plots-mean).
+The Kruskal-Wallis test found strong evidence of a difference in Scale means for both Scales A and B but only for the MAR case. The Tukey's HSD test found that the difference was only detectable between PM and the other single imputation techniques and does not impact on this research. See Figure \@ref(fig:bm-wu-sym-plots-mean).
 
-Table \@ref(tab:bm-wu-sym-mean-A-relb) shows the relative bias introduced by each imputation method on Scale A. ibestdc1chip is at the bottom of the table and sometimes more than double the better performing techniques. Nevertheless, in each case, the statistic is well within the acceptable limit of < 0.05 to be considered a good performing imputation method. Contrastingly, Table \@ref(tab:bm-wu-sym-mean-B-relb) shows ibestdc1chip does very well for MAR and MNAR data.
+Table \@ref(tab:bm-wu-sym-mean-A-relb) shows the relative bias introduced by each imputation method on Scale A. ibestdc1chip is at the bottom of the table and sometimes more than double the better performing techniques. Nevertheless, in each case, the statistic is well within the acceptable limit of < 0.05 to be considered a good performing imputation method. Contrastingly, Table \@ref(tab:bm-wu-sym-mean-B-relb) shows ibestdc1chip does very well for Scale B with MAR and MNAR data.
 
 ```{r bm-wu-sym-mean-A-relb}
 tab <- subset(res$qdata
@@ -3388,7 +3340,7 @@ relb_meanB
 
 #### Scale Standard Deviations
 
-```{r bm-wu-sym-plots-sd, fig.height=2.25, fig.cap='Scale standard deviations after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r bm-wu-sym-plots-sd, fig.height=2.25, fig.cap='Scale standard deviations after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("sd_A", "sd_B")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -3523,7 +3475,7 @@ relb_sdB
 
 #### Cronbach's alpha
 
-```{r bm-wu-sym-plots-alpha, fig.height=2.25, fig.cap='Cronbach\'s alpha after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r bm-wu-sym-plots-alpha, fig.height=2.25, fig.cap='Cronbach\'s alpha after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("alpha_A", "alpha_B")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -3626,7 +3578,7 @@ for (ds in dtsts) {
 }
 ```
 
-The Kruskall-Wallis test found very strong evidence of a difference in Cronbach's alpha for both Scales A and B between the variants which are confirmed by Tukey's HSD test. The results are very nuanced and worth considering further. All the single imputation methods tended to bias the alpha statistic upwards by around two percentage points, while ibestdc1chip and amelia tended towards a downward bias of a smaller magnitude. ibestdc1chip beat amelia in the MCAR and MNAR cases. Overall mice was the best performer for this measure, returning an estimate with no detectable difference from the population parameter.  See Figure \@ref(fig:bm-wu-sym-plots-mean).
+The Kruskal-Wallis test found very strong evidence of a difference in Cronbach's alpha for both Scales A and B between the variants which are confirmed by Tukey's HSD test. The results are very nuanced and worth considering further. All the single imputation methods tended to bias the alpha statistic upwards by around two percentage points, while ibestdc1chip and amelia tended towards a downward bias of a smaller magnitude. ibestdc1chip beat amelia in the MCAR and MNAR cases. Overall mice was the best performer for this measure, returning an estimate with no detectable difference from the population parameter. See Figure \@ref(fig:bm-wu-sym-plots-mean).
 
 Tables \@ref(tab:bm-wu-sym-alpha-A-relb) and \@ref(tab:bm-wu-sym-alpha-B-relb) show that the relative bias is within the acceptable limit of < 0.05 to be considered a good performing imputation method.
 
@@ -3658,7 +3610,7 @@ relb_alphaB
 
 #### Split-half Correlation
 
-```{r bm-wu-sym-plots-splith, fig.height=2.25, fig.width=4.5, fig.cap='Split-half correlation after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r bm-wu-sym-plots-splith, fig.height=2.25, fig.width=4.5, fig.cap='Split-half correlation after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("splith_mix")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -3722,7 +3674,7 @@ for (ds in dtsts) {
 }
 ```
 
-The Kruskall-Wallis test found very strong evidence of a difference in the split half correlation between the variants which are confirmed by Tukey's HSD test. The upwards bias in the estimates from the single imputation techniques on this statistic is rather startling. It appears to be so great that the two Scales would be considered to be associated in any test of reliability. This has very serious consequences for subsequent data analysis. ibestdc1chip compares very favourably with mice and amelia. All three very closely preserve the population parameter. See Figure \@ref(fig:bm-wu-sym-plots-splith).
+The Kruskal-Wallis test found very strong evidence of a difference in the split-half correlation between the variants which are confirmed by Tukey's HSD test. The upwards bias in the estimates from the single imputation techniques on this statistic is rather startling. It appears to be so great that the two Scales would be considered to be associated in any test of reliability. This has very serious consequences for subsequent data analysis. ibestdc1chip compares very favourably with mice and amelia. All three very closely preserve the population parameter. See Figure \@ref(fig:bm-wu-sym-plots-splith).
 
 Table \@ref(tab:bm-wu-sym-splith-relb) serves to illustrate the very poor performance of the single imputation techniques with Split-half correlation relative bias exceeding a value of 1.0, compared to the acceptable value of 0.05. Both mice and ibestdc1chip slightly exceeded the acceptable limit in one or more datasets and it turns out the amelia is the best performing method for this specific statistic. This was not immediately obvious from the visual assessment, due to the overwhelming scale of the single imputation methods.
 
@@ -3738,8 +3690,6 @@ relb_splith <- knitr::kable(
 
 relb_splith
 ```
-
-\clearpage
 
 ### Severely Asymmetric Data
 
@@ -3858,7 +3808,7 @@ There was very strong evidence of a difference in MASE for both Scales A and B b
 
 #### Scale means
 
-```{r bm-wu-sasym-plots-mean, fig.height=2.25, fig.cap='Scale means after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r bm-wu-sasym-plots-mean, fig.height=2.25, fig.cap='Scale means after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("mean_A", "mean_B")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -3962,7 +3912,7 @@ for (ds in dtsts[2]) {
 }
 ```
 
-The Kruskall-Wallis test found strong evidence of a difference in Scale means for both Scales A and B. This is confirmed by the Tukey's HSD test. The visual assessment shows the AR-based imputation performing worst of all in both scales. See Figure \@ref(fig:bm-wu-sasym-plots-mean).
+The Kruskal-Wallis test found strong evidence of a difference in Scale means for both Scales A and B. This is confirmed by the Tukey's HSD test. The visual assessment shows the AR-based imputation performing worst of all in both scales. See Figure \@ref(fig:bm-wu-sasym-plots-mean).
 
 Table \@ref(tab:bm-wu-sasym-mean-A-relb) shows the relative bias for Scale A with ibestdc1chip is at the bottom of the table, exceeding the acceptable limit of < 0.05. Contrastingly, Table \@ref(tab:bm-wu-sasym-mean-B-relb) shows ibestdc1chip is well within boundary even though it doesn't perform as well as the other methods.
 
@@ -3994,7 +3944,7 @@ relb_meanB
 
 #### Scale Standard Deviations
 
-```{r bm-wu-sasym-plots-sd, fig.height=2.25, fig.cap='Scale standard deviations after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r bm-wu-sasym-plots-sd, fig.height=2.25, fig.cap='Scale standard deviations after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("sd_A", "sd_B")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -4129,7 +4079,7 @@ relb_sdB
 
 #### Cronbach's alpha
 
-```{r bm-wu-sasym-plots-alpha, fig.height=2.25, fig.cap='Cronbach\'s alpha after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r bm-wu-sasym-plots-alpha, fig.height=2.25, fig.cap='Cronbach\'s alpha after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("alpha_A", "alpha_B")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -4232,7 +4182,7 @@ for (ds in dtsts) {
 }
 ```
 
-The Kruskall-Wallis test found very strong evidence of a difference in Cronbach's alpha for both Scales A and B between the variants which are confirmed by Tukey's HSD test. The results are very nuanced and worth considering further. All the single imputation methods tended to bias the alpha statistic upwards by around two percentage points, while ibestdc1chip and amelia tended towards a downward bias of a smaller magnitude. ibestdc1chip beat amelia in the MCAR and MNAR cases. Overall mice was the best performer for this measure, returning an estimate with no detectable difference from the population parameter.  See Figure \@ref(fig:bm-wu-sasym-plots-mean).
+The Kruskal-Wallis test found very strong evidence of a difference in Cronbach's alpha for both Scales A and B between the variants which are confirmed by Tukey's HSD test. The results are very nuanced and worth considering further. All the single imputation methods tended to bias the alpha statistic upwards by around two percentage points, while ibestdc1chip and amelia tended towards a downward bias of a smaller magnitude. ibestdc1chip beat amelia in the MCAR and MNAR cases. Overall mice was the best performer for this measure, returning an estimate with no detectable difference from the population parameter.  See Figure \@ref(fig:bm-wu-sasym-plots-mean).
 
 Tables \@ref(tab:bm-wu-sasym-alpha-A-relb) and \@ref(tab:bm-wu-sasym-alpha-B-relb) show that the relative bias of introduced by ibestdc1chip is within the acceptable limit of < 0.05, with the exception of Scale B on MAR data where it is slightly over.
 
@@ -4264,7 +4214,7 @@ relb_alphaB
 
 #### Split-half Correlation
 
-```{r bm-wu-sasym-plots-splith, fig.height=2.25, fig.width=4.5, fig.cap='Split half correlation after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter value before imputation.'}
+```{r bm-wu-sasym-plots-splith, fig.height=2.25, fig.width=4.5, fig.cap='Split-half correlation after imputation with 95% confidence interval on 99 df. Dotted line shows population parameter.'}
 stats_names <- c("splith_mix")
 g <- ggplot(data = subset(res$ci_data
                           , stats %in% stats_names)
@@ -4328,9 +4278,9 @@ for (ds in dtsts) {
 }
 ```
 
-The Kruskall-Wallis test found very strong evidence of a difference in Cronbach's alpha for both Scales A and B between the variants which are confirmed by Tukey's HSD test. The upwards bias in the estimates from the single imputation techniques on this statistic is rather startling. It appears to be so great that the two Scales would be considered to be associated in any test of reliability. This is very serious consequences for subsequent data analysis. ibestdc1chip compares very favourably with mice and amelia. All three very closely preserve the population parameter. See Figure \@ref(fig:bm-wu-sasym-plots-splith).
+The Kruskal-Wallis test found very strong evidence of a difference split-half correlation between the variants which is confirmed by Tukey's HSD test. The upwards bias in the estimates from the single imputation techniques on this statistic is rather startling. It appears to be so great that the two Scales would be considered to be associated in any test of reliability. This is very serious consequences for subsequent data analysis. ibestdc1chip compares very favourably with mice and amelia. All three very closely preserve the population parameter. See Figure \@ref(fig:bm-wu-sasym-plots-splith).
 
-Table \@ref(tab:bm-wu-sasym-splith-relb) serves to illustrate the very poor performance of the single imputation techniques with Split-half correlation relative bias exceeding a value of 1.2, compared to the acceptable value of 0.05. ibestdc1chip also exceeded the acceptable limit in MCAR and MNAR data but performed best on MAR data. The reasons for such inconsistency are a matter for further research.
+Table \@ref(tab:bm-wu-sasym-splith-relb) serves to illustrate the very poor performance of the single imputation techniques with Split-half correlation relative bias exceeding a value of 1.0, compared to the acceptable value of 0.05. ibestdc1chip also exceeded the acceptable limit in MCAR and MNAR data but performed best on MAR data. The reasons for such inconsistency are a matter for further research.
 
 ```{r bm-wu-sasym-splith-relb}
 tab <- subset(res$qdata
@@ -4344,5 +4294,3 @@ relb_splith <- knitr::kable(
 
 relb_splith
 ```
-
-\clearpage

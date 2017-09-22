@@ -22,15 +22,13 @@ Concurrently with the literature review, proof of concept and prototyping in cod
 
 ### Algorithm
 
-For practical reasons, the novel AR-based method has the *apriori* algorithm at its core. However, this would ideally be substituted in the future with the FP-growth algorithm. These techniques are well-documented in the literature, so they will not be broken down into detailed algorithmic steps here. Furthermore, *apriori*, as implemented in the arules package for R, @R-arules, finds all rules. These must then be converted into CARs by filtering only specific consequent conditions. This is an inefficient process and not intentionally part of the the AR-based imputation algorithm. It does not make sense to document the novel algorithm this way so the steps below simply begin with a set of CARs as input without defining how these are generated.
+For practical reasons, the novel AR-based method has the *apriori* algorithm at its core. However, this would ideally be substituted in the future with the FP-growth algorithm. These techniques are well-documented in the literature, so they will not be broken down into detailed algorithmic steps here. Furthermore, *apriori*, as implemented in the arules package for R, @R-arules, finds all rules. These must then be converted into CARs by filtering only specific consequent conditions. This is an inefficient process and not intentionally part of the AR-based imputation algorithm. It does not make sense to document the novel algorithm this way so the steps below simply begin with a set of CARs as input without defining how these are generated.
 
 Recalling the data matrix $X$ and its corresponding missing indicator matrix $M$ as given in \@ref(eq:carpitaX) and \@ref(eq:carpitaM), let $J$ be the set of variables, such that for each $j$ there is some missing data, $M_{+j} > 0,\ j \in \{1,\ 2,\ \dots , p\  \}$. Recall also that $B(j)$ is the set of row indices for respondents who have a value in $j$ ($M_{ij} = 0$) and $B'(j)$, the complement set of row indices with a missing value in $j$ ($M_{ij} = 1$). Assuming AR-based imputation does not always estimate a value for every missing data point, let $M'_{ij}$ be the missing indicator matrix after AR-based imputation.
 
-Let $lhs(r)$ be the antecedent, or left-hand side of rule $r$ and $rhs(r)$ be the consequent, or right-hand side of rule $r$. When $X_{i}\ \textit{satisfies}\ lhs(r_j)$, all key-value pairs in $lhs(r_j)$ have a match in the key-value pair representation of $X_{i}$.
+Let $\textit{lhs}(r)$ be the antecedent, or left-hand side of rule $r$ and $\textit{rhs}(r)$ be the consequent, or right-hand side of rule $r$. Let $R_J$ be the set of all CARs found for the set of variables in J, $R_j$ be the set of CARs for variable $j$. For any single CAR $r_j$, the cardinality of $\textit{rhs}(r_j)$ is one, its value is $k \in \{\ 1, 2,\ \dots\ ,\ K\ \}$ where $K$ is the number of ordinal levels. $X_{i}\ \textit{satisfies}\ r_j$ when all key-value pairs in $\textit{lhs}(r_j)$ have a match in the key-value pair representation of $X_{i}$.
 
-Let $R_J$ be the set of all CARs found for the set of variables in J, $R_j$ be the set of CARs for variable $j$, such that $rhs(r_j)$ contains a single, valid value for $X_{\bullet j}$.
-
-Let $\textit{agg}()$ be the aggregate function set by user (e.g. rounded mean, majority vote). Let $\textit{def}()$ be the default class function set by user (e.g. majority class, posterior frequency distribution). Let $\textit{srt}()$ be the precedence sorting function set by user (e.g. by *Confidence*, Chi squared, etc).
+Let $\textit{agg}()$ be the aggregate function set by user (e.g. rounded mean, majority vote) with $N$ as the early stopping parameter. $N = 1$ is the *best rule* method. Let $\textit{def}()$ be the default class function set by user (e.g. majority class, posterior frequency distribution). Let $\textit{srt}()$ be the precedence sorting function set by user (e.g. by *Confidence*, Chi squared, etc).
 
 \begin{algorithm}
 \caption{Association Rules based imputation}\label{ARI1}
@@ -114,7 +112,7 @@ For the Iterative Sequential Association Rules based imputation algorithm, the s
     \State $R_j \gets \textit{makeCARs}(j)$
     \State $X'' \gets \textit{run AR-based imputation }(\ X = X',\ R = R_j,\ J = j,\ \textit{agg}(),\ \textit{def}(),\ \textit{srt}()\ )$
   \EndFor
-  \State $c \gets \frac{1}{|J|} \sum^J_{j \in J}{\sum_{i \in B'(j)} \sqrt(X''_{ij} - X'_{ij})^2}$
+  \State $c \gets \frac{1}{|J|} \sum_{j \in J}{\sum_{i \in B'(j)} \sqrt(X''_{ij} - X'_{ij})^2}$
   \State $X' \gets X''$
 \EndWhile
 \State $\textbf{return}\ X'$
@@ -124,13 +122,13 @@ For the Iterative Sequential Association Rules based imputation algorithm, the s
 
 ## Experimental Design
 
-\secref{sec:succrit} identified and critiqued similar research found in the literature. The following paragraphs conduct a further evaluation of the common design patterns identified with a view to formulating a model process for the applied experimental stage of this project.
+\secref{sec:succrit} identified and critiqued the experimental designs from similar research found in the literature. The following paragraphs formulate the common design factors into a model process for the applied experimental stage of this project.
 
 ### Experimental Design Factors
 
 \textbf{Objective and guiding principles:} The objective of the experimental stage is ultimately to compare a novel technique against existing benchmark techniques. However, the literature review unearthed a plethora of variations, tweaks and tunings for an AR-based imputation technique, any of which may improve general performance. It would be computationally and operationally very difficult to run all possible variants, let alone to compare them against the several benchmarks. Yet, there is a real motivation to find an optimally performing variant otherwise there is a risk of failing to discover the novel technique's true potential. The literature review also discussed several data scenarios which should be explored in order to investigate any niche uses for the novel technique. 
 
-\textbf{Multi-stage experimental design:} @carpita2011imputation implemented a common sense, two-stage experimental design which isolates the discovery of the best performing novel method variant from the benchmarking process. There are potentially hundreds of unique variants in this expermient and they cannot each be assessed. Therefore, a multi-stage tournement approach, building on @carpita2011imputation will be adopted. The results from each stage will be used to narrow the options for subsequent stages.
+\textbf{Multi-stage experimental design:} @carpita2011imputation implemented a common sense, two-stage experimental design which isolates the discovery of the best performing novel method variant from the benchmarking process. There are potentially hundreds of unique variants in this experiment and they cannot each be assessed. Therefore, a multi-stage approach, building on @carpita2011imputation will be adopted. The results from each stage will be used to narrow the options for subsequent stages.
 
 \textbf{Sample size choice:} This was quite variable among the papers reviewed which used two or three sample sizes, ranging between 200 to 2000. The choice is frequently a trade off between precision and computational cost which is greater for larger samples and each additional option increases the number of experiments geometrically. This research will test just one samples size of 1000 which is good for a general purpose experiment as the research needs to focus on the optimization and benchmarking. Niche scenarios with larger or smaller sample sizes will be deferred for further work.
 
@@ -138,17 +136,17 @@ For the Iterative Sequential Association Rules based imputation algorithm, the s
 
 \textbf{Missingness patterns:} The most common missingness mechanism tested is MAR because many papers on this topic refer specifically to MI, with its underlying MVN assumptions. MCAR is less well tested, presumably because it is considered ignorable and rare in real world scenarios. Tests of MNAR are even fewer in number, perhaps because the general consensus in the literature is that this is an intractable problem. However, the most relevant paper to this research describes an experimental process with detail on the generation of two different kinds of MNAR patterns which are relatively trivial to implement. This is one area where it is valuable, even at an early stage, to assess degrees of performance because the assumptions about missingness patterns are fundamental to the performance of the benchmarks.
 
-\textbf{Interestingness Measures:} The performance of ARM can be subtly manipulated by applying any one of a large selection of documented interestingness measures which can be used to sort the found rules. There are too many such measures to test them all in a reasonably designed experiment but two were discussed in the literature on CBA as being useful for predictive tasks; Predictive (Laplace's) accuracy, presented in @yin2003cpar, downweights rules that have high *Confidence* but low *Support* in the data and Chi squared is a good measure of how unlikely a rule was to have been discovered by chance, which is equivalent to choosing a predictive model with high sensitivity and specificity. The weighted Chi square statistic, proposed in @li2001cmar goes further by finding the Chi square as a proportion of the maximum possible Chi square score, given the data. This project will include comparisons of different precedence orders for the importance of found rules, based on these statistics. It should be noted that minimum *Support* is set extremely low at 0.02 in order to find even rare patterns. However, this should be considered in context of tabular, not transaction data along with the dataset size, which is only 1000 rows. This means that a pattern must appear in at least 20 rows to clear this threshold. This use case is very different from the enterprise retail origins of ARM. It is important that at least one matching rule can be found in the majority vast majority of cases, otherwise the method has to fall back on the default class too frequently. The primary interestingness measure is also set to a fairly low value of 0.2 for all variants. These values were found to be effective during proof of concept stages, but a methodical investigation of these tuning parameters should be included in any future refinement.
+\textbf{Interestingness Measures:} The performance of ARM can be subtly manipulated by applying any one of a large selection of documented interestingness measures which can be used to rank the rules. There are too many such measures to test them all in a reasonably designed experiment but two were discussed in the literature on CBA as being useful for predictive tasks; Laplace's accuracy, presented in @yin2003cpar, downweights rules that have high *Confidence* but low *Support* in the data and Chi squared is a good measure of how unlikely a rule was to have been discovered by chance, which is equivalent to choosing a predictive model with high sensitivity and specificity. The weighted Chi square statistic, proposed in @li2001cmar goes further by weighting the Chi square as a proportion of the maximum possible Chi square score based on the cases that satisfy any given rule. This project will compare *Confidence*, Laplace's Accuracy, Chi square and weighted Chi square. It should be noted that, for pattern discovery, minimum *Support* is set extremely low at 0.02 in order to find even rare patterns. However, this should be considered in context of tabular, not transaction data along with the dataset size, which is only 1000 rows. This means that a pattern must appear in at least 20 rows to clear this threshold. This use case is very different from the enterprise retail origins of ARM. It is important that at least one matching rule can be found in the vast majority of cases, otherwise the method has to fall back on the default class too frequently. The *Confidence* measure for the initial rule discovery, prior to ranking, is also set to a fairly low value of 0.2 for all variants. These values were found to be effective during proof of concept stages, but a methodical investigation of these tuning parameters should be included in any future refinement.
 
 \textbf{Range of techniques applied in benchmarking:} The relevant articles are very varied on this point and many report the inclusion of mean imputation, regression imputation and list-wise deletion. This may be a symptom of the relative age of some of the research, or potentially flaws in the research design. It is not considered worthwhile to compare any novel technique to those techniques regarded as flawed or outdated in the modern literature. This research will focus on techniques that are considered state of the art and those that are proven to be effective on surveys and questionnaires and non-normally distributed data types. MI and MICE, person-mean, corrected item mean, two-way imputation and item correlation substitution are included.
 
-\textbf{The number of imputations in multiply imputed techniques:} Based on the findings in the literature review, a rule of thumb of 1 imputation per 1% of missing data has superseded the previous advice of 3-5 imputations. However, this results in a suggested 30 iterations for the MI and MICE benchmarks, which is computationally demanding. This research will fall back on the classic advice and apply m=5 to these two benchmarks.
+\textbf{The number of imputations in multiply imputed techniques:} Based on the findings in the literature review, a rule of thumb of 1 imputation per 1% of missing data has superseded the previous advice of 3-5 imputations. However, this results in a suggested 30 iterations for the MI and MICE benchmarks, which is computationally demanding. This research will fall back on the classic advice and apply m=5 to these two benchmarks, as well as the iterative-sequential implementation of the novel method.
 
-\textbf{Synthetic or real-world data:} Many experimenters use synthetic data because of the possibility to set up precise initial conditions. However, the literature review hinted at a possibility to introduce design bias through the choice of model that generates the data. Real-world data avoids this problem because there are no design assumptions and unusual empirical distributions may be involved. This project is investigating a novel approach and while it will be very interesting to look for many niche applications of the technique, there is a danger to broaden the scope too far at an early stage. Therefore, this project will make use of Wu's synthetic method which is effective for Likert scales. It uses structural equations to model the data so that related items can be guaranteed a high degree of inter-item correlation.
+\textbf{Synthetic or real-world data:} Many experimenters use synthetic data because of the possibility to set up precise initial conditions. However, the literature review hinted at a possibility to introduce design bias through the choice of model that generates the data. Real-world data avoids this problem because there are no design assumptions and unusual empirical distributions may be involved. This project is investigating a novel approach and while it will be very interesting to look for many niche applications of the technique, there is a danger to broaden the scope too far at an early stage. Therefore, this project will implement a synthetic dataset, as close as possible to that described in @wu2015comparison. SEM will be used so that related items can be guaranteed a high degree of inter-item correlation.
 
-\textbf{Data distributions:} Some experiments generated synthetic data with different levels of skew, kurtosis and bi/multi-modality and inter-item correlation. There was a great variety of methods implemented, ranging from the very precise but very complicated, to the more pragmatic and approximate. During the literature review, it was observed that there is no real value added by creating very precise distributional qualities on an initially continuous variable, given the fact synthetic data has to be discretized into an ordinal scale for the experimental work. This research will therefore adopt Wu's method, one of the most pragmatic approaches for generating the data required. Synthetic data is discretized according to hard-coded thresholds. The resulting empirical distributions are accepted as population parameters for the starting conditions. This also makes experiments with synthetic and real-world data are easier to compare. Both symmetric and severely asymmetric data is synthesized for comparison, and to ensure that benchmark methods based on MVN assumptions are suitably challenged.
+\textbf{Data distributions:} Some experiments generated synthetic data with different levels of skew, kurtosis and bi/multi-modality and inter-item correlation. There was a great variety of methods implemented, ranging from the very precise but very complicated, to the more pragmatic and approximate. During the literature review, it was observed that there is no real value added by creating very precise distributional qualities on an initially continuous variable, given the fact synthetic data has to be discretized into an ordinal scale for the experimental work. This research will therefore adopt the method described in @wu2015comparison, which was one of the most pragmatic approaches for generating the data required. Synthetic data is discretized according to hard-coded thresholds. A very large, one-off sample is generated and the population parameters for the starting conditions are estimated from this empirical distribution. This also makes experiments with synthetic and real-world data are easier to compare. Both symmetric and severely asymmetric data is synthesized for comparison, and to ensure that benchmark methods based on MVN assumptions are suitably challenged.
 
-\textbf{Range of item scores:} Articles that focussed on ordinal and Likert scales varied the number of levels among 2, 3, 5, 6, and 7. In the literature on Likert scales, the values of 5 and 7 are very common and others are rarely seen. Because of the multi-stage design and many method variants to test, this project requires a narrow design scope to maintain a manageable number of combinations. The range will be restricted to 7, as used in Wu's method.
+\textbf{Range of item scores:} Articles that focussed on ordinal and Likert scales varied the number of levels among 2, 3, 5, 6, and 7. In the literature on Likert scales, the values of 5 and 7 are very common and others are rarely seen. Because of the multi-stage design and many method variants to test, this project requires a narrow design scope to maintain a manageable number of combinations. The range will be restricted to 7, as used in the method described in @wu2015comparison.
 
 \textbf{Number of experimental replications:} One thousand replications per set of initial conditions was a consistent choice among the papers reviewed. However, association rules mining and prediction are more computationally expensive and can be quite time consuming when combined with iterative imputation. The multi-stage design of this experiment makes a large number of replicas impractical. Therefore, 100 rounds of each experiment will be run.
 
@@ -168,7 +166,7 @@ factor_options <- c("7"
                 , sample_sizes
                 , paste0(missing_prop * 100, "%")
                 , paste(wu_missing_patt, collapse = ", ")
-                , "Benchmarking novel ARM-based method"
+                , "Benchmarking novel AR-based method"
                 , "Best Rule, Top N Mean, Top N Maj-Vote, RHS Freq"
                 , "Most frequent, Non-deterministic"
                 , "Confidence, Laplace, Chisq, Wt Chisq"
@@ -205,17 +203,15 @@ For one set of initial conditions:
 
 ### Success Measures
 
-A wide variety of well established statistics for measuring the effectiveness of imputation was covered in the literature review. It would be painstaking to attempt to measure and report everything, so for simplicity, the following statistics will be taken:
+The following statistics will be measured for each experiment:
 
-* Mean Absolute Scale Error (MASE, using the overall scale mean), see \@ref(eq:sse) & \@ref(eq:mase). This statistic measures the mean absolute difference between the original scale score and the scale score after imputation for each respondent. Taking the absolute difference maintains the magnitude of any error, but the direction of bias is lost.
-* Scale mean.
-* Scale standard deviation.
+* Mean Absolute Scale Error (MASE). See \@ref(eq:sse) & \@ref(eq:mase). This statistic measures the mean absolute difference between the MIRV totals (the scale score) before and after imputation for each respondent. MASE values of < 0.5 have a neutral effect on the scale totals because of rounding.
+* Scale mean, being the mean of scale means for each subject.
+* Scale standard deviation, being the standard deviation of scale means for each subject.
 * Cronbach's alpha.
-* Split half correlation with Fisher's r-to-Z transform, see  \@ref(eq:fisherz). The split half method combines half the individual items at random and assessing the inter-item correlation for stability across all the items. Here it is used to test whether two non-related scale items have become more or less correlated by deliberately combining items from separate scales that were subject to the imputation.
+* Split half correlation with Fisher's r-to-Z transform, see  \@ref(eq:fisherz). The split half method combines half the individual items at random and assessing the inter-item correlation for stability across all the items. Here it is used to test whether two non-related scale items have become more or less correlated by deliberately combining items from separate scales that were subject to the imputation, A1-A3 and B1-B3. The r-to-Z transform allows significance tests to be applied.
 * Ability by individual attribute (data point) and by case is measured at Stage 1 where the process does not finish with a default class imputation.
-* Relative bias and MSE ratio are considered during Stage 5 as part of the benchmarking. See \@ref(eq:relbias) and \@ref(eq:mseratio).
-
-Various vizualisations will also be applied to highlight the important results.
+* Relative bias of each statistic is considered during Stage 5 as part of the benchmarking. See \@ref(eq:relbias). A value of < 0.05 is deemed acceptable for a well-performing imputation technique.
 
 ## Practical Considerations
 
@@ -225,62 +221,21 @@ Various vizualisations will also be applied to highlight the important results.
 
 The following real-world datasets were assessed for suitability for inclusion in the experiments:
 
-* wiki4HE dataset (UCI Machine Learning Repository) [@meseguer2014factors; @gunduzfokoue2013]
-
-```{r wiki4HE_data}
-wiki4 <- read.csv("wiki4HE.csv"
-                  , sep = ";"
-                  , na.strings = "?")
-```
+* wiki4HE dataset (from the UCI Machine Learning Repository) [@meseguer2014factors; @gunduzfokoue2013]
 
 * Turkiye Student Evaluation (UCI Machine Learning Repository) @gunduzfokoue2013
 
-```{r turkiye}
-turk <- read.csv("turkiye.csv")
-```
-
 * Young People's Survey Dataset [@yps2013]
-
-```{r young}
-yps <- read.csv("responses.csv")
-```
 
 * Job Satisfaction and Procedural Fairness data sets @carpita2011imputation
 
-```{r carpita}
-library(xlsx)
-read_jspf <- function(sheet, cols) {
-  read.xlsx2("JSPF.xls"
-          , sheetName = sheet
-          , stringsAsFactors = FALSE
-          , colClasses = c("numeric"
-                           , "character"
-                           , rep("numeric", cols)))
-}
-
-js <- read_jspf("JS", 13)
-pf <- read_jspf("PF", 10)
-```
-
 * OxIS 2013 databases provided by the Oxford Internet Institute on 21/04/2017.
-
-```{r oxis}
-oxis <- read.csv("oxis.csv")
-names(oxis)[1] <- "qa01a"
-```
 
 * The [Online Personality Test (not clinically administered)](http://personality-testing.info/)
 
-```{r optest, cache=TRUE}
-temp <- tempfile()
-download.file("http://personality-testing.info/_rawdata/BIG5.zip", temp, mode="wb")
-perstest <- read.table(unz(temp, "BIG5/data.csv"), header = TRUE, sep="\t")
-unlink(temp); rm(temp)
-```
-
 #### Synthetic Data Methods
 
-To generate synthetic datasets containing 5-level item scales, the parameters given in @de2010five can be used. These distributions are categorized by friendly names such as "Very Strongly Agree" and "Neutral to Disagree." The expected values for the meta-population statistics are given in the article and can be easily compared to the generated data to ensure it fits the intended distribution. See \@ref(fig:ari-dewinter-demo-plot)
+To generate synthetic datasets containing 5-level item scales, the parameters given in @de2010five can be used. These distributions are categorized by friendly names such as "Very Strongly Agree" and "Neutral to Disagree." The expected values for the meta-population statistics are given in the article and can be easily compared to the generated data to ensure it fits the intended distribution. See \@ref(fig:ari-dewinter-demo-plot).
 
 To generate synthetic datasets containing 7-level item scales, the steps given in @wu2015comparison are followed:
 
@@ -314,9 +269,9 @@ Other tools considered and ruled out were:
 
 @amaral2011computing [p.4]
 
-To facilitate the automation of experiments, the novel technique will be developed as an R package. The package will encapsulate all the programmatic code and help to minimize scripting errors. By following the best practice guidance in @Wickham:2015:RP:2904414, it is hoped that the package will be produced of a quality suitable for publication on the Comprehensive R Archive Network [https://cran.r-project.org/](CRAN), which is the primary repository for published R packages. CRAN is curated by the community to ensure that packages meet a strict set of guidelines, which helps to ensure consistency and reliability for other users.
+To facilitate the automation of experiments, the novel technique was developed as an R package. The package encapsulates all the programmatic code and helps to minimize scripting errors. By following the best practice guidance in @Wickham:2015:RP:2904414, it is hoped that the package will eventually be of an acceptable quality for publication on the Comprehensive R Archive Network [https://cran.r-project.org/](CRAN), which is the primary repository for published R packages. CRAN is curated by the community to ensure that packages meet a strict set of guidelines, which helps to ensure consistency and reliability for other users.
 
-The package is named arulesimp (*a*ssociation *rules imp*utation) as a nod to the arules package which it imports and invokes to run the ARM step of the novel imputation technique. In addition to this, there are other utility and convenience functions based on the conceptual model devised in \secref{sec:concmod}. These can be used to generate synthetic data for demonstration research purposes, simulating different missingness patterns in data and functions for pre-processing data into a format suitable for the underlying arules package which requires discretized factor variables. Some demonstration code follows:
+The package has been named arulesimp (*a*ssociation *rules imp*utation) as a nod to the arules package which it imports and invokes to run the ARM step of the novel imputation method. In addition to this, there are other utility and convenience functions based on the conceptual model devised in \secref{sec:concmod}. These can be used to generate synthetic data for demonstration research purposes, simulating different missingness patterns in data, and functions for pre-processing data into a format suitable for the underlying arules package which requires discretized factor variables. Some demonstration code follows:
 
 #### Synthetic data functions {#sec:syndatfun}
 ```{r ari-dewinter-demo, echo=TRUE}
@@ -532,10 +487,10 @@ compare.density(a.out, var = "A1")
 overimpute(a.out, var = "A1")
 ```
 
-Overimpute diagnostic from the Amelia package performs multiple imputations over the observed data to show how the model would have imputed them if absent. It is very useful to see if the model is accurate. In this case, the predictions do not appear to follow the unity line at all. Rather, it appears that any value might be imputed as any other value with fairly equal chance. It might be inferred that Amelia has done no better than naive random imputation on this data.
+Overimpute diagnostic from the Amelia package performs multiple imputations over the observed data to show how the model would have imputed each value as if it were absent. It is very useful to see if the model is accurate. In this case, the predictions do not appear to follow the unity line at all. Rather, it appears that any value might be imputed as any other value with fairly equal chance. From this plot, it is suggested that Amelia has done no better than naive random imputation on this data.
 
 #### mice
-mice, @R-mice implemented the MICE algorithm which can use PMM for non-normally distributed data.
+The mice package, @R-mice, implements the MICE algorithm which can use PMM for non-normally distributed data.
 ```{r mice_demo, echo=TRUE}
 # library(mice) # already loaded
 mice.out <- mice(wu_mar$data, m = 3, maxit = 10
@@ -559,9 +514,9 @@ densityplot(mice.out)
 ```
 
 #### VIM
-VIM, @R-VIM is a package that provides some imputation methods not available elsewhere including Hot-deck, and nearest neighbours as well as a huge suite of diagnostic plots for visualizing missingness and imputed values. See Figure \@ref(fig:vim-demo-plot)
+VIM, @R-VIM is a package that provides some imputation methods not available elsewhere including Hot-deck, and nearest neighbours as well as a huge suite of diagnostic plots for visualizing missingness and imputed values. See Figure \@ref(fig:vim-demo-plot).
 
-```{r vim-demo-plot, fig.height=3, echo=TRUE}
+```{r vim-demo-plot, fig.height=3, echo=TRUE, fig.cap='One of VIM\'s more diagnostic plots. It also generates missingness statistics automatically.'}
 # library(VIM) # already loaded
 
 # The VIM package has some excellent vizualizations
