@@ -1,0 +1,316 @@
+\documentclass[pdf]{beamer}
+\mode<presentation>{}
+\usepackage{beamerthemeshadow}
+\usepackage{tikz}
+\usepackage{tipa}
+\usetikzlibrary{arrows,shapes}
+\tikzstyle{every picture}+=[remember picture]
+
+%% Make the r-code small
+\ifdefined\knitrout
+  \renewenvironment{knitrout}{\begin{footnotesize}}{\end{footnotesize}}
+\else
+\fi
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    citecolor=blue
+}
+ 
+\urlstyle{same}
+
+\usepackage[backend=bibtex, maxcitenames=2, style=authoryear]{biblatex}
+\addbibresource{likertimputebiblio.bib}
+\addbibresource{packages.bib}
+
+\title[I-ISARP]{An Association Rules Based Method for Imputing Missing Ordinal and Likert Scale Data}
+\author{Julian Hatwell}
+\institute[BCU]
+{Birmingham City University\\
+  Supervisor: Prof. M. M. Gaber
+}
+\begin{document}
+
+<<prologue, include=FALSE>>=
+knitr::opts_chunk$set(warning = FALSE
+                      , message = FALSE
+                      , echo = FALSE
+                      )
+knitr::opts_template$set(
+  fig.tile = list(fig.height = 3
+                  , fig.width = 3
+                  , fig.align='center')
+  )
+knitr::opts_knit$set(self.contained=FALSE)
+    
+library(ggplot2)
+library(tikzDevice)
+@
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}{Outline}
+\section{Introduction}
+\tableofcontents[currentsection]
+\end{frame}
+
+\begin{frame}{Overview}
+\begin{center}\textbf{AIM:}\\
+To design and evaluate a novel, AR-based imputation technique for missing ordinal and Likert scale data, benchmarked against state of the art.\end{center}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Motivation}
+\begin{itemize}
+\item<1-> Already had an interest in discrete data analysis\\
+\includegraphics[height=2cm]{friendly_cover.jpg}\ Source: \textcite{friendly2016discrete}
+\item<2-> Last year's data mining module - Exploring Kaggle's Young Peoples Survey dataset with ARM
+<<yps-head>>=
+yps <- read.csv("responses.csv")
+yps[183:186, 21:25]
+@
+\item<3-> Investigated further, found a gap in the literature
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\section{Research Methods}
+\tableofcontents[currentsection]
+\end{frame}
+
+\begin{frame}{Literature Review}
+\begin{itemize}
+  \item \tikz[baseline]{
+            \node[fill=pink!10,anchor=base] (t1)
+            {Surveys, background and history};}
+  \item \tikz[baseline]{
+            \node[fill=pink!20,anchor=base] (t2)
+            {Likert scales};}
+  \item \tikz[baseline]{
+            \node[fill=cyan!20,anchor=base] (t3)
+            {Missing data};}
+  \begin{itemize}
+    \item \tikz[baseline]{
+              \node[fill=cyan!30,anchor=base] (t4)
+              {MCAR, MAR and MNAR};}
+    \item \tikz[baseline]{
+              \node[fill=cyan!30,anchor=base] (t5)
+              {Propensity (logistic model of missing values)};}
+  \end{itemize}
+  \item \tikz[baseline]{
+            \node[fill=cyan!30,anchor=base] (t6)
+            {Imputation methods};}
+    \begin{itemize}
+        \item \tikz[baseline]{
+            \node[fill=cyan!40,anchor=base] (t7)
+            {MI (parametric methods)};}
+        \item \tikz[baseline]{
+            \node[fill=cyan!40,anchor=base] (t8)
+            {MICE (iterative-sequential)};}
+        \item \tikz[baseline]{
+            \node[fill=cyan!40,anchor=base] (t9)
+            {Hot-decking (similarity-based, non-parametric)};}
+      \end{itemize}
+  \item \tikz[baseline]{
+            \node[fill=lime!30,anchor=base] (t10)
+            {Association Rules Mining (ARM)};}
+    \begin{itemize}
+      \item \tikz[baseline]{
+            \node[fill=lime!40,anchor=base] (t11)
+            {Prediction with ARM};}
+    \end{itemize}
+\end{itemize}
+\hfill \tikz[baseline]{
+            \node[fill=teal!50,anchor=base] (t12)
+            {I-ISARP};
+        }
+        
+\begin{tikzpicture}[overlay]
+        \path[->] (t5) edge [out=0, in=90] (t12);
+        \path[->] (t8) edge [out=0, in=90] (t12);
+        \path[->] (t9) edge [out=0, in=90] (t12);
+        \path[->] (t11) edge [out=0, in=90] (t12);
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Experimental Study Design}
+\begin{itemize}
+  \item \tikz[baseline]{
+            \node[fill=pink!10,anchor=base] (t1)
+            {Datasets};}
+    \begin{itemize}
+        \item \tikz[baseline]{
+            \node[fill=pink!20,anchor=base] (t2)
+            {Real-world data};}
+        \item \tikz[baseline]{
+            \node[fill=pink!20,anchor=base] (t3)
+            {Methods for synthesizing realistic data};}
+    \end{itemize}
+  \item \tikz[baseline]{
+            \node[fill=cyan!10,anchor=base] (t4)
+            {Success measures};}
+    \begin{itemize}
+        \item \tikz[baseline]{
+            \node[fill=cyan!20,anchor=base] (t5)
+            {Prediction accuracy};}
+        \item \tikz[baseline]{
+            \node[fill=cyan!20,anchor=base] (t6)
+            {Statistical parameters};}
+    \end{itemize}
+  \item \tikz[baseline]{
+            \node[fill=lime!10,anchor=base] (t7)
+            {Benchmarks and comparison techniques};}
+    \begin{itemize}
+        \item \tikz[baseline]{
+            \node[fill=lime!20,anchor=base] (t8)
+            {Classic techniques (listwise deletion, mean imputation)};}
+        \item \tikz[baseline]{
+            \node[fill=lime!20,anchor=base] (t9)
+            {State of the art: MI, MICE};}
+        \item \tikz[baseline]{
+            \node[fill=lime!20,anchor=base] (t10)
+            {Likert specific: PM, CIM, TW, ICS};}
+    \end{itemize}
+    \item \tikz[baseline]{
+          \node[fill=pink!10,anchor=base] (t11)
+          {Other design factors};}
+\end{itemize}
+\hfill \tikz[baseline]{
+            \node[fill=teal!30,anchor=base] (t12)
+            {Experimental Design Matrix};
+        }
+
+\begin{tikzpicture}[overlay]
+        \path[->] (t3) edge [out=0, in=90] (t12);
+        \path[->] (t6) edge [out=0, in=90] (t12);
+        \path[->] (t9) edge [out=0, in=90] (t12);
+        \path[->] (t10) edge [out=0, in=90] (t12);
+        \path[->] (t11) edge [out=0, in=90] (t12);
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Experimental Study Design}
+<<hatwell-design-matrix, results='asis'>>=
+factor_name <- c("Experimental Aim"
+                , "Number of ordinal categories"
+                , "Sample size"
+                , "Data distributions"
+                , "Proportion of missing data"
+                , "Missing data mechanisms"
+                , "Benchmark methods"
+                , "Data source"
+                , "Number of repetitions")
+factor_options <- c("Benchmarking of I-ISARP"
+                , "7"
+                , "1000"
+                , "Symmetric and Severely Asym."
+                , "0.3"
+                , "MCAR, MAR, MNAR"
+                , "PM, CIM, TW, ICS, MI, MICE"
+                , "Synthetic data"
+                , "100")
+
+cp_design_matrix <- knitr::kable(data.frame(
+  "Design Factor" = factor_name
+  , Options = factor_options
+  , check.names = FALSE)
+        , caption = "Experimental Design Matrix")
+
+cp_design_matrix
+@
+\end{frame}
+
+\begin{frame}
+\section{Outcomes}
+\tableofcontents[currentsection]
+\end{frame}
+
+\begin{frame}{Project Artefacts}
+\begin{itemize}
+\item<1-> Dissertation: ``An Association Rules Based Method for Imputing Missing Ordinal and Likert Scale Data''
+\item<2-> R package ``arulesimp'' implements the algorithm and other utility and convenience functions. Distributable to other researchers via github and the devtools framework,  \textcite{R-devtools}.
+\item<3-> An 8-page research paper, describing the final algorithm ``I-ISARP'' submitted to the ACM (acceptance pending).
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Findings and Conclusions}
+\begin{itemize}
+  \item Algorithmic design
+  \begin{itemize}
+    \item See Dissertation, Chapter 3.1
+    \item See ACM submission, Section 4
+  \end{itemize}
+  \item Findings
+  \begin{itemize}
+    \item See Dissertation, Chapters 4 \& 5.1
+    \item See ACM submission, Sections 6-7
+  \end{itemize}
+    \item Conclusions and further work
+  \begin{itemize}
+    \item See Dissertation, Chapter 5.2
+    \item See ACM submission, Section 8
+  \end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\section{Reflection}
+\tableofcontents[currentsection]
+\end{frame}
+
+\begin{frame}{Project Management}
+\includegraphics[height=7cm]{figure/gantt-1.pdf}
+\end{frame}
+
+\begin{frame}{Benefits - New Skills and Knowledge}
+\begin{itemize}
+  \item Literature Review
+    \begin{itemize}
+      \item Time to explore many topics that were new to me:
+      \begin{itemize}
+        \item advanced methods for ordinal data analysis
+        \item missing data analysis: MCAR, MAR, MNAR and propensity
+        \item MI and MICE
+        \item The rigour required for realistic data synthesis
+      \end{itemize}
+    \item Curated list for future reference
+    \item Research practice - synthesizing new ideas from related work
+    \item Critical reading - looking for open research questions
+  \end{itemize}
+  \item Creating an R package
+  \item Managing a 4 month research project
+  \item Writing and submitting an academic paper
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Challenges and Further Learning Opportunities}
+\begin{itemize}
+  \item Scope
+  \begin{itemize}
+    \item Identifying the project size and scale early
+    \item Managing scope creep as new questions arise
+  \end{itemize}
+  \item Use of formal methods
+  \begin{itemize}
+    \item Theoretical proofs that a novel process ``should'' work
+    \item Time complexity analysis
+  \end{itemize}
+  \item Verbose writing style - need to practice ``self-editing''
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Q\&A}
+\begin{center}
+\Huge Q \& A
+\end{center}
+\end{frame}
+
+\end{document}
